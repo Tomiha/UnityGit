@@ -1,0 +1,266 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8359976457174879847
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadbff38aba484f43b81492d7729e216, type: 3}
+  m_Name: Attribute
+  m_EditorClassIdentifier: 
+  AttrType: 0
+  AttrName: Rust
+  AttrValue: Yes
+--- !u!114 &-8331921026959118162
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadbff38aba484f43b81492d7729e216, type: 3}
+  m_Name: Attribute
+  m_EditorClassIdentifier: 
+  AttrType: 0
+  AttrName: ScratchPropety
+  AttrValue: safafsafasf
+--- !u!114 &-7155211975567535163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26cce834b785dcb45ae0b94f4ac625f0, type: 3}
+  m_Name: 3_ScratchToken9001
+  m_EditorClassIdentifier: 
+  LiveModel: '{"id":3,"name":"ScratchToken9001","description":"A token that is over
+    9000!","image":"www.venly.io/image.png","imageThumbnail":"www.venly.io/image.png","imagePreview":"www.venly.io/image.png","externalUrl":"www.venly.io","youtubeUrl":null,"backgroundColor":"#ffffff","fungible":true,"burnable":true,"maxSupply":200,"currentSupply":0,"animationUrls":[{"type":"safsfasf","value":"asfasfasf"}],"attributes":[{"type":"stat","name":"safsfsaf","value":"sdfasdfsaf"}],"transactionHash":"0x5d196e82268c307b83d57ea62edd6d9d05479725a87ce6f6463a83ae189635c0","storage":{"type":"CLOUD","location":"https://metadata-staging.arkane.network/metadata/contracts/32992/tokens/{id}"},"confirmed":true}'
+  ItemState: 1
+  Confirmed: 1
+  Id: 3
+  TransactionHash: 0x5d196e82268c307b83d57ea62edd6d9d05479725a87ce6f6463a83ae189635c0
+  Name: ScratchToken9001
+  Description: A token that is over 9000!
+  ExternalUrl: www.venly.io
+  ImageUrl: www.venly.io/image.png
+  Contract: {fileID: 11400000}
+  ImageThumbnail: www.venly.io/image.png
+  ImagePreview: www.venly.io/image.png
+  CurrentSupply: 0
+  Fungible: 1
+  Burnable: 1
+  MaxSupply: 200
+  BackgroundColor: '#ffffff'
+  AnimationUrls:
+  - Type: safsfasf
+    Value: asfasfasf
+  Attributes:
+  - Type: 0
+    Name: safsfsaf
+    Value: sdfasdfsaf
+  TextureUrl: www.venly.io/image.png
+  TokenTexture: {fileID: 0}
+--- !u!114 &-7101055059252768540
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9631cc2c0f185f341b2634f932ce3bc1, type: 3}
+  m_Name: Pair
+  m_EditorClassIdentifier: 
+  Type: safsfasf
+  Value: asfasfasf
+--- !u!114 &-5518353593509255585
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9631cc2c0f185f341b2634f932ce3bc1, type: 3}
+  m_Name: Pair
+  m_EditorClassIdentifier: 
+  Type: 
+  Value: 
+--- !u!114 &-3389228384766152826
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9631cc2c0f185f341b2634f932ce3bc1, type: 3}
+  m_Name: Pair
+  m_EditorClassIdentifier: 
+  Type: scratchType
+  Value: some value
+--- !u!114 &-1612877265264304592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26cce834b785dcb45ae0b94f4ac625f0, type: 3}
+  m_Name: 2_ScratchToken
+  m_EditorClassIdentifier: 
+  LiveModel: '{"id":2,"name":"ScratchToken","description":"safasfsfaasdf","image":"www.scratch.io/image.png","imageThumbnail":"www.scratch.io/image.png","imagePreview":"www.scratch.io/image.png","externalUrl":"www.scratch.io","youtubeUrl":null,"backgroundColor":"#ff00ff","fungible":true,"burnable":true,"maxSupply":10000,"currentSupply":0,"animationUrls":[{"type":"scratchType","value":"some
+    value"}],"attributes":[{"type":"stat","name":"ScratchPropety","value":"safafsafasf"},{"type":"stat","name":"Rust","value":"Yes"}],"transactionHash":"0x2b78a20553b89643750ced1ea01364f725a0c0e66762ed8e305361dd5afa513d","storage":{"type":"CLOUD","location":"https://metadata-staging.arkane.network/metadata/contracts/32992/tokens/{id}"},"confirmed":true}'
+  ItemState: 1
+  Confirmed: 1
+  Id: 2
+  TransactionHash: 0x2b78a20553b89643750ced1ea01364f725a0c0e66762ed8e305361dd5afa513d
+  Name: ScratchToken
+  Description: safasfsfaasdf
+  ExternalUrl: www.scratch.io
+  ImageUrl: www.scratch.io/image.png
+  Contract: {fileID: 11400000}
+  ImageThumbnail: www.scratch.io/image.png
+  ImagePreview: www.scratch.io/image.png
+  CurrentSupply: 0
+  Fungible: 1
+  Burnable: 1
+  MaxSupply: 10000
+  BackgroundColor: '#ff00ff'
+  AnimationUrls:
+  - Type: scratchType
+    Value: some value
+  Attributes:
+  - Type: 0
+    Name: ScratchPropety
+    Value: safafsafasf
+  - Type: 0
+    Name: Rust
+    Value: Yes
+  TextureUrl: 
+  TokenTexture: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 381e55a8044b6fd4ea0da4c2b6bfc9ff, type: 3}
+  m_Name: 32992_ScratchContract
+  m_EditorClassIdentifier: 
+  LiveModel: '{"name":"ScratchContract","description":"SDK Test Contract","confirmed":true,"address":"0xb00851e12257016317288462bc71fa2a8287fe12","id":32992,"secretType":"ETHEREUM","symbol":"SRATCH","externalUrl":"www.venly.io","image":"https://lh3.googleusercontent.com/GS0ZfYHoOe_rKQryk6xIKVUB39Rid2eS1FWzuP5YMScbBBcdVlrhCMkIE6gyChDXxbE=w2400","media":[{"type":"data","value":"https://lh3.googleusercontent.com/GS0ZfYHoOe_rKQryk6xIKVUB39Rid2eS1FWzuP5YMScbBBcdVlrhCMkIE6gyChDXxbE=w2400"},{"type":"more
+    data","value":"https://lh3.googleusercontent.com/GS0ZfYHoOe_rKQryk6xIKVUB39Rid2eS1FWzuP5YMScbBBcdVlrhCMkIE6gyChDXxbE=w2400"}],"transactionHash":"0xe0112a4aedbd25dfead4ba73a78a62d1bb9123b71317537f6623938af2e3233e","owner":"0xE7504998648E1c078a9f15E70D6A890D6238119C","storage":{"type":"CLOUD","location":"https://metadata-staging.arkane.network/metadata/contracts/32992"},"external_link":"www.venly.io"}'
+  ItemState: 1
+  Confirmed: 1
+  Id: 32992
+  TransactionHash: 0xe0112a4aedbd25dfead4ba73a78a62d1bb9123b71317537f6623938af2e3233e
+  Name: ScratchContract
+  Description: SDK Test Contract
+  ExternalUrl: www.venly.io
+  ImageUrl: https://lh3.googleusercontent.com/GS0ZfYHoOe_rKQryk6xIKVUB39Rid2eS1FWzuP5YMScbBBcdVlrhCMkIE6gyChDXxbE=w2400
+  TokenTypes:
+  - {fileID: -1612877265264304592}
+  - {fileID: -7155211975567535163}
+  - {fileID: 954415880155112372}
+  Address: 0xb00851e12257016317288462bc71fa2a8287fe12
+  Chain: 4
+  Owner: 0xE7504998648E1c078a9f15E70D6A890D6238119C
+  Symbol: SRATCH
+  Media:
+  - Type: data
+    Value: https://lh3.googleusercontent.com/GS0ZfYHoOe_rKQryk6xIKVUB39Rid2eS1FWzuP5YMScbBBcdVlrhCMkIE6gyChDXxbE=w2400
+  - Type: more data
+    Value: https://lh3.googleusercontent.com/GS0ZfYHoOe_rKQryk6xIKVUB39Rid2eS1FWzuP5YMScbBBcdVlrhCMkIE6gyChDXxbE=w2400
+--- !u!114 &194544729961673893
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9631cc2c0f185f341b2634f932ce3bc1, type: 3}
+  m_Name: Pair
+  m_EditorClassIdentifier: 
+  Type: data
+  Value: https://lh3.googleusercontent.com/GS0ZfYHoOe_rKQryk6xIKVUB39Rid2eS1FWzuP5YMScbBBcdVlrhCMkIE6gyChDXxbE=w2400
+--- !u!114 &954415880155112372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26cce834b785dcb45ae0b94f4ac625f0, type: 3}
+  m_Name: TokenType_0
+  m_EditorClassIdentifier: 
+  LiveModel: 
+  ItemState: 2
+  Confirmed: 0
+  Id: 0
+  TransactionHash: 
+  Name: TokenType_0
+  Description: 
+  ExternalUrl: 
+  ImageUrl: 
+  Contract: {fileID: 11400000}
+  ImageThumbnail: 
+  ImagePreview: 
+  CurrentSupply: 0
+  Fungible: 0
+  Burnable: 0
+  MaxSupply: 0
+  BackgroundColor: 
+  AnimationUrls: []
+  Attributes: []
+  TextureUrl: 
+  TokenTexture: {fileID: 0}
+--- !u!114 &3327277148400459988
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cadbff38aba484f43b81492d7729e216, type: 3}
+  m_Name: Attribute
+  m_EditorClassIdentifier: 
+  AttrType: 0
+  AttrName: safsfsaf
+  AttrValue: sdfasdfsaf
+--- !u!114 &6659616025490830745
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9631cc2c0f185f341b2634f932ce3bc1, type: 3}
+  m_Name: Pair
+  m_EditorClassIdentifier: 
+  Type: more data
+  Value: https://lh3.googleusercontent.com/GS0ZfYHoOe_rKQryk6xIKVUB39Rid2eS1FWzuP5YMScbBBcdVlrhCMkIE6gyChDXxbE=w2400

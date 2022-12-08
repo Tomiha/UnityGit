@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleItemListView.uss?fileID=7433441132597879392&amp;guid=95a202aae53364c4f82dd1b733975d98&amp;type=3#styleItemListView" />
+    <ui:VisualElement name="root-contract-item" style="flex-grow: 1; justify-content: space-around; flex-direction: column; align-items: flex-start; margin-bottom: 10px;">
+        <ui:VisualElement name="root-item" class="contract-item" style="flex-direction: row; align-items: center; flex-grow: 0; height: auto; flex-shrink: 1; justify-content: flex-start; flex-wrap: nowrap; width: 100%;">
+            <ui:VisualElement name="item-status" class="item-status" style="align-items: center; justify-content: center; visibility: visible; display: flex; flex-shrink: 0; margin-right: 10px; flex-direction: row; font-size: 10px;">
+                <ui:Label text="LOCAL" display-tooltip-when-elided="true" name="item-status-text" class="item-status-text" style="align-items: center; justify-content: center; padding-right: 0; padding-left: 0;" />
+            </ui:VisualElement>
+            <ui:VisualElement style="margin-right: 22px;">
+                <ui:Label text=" dafaffasfsdff fsfsdafasfasffasdfdasfasfsadf" display-tooltip-when-elided="true" name="item-name" binding-path="Name" class="item-contract-label" style="flex-grow: 1; justify-content: flex-start; align-items: auto; -unity-font-style: bold; white-space: normal;" />
+            </ui:VisualElement>
+            <ui:Button text="-" display-tooltip-when-elided="true" name="contract-action-delete" tooltip="Remove/Burn this contract" class="item-btn-delete" style="position: absolute; left: 100%; margin-left: -17px;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="root-sub" style="flex-grow: 1; width: auto; flex-direction: row; justify-content: flex-start; align-items: flex-start;">
+            <ui:VisualElement name="spacer" class="container-tokentype-spacer" style="flex-grow: 0; align-items: center;">
+                <ui:VisualElement style="align-items: stretch; justify-content: space-between; background-color: rgb(188, 188, 188); height: 100%; width: 5px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; margin-top: 5px; margin-bottom: 5px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="root-tokentypes" style="flex-grow: 1; height: 100%;">
+                <ui:VisualElement name="container-tokentypes" style="flex-grow: 1;" />
+                <ui:VisualElement name="contract-actions" style="flex-direction: row; justify-content: flex-start;">
+                    <ui:Button text="+" display-tooltip-when-elided="true" name="tokentype-action-add" tooltip="Add a new Token-Type to this contract" class="btn-add-item" style="margin-left: 0; font-size: 10px; margin-top: 2px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

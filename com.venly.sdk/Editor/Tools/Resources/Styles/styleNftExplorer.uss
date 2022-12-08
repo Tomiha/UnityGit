@@ -1,0 +1,31 @@
+/*Label {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(68, 138, 255);
+}*/
+
+.header {
+    height: 100px;
+    background-color: green;
+}
+
+.header-settings {
+    background-color: red;
+}
+
+.header-content {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.header-title {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: black;
+
+    align-self: flex-start;
+}
+
+.header-details {
+    font-size: 10px;
+}

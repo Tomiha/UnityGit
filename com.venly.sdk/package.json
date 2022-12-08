@@ -1,0 +1,25 @@
+{
+  "name": "com.venly.sdk",
+  "version": "0.1.0",
+  "displayName": "Venly SDK (Alpha)",
+  "description": "The Venly SDK provides an easy way to communicate with Venly's various API products (Wallet/NFT). The SDK is backend agnostic meaning that you can either use one of the buildin backend extensions (such as PlayFab) or build an extension for your own backend solution.",
+  "unity": "2021.3",
+  "documentationUrl": "https://venly.io/",
+  "changelogUrl": "https://venly.io/",
+  "licensesUrl": "https://venly.io/",
+  "keywords": [
+    "Venly",
+    "NFT",
+    "web3",
+    "SDK",
+    "Blockchain"
+  ],
+  "author": {
+    "name": "Venly",
+    "email": "thomas.goussaert@venly.io",
+    "url": "https://www.venly.io"
+  },
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.0.2"
+  }
+}

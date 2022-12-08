@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleAttributeItemList.uss?fileID=7433441132597879392&amp;guid=1707bedc4c25ca34d968d066acd2d96a&amp;type=3#styleAttributeItemList" />
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleControls.uss?fileID=7433441132597879392&amp;guid=160a484f0b8948541aaecfb579cbc75d&amp;type=3#styleControls" />
+    <ui:VisualElement name="root" class="control-rw-background" style="flex-direction: row; flex-grow: 1; margin-top: 0;">
+        <ui:Label text="Attributes" display-tooltip-when-elided="true" enable-rich-text="false" name="lbl-name" class="control-rw-label" style="-unity-font-style: bold; width: 150px; margin-top: 3px;" />
+        <ui:VisualElement style="flex-grow: 1;">
+            <ui:VisualElement name="item-container" style="flex-grow: 1; align-items: stretch; justify-content: flex-start; margin-top: 2px;" />
+            <ui:Button text="+" display-tooltip-when-elided="true" name="btn-add-item" style="width: 20px; height: 20px; margin-left: 0; margin-bottom: 2px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

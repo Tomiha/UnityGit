@@ -1,0 +1,21 @@
+.data-label {
+    width: 150px;
+    -unity-font-style: bold;
+}
+
+.data-text-field > .unity-label {
+    -unity-font-style: bold;
+    width: 100px;
+}
+
+.unity-base-text-field__input {
+    flex-grow: 1;
+}
+
+.data-row {
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.data-text-field {
+}

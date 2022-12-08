@@ -1,0 +1,30 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" en="UnityEngine.UIElements" ed="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleNftExplorer.uss?fileID=7433441132597879392&amp;guid=6ddb2a7933af5c84a8d8b275ed03eee5&amp;type=3#styleNftExplorer" />
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleItemListView.uss?fileID=7433441132597879392&amp;guid=95a202aae53364c4f82dd1b733975d98&amp;type=3#styleItemListView" />
+    <ui:VisualElement name="root" style="flex-direction: column; flex-grow: 1; height: auto; width: auto; justify-content: space-between; align-items: stretch; max-height: none; min-height: auto; min-width: auto;">
+        <ui:VisualElement name="mainHeader" style="height: 70px; width: 100%; flex-direction: row; justify-content: flex-start; align-items: flex-start; -unity-background-scale-mode: stretch-to-fill; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; flex-shrink: 0;">
+            <ui:VisualElement name="headerContent" style="flex-direction: row; justify-content: space-between; align-items: stretch; margin-bottom: 0; padding-left: 0; margin-left: 0; margin-top: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; flex-wrap: nowrap; width: 100%; position: relative;">
+                <ui:VisualElement name="header-logo" style="flex-grow: 0; background-image: url(&apos;project://database/Assets/VenlySDK/Editor/Icons/Logo_VenlyGradientBackground.png?fileID=2800000&amp;guid=5550cca8c26e20b449d8ed1a3772674c&amp;type=3#Logo_VenlyGradientBackground&apos;); -unity-background-scale-mode: scale-to-fit; width: 70px; background-color: rgba(255, 255, 255, 0); flex-shrink: 0;" />
+                <ui:VisualElement name="headerTitle" style="width: 200px; flex-direction: column; margin-left: 10px;">
+                    <ui:Label text="Contract Manager" class="header-title" style="color: rgb(238, 230, 230);" />
+                    <ui:Label text="Client ID: " name="lbl-client-id" class="header-details" />
+                    <ui:Label text="App ID: " name="lbl-app-id" class="header-details" />
+                </ui:VisualElement>
+                <ui:VisualElement name="spacer" style="flex-direction: row; align-items: flex-end; width: 100%; flex-grow: 1;" />
+                <ui:VisualElement name="headerSettings" style="flex-direction: row; align-items: flex-start; justify-content: flex-end; width: 50px; flex-shrink: 0;">
+                    <ui:Button text="Sync" display-tooltip-when-elided="true" name="btn-sync" style="justify-content: flex-end; position: relative; flex-basis: auto; flex-direction: column; align-items: auto;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="mainContent" style="flex-grow: 1; height: 100%; flex-direction: row; width: auto; align-items: stretch; flex-shrink: 1; min-height: auto; min-width: auto;">
+            <Venly.Editor.Tools.Controls.SplitView orientation="Horizontal" fixed-pane-initial-dimension="230" style="flex-direction: row; min-width: auto; min-height: auto;">
+                <ui:VisualElement name="contentTreePane" style="flex-grow: 1; flex-direction: row; width: 399px; min-width: 150px;">
+                    <Venly.Editor.Tools.ContractManager.ContractListView name="contract-list-view" style="flex-grow: 1; width: 100%; border-left-color: rgb(187, 187, 187); border-right-color: rgb(187, 187, 187); border-top-color: rgb(187, 187, 187); border-bottom-color: rgb(187, 187, 187); border-left-width: 0; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="item-details-panel" style="flex-grow: 1; width: auto; flex-direction: row; min-width: 200px; border-left-width: 0; border-right-width: 0; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(186, 186, 186); border-right-color: rgb(186, 186, 186); border-top-color: rgb(186, 186, 186); border-bottom-color: rgb(186, 186, 186);" />
+            </Venly.Editor.Tools.Controls.SplitView>
+            <ui:VisualElement name="overlay-block" style="position: absolute; flex-grow: 1; width: 100%; height: 100%; background-color: rgba(137, 137, 137, 0.6); display: none; visibility: visible; overflow: visible;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="mainFooter" style="flex-shrink: 0; height: 30px; flex-direction: row; width: auto; min-height: 30px; align-items: stretch; justify-content: center;" />
+    </ui:VisualElement>
+</ui:UXML>

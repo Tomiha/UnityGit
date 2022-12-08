@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" editor-extension-mode="False">
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleItemListView.uss?fileID=7433441132597879392&amp;guid=95a202aae53364c4f82dd1b733975d98&amp;type=3#styleItemListView" />
+    <ui:VisualElement name="root" style="margin-top: 10px; margin-right: 10px; margin-left: 10px;">
+        <ui:ScrollView horizontal-scroller-visibility="Hidden">
+            <ui:VisualElement name="container-list" style="flex-grow: 1;" />
+            <ui:VisualElement tooltip="Add a new contract" style="flex-direction: row; align-items: center;">
+                <ui:Button text="+" display-tooltip-when-elided="true" name="contract-action-add" class="btn-add-item" style="margin-left: 0;" />
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

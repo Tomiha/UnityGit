@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleSDKManager.uss?fileID=7433441132597879392&amp;guid=61df8ef11f26bd549ba260717d48373f&amp;type=3#styleSDKManager" />
+    <ui:VisualElement style="align-items: stretch; justify-content: center; flex-grow: 1; margin-left: 10px; margin-right: 10px;">
+        <ui:VisualElement style="flex-direction: row; align-items: center; flex-wrap: nowrap; justify-content: center; margin-bottom: 5px;">
+            <ui:Label text="Client Id:" display-tooltip-when-elided="true" class="settings-label" style="width: 100px; flex-shrink: 1;" />
+            <ui:TextField picking-mode="Ignore" value="filler text" text="filler text" binding-path="ClientId" style="flex-shrink: 1; width: 200px; flex-grow: 1; max-width: 200px;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: center;">
+            <ui:Label text="Client Secret:" display-tooltip-when-elided="true" class="settings-label" style="width: 100px; flex-shrink: 1;" />
+            <ui:TextField picking-mode="Ignore" value="filler text" text="filler text" binding-path="ClientSecret" style="flex-grow: 1; white-space: normal; width: 200px; flex-shrink: 1; max-width: 200px;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="align-items: center;">
+            <ui:Button text="Save" display-tooltip-when-elided="true" name="btn-save-auth" style="margin-top: 30px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

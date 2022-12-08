@@ -1,0 +1,43 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleItemView.uss?fileID=7433441132597879392&amp;guid=b486e510db4dc3a409ed8d34a956b501&amp;type=3#styleItemView" />
+    <ui:VisualElement name="header" style="flex-direction: column; margin-left: 10px; margin-top: 10px; margin-bottom: 20px; background-color: rgb(103, 22, 78); margin-right: 10px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; padding-left: 5px; padding-top: 5px; padding-bottom: 5px; padding-right: 5px; flex-shrink: 0; min-height: 35px;">
+        <ui:VisualElement style="flex-direction: row;">
+            <ui:Button text="Refresh" display-tooltip-when-elided="true" name="btn-refresh" />
+            <ui:VisualElement name="header-spacer" style="flex-grow: 1; align-items: center;">
+                <ui:Label display-tooltip-when-elided="true" text="TOKEN TYPE" name="header-title" style="font-size: 20px; -unity-font-style: bold;" />
+            </ui:VisualElement>
+            <ui:Button text="PUSH" display-tooltip-when-elided="true" name="btn-push" />
+            <ui:Button text="UPDATE" display-tooltip-when-elided="true" name="btn-update" />
+            <ui:Button text="EDIT" display-tooltip-when-elided="true" name="btn-edit" />
+            <ui:Button text="CANCEL" display-tooltip-when-elided="true" name="btn-cancel" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-direction: row; justify-content: center; background-color: rgb(121, 53, 230); margin-top: 5px; margin-left: -5px; margin-right: -5px; margin-bottom: -5px; padding-top: 2px; padding-bottom: 2px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="header-sub-title" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <Venly.Editor.Tools.Controls.SplitView fixed-pane-index="1" fixed-pane-initial-dimension="200" style="flex-direction: row;">
+        <ui:ScrollView mode="Vertical" style="flex-grow: 1;">
+            <ui:VisualElement name="item-data" style="flex-grow: 1; margin-left: 10px; margin-top: 10px; margin-right: 10px; flex-wrap: nowrap;">
+                <Venly.Editor.Tools.Controls.LabelFieldRW text="Confirmed" name="confirmed" editmode="Read" binding-path="Confirmed" class="data-row" />
+                <Venly.Editor.Tools.Controls.LabelFieldRW text="ID" name="id" editmode="Read" binding-path="Id" class="data-row" />
+                <Venly.Editor.Tools.Controls.ToggleFieldRW name="fungible" text="Fungible" binding-path="Fungible" class="data-row" />
+                <Venly.Editor.Tools.Controls.ToggleFieldRW name="burnable" text="Burnable" binding-path="Burnable" class="data-row" />
+                <Venly.Editor.Tools.Controls.LongFieldRW name="max-supply" text="Max Supply" binding-path="MaxSupply" class="data-row" />
+                <Venly.Editor.Tools.Controls.LabelFieldRW text="Current Supply" name="current-supply" editmode="Read" type="TransactionHash" binding-path="CurrentSupply" class="data-row" />
+                <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Name" binding-path="Name" name="name" multiline="false" class="data-row" />
+                <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Description" name="description" multiline="true" binding-path="Description" class="data-row" />
+                <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="External URL" name="external-url" binding-path="ExternalUrl" class="data-row" />
+                <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Image URL" name="image-url" binding-path="ImageUrl" class="data-row" />
+                <Venly.Editor.Tools.Controls.LabelFieldRW text="Image Thumbnail" name="image-thumbnail" editmode="Read" type="TransactionHash" binding-path="ImageThumbnail" class="data-row" />
+                <Venly.Editor.Tools.Controls.LabelFieldRW text="Image Preview" name="image-preview" editmode="Read" type="TransactionHash" binding-path="ImagePreview" class="data-row" />
+                <Venly.Editor.Tools.Controls.TypeValueList list-name="Animation URLs" name="animation-urls" binding-path="AnimationUrls" class="data-row" />
+                <Venly.Editor.Tools.Controls.TextFieldRW name="background-color" text="Background Color" binding-path="BackgroundColor" class="data-row" />
+                <Venly.Editor.Tools.Controls.LabelFieldRW text="Transaction Hash" name="transaction-hash" editmode="Read" type="TransactionHash" binding-path="TransactionHash" class="data-row" />
+                <Venly.Editor.Tools.Controls.TokenAttributeList name="attributes" binding-path="Attributes" list-name="Attributes" class="data-row" style="margin-top: 10px;" />
+            </ui:VisualElement>
+        </ui:ScrollView>
+        <ui:VisualElement style="flex-grow: 1; flex-shrink: 1; width: 100%; align-items: center; justify-content: center; height: 100%; padding-left: 20px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px;">
+            <ui:VisualElement name="container-image" style="background-image: url(&apos;project://database/Assets/VenlySDK/Editor/Icons/Logo_VenlyGradientBackground.png?fileID=2800000&amp;guid=5550cca8c26e20b449d8ed1a3772674c&amp;type=3#Logo_VenlyGradientBackground&apos;); width: 100%; height: 100%; -unity-background-scale-mode: scale-to-fit; flex-grow: 1; flex-shrink: 1; align-items: center; justify-content: center;" />
+        </ui:VisualElement>
+    </Venly.Editor.Tools.Controls.SplitView>
+</ui:UXML>

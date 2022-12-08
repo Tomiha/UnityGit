@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleControls.uss?fileID=7433441132597879392&amp;guid=160a484f0b8948541aaecfb579cbc75d&amp;type=3#styleControls" />
+    <ui:VisualElement name="root" class="control-rw-background" style="flex-direction: row;">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="name" class="control-rw-label" style="-unity-font-style: bold;" />
+        <ui:VisualElement name="content-container" style="flex-grow: 1;">
+            <ui:Toggle name="value-write" />
+            <ui:Label name="value-read" style="display: flex; margin-left: 3px; margin-top: 1px; margin-bottom: 1px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

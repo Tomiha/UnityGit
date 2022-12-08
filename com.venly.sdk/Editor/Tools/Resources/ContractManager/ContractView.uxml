@@ -1,0 +1,35 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" editor-extension-mode="True">
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleItemView.uss?fileID=7433441132597879392&amp;guid=b486e510db4dc3a409ed8d34a956b501&amp;type=3#styleItemView" />
+    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleControls.uss?fileID=7433441132597879392&amp;guid=160a484f0b8948541aaecfb579cbc75d&amp;type=3#styleControls" />
+    <ui:VisualElement name="header" style="flex-direction: column; margin-left: 10px; margin-top: 10px; margin-bottom: 20px; background-color: rgb(103, 22, 78); margin-right: 10px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; padding-left: 5px; padding-top: 5px; padding-bottom: 5px; padding-right: 5px; min-width: auto;">
+        <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
+            <ui:Button text="Refresh" display-tooltip-when-elided="true" name="btn-refresh" />
+            <ui:VisualElement name="header-spacer" style="flex-grow: 1; align-items: center;">
+                <ui:Label display-tooltip-when-elided="true" text="CONTRACT" name="header-title" style="font-size: 20px; -unity-font-style: bold;" />
+            </ui:VisualElement>
+            <ui:Button text="PUSH" display-tooltip-when-elided="true" name="btn-push" />
+            <ui:Button text="UPDATE" display-tooltip-when-elided="true" name="btn-update" />
+            <ui:Button text="EDIT" display-tooltip-when-elided="true" name="btn-edit" />
+            <ui:Button text="CANCEL" display-tooltip-when-elided="true" name="btn-cancel" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-direction: row; justify-content: center; background-color: rgb(121, 53, 230); margin-top: 5px; margin-left: -5px; margin-right: -5px; margin-bottom: -5px; padding-top: 2px; padding-bottom: 2px; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="header-sub-title" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:ScrollView>
+        <ui:VisualElement name="item-data" style="flex-grow: 1; margin-left: 10px; margin-top: 10px; margin-right: 10px;">
+            <Venly.Editor.Tools.Controls.LabelFieldRW text="Confirmed" name="confirmed" editmode="Read" binding-path="Confirmed" class="data-row" />
+            <Venly.Editor.Tools.Controls.LabelFieldRW text="ID" name="id" editmode="Read" binding-path="Id" class="data-row" />
+            <Venly.Editor.Tools.Controls.LabelFieldRW text="Address" name="address" editmode="Read" binding-path="Address" class="data-row" />
+            <Venly.Editor.Tools.Controls.LabelFieldRW text="Transaction Hash" name="transaction-hash" editmode="Read" type="TransactionHash" binding-path="TransactionHash" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Name" binding-path="Name" name="name" multiline="false" class="data-row" style="margin-top: 10px;" />
+            <Venly.Editor.Tools.Controls.EnumFieldRW name="chain" text="Chain" binding-path="Chain" type="Venly.Models.eVySecretType,VenlySDK" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Description" name="description" multiline="true" binding-path="Description" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Owner" name="owner" binding-path="Owner" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Symbol" name="symbol" binding-path="Symbol" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="External URL" name="external-url" binding-path="ExternalUrl" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Image URL" name="image-url" binding-path="ImageUrl" class="data-row" />
+            <Venly.Editor.Tools.Controls.TypeValueList name="media-list" list-name="Media" binding-path="Media" class="data-row" />
+        </ui:VisualElement>
+    </ui:ScrollView>
+</ui:UXML>

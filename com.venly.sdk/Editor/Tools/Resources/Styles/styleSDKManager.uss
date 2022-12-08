@@ -1,0 +1,25 @@
+.unity-button {
+    background-color: rgb(121, 39, 255);
+    -unity-font-definition: url('project://database/Assets/VenlySDK/Editor/Tools/Resources/Fonts/TTCommons-Medium%20SDF.asset?fileID=11400000&guid=f3a4e4b2373605e4a8c766af0f935b41&type=2#TTCommons-Medium SDF');
+    font-size: 18px;
+    padding-top: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.manager-button-size {
+    flex-grow: 1;
+}
+
+.settings-label {
+    width: 90px;
+    -unity-font-style: bold;
+}
+
+.settings-value {
+    flex-grow: 1;
+    width: 100%;
+}
+
+.setting-backend-field {
+}
