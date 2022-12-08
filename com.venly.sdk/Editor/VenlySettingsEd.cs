@@ -1,12 +1,15 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using Venly.Editor.Utils;
 using Venly.Models;
 using AssetDatabase = UnityEditor.AssetDatabase;
+using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace Venly.Editor
 {
@@ -28,17 +31,11 @@ namespace Venly.Editor
         }
 
         public bool IsInitialized { get; private set; }
-
-        public string SdkRootPath { get; private set; }
-        public string SdkResourcePath { get; private set; }
-
-        private string _sdkEditorPath { get; set; }
-        private string _sdkEditorResourcePath { get; set; }
-
-        private const string SdkPackageRoot = "Packages\\com.venly.sdk\\";
-        //private const string SDKFolderName = "VenlySDK";
         private const string SettingsFilename = "VenlySettings";
         private const string EditorDataFilename = "VenlyEditorData";
+        private const string _defaultResourceRoot = "Assets\\Resources\\";
+        private const string _sdkPackageRoot = "Packages\\com.venly.sdk\\";
+        private const string _managerPackageRoot = "Packages\\com.venly.sdkmanager\\";
 
         private VenlySettingsSO _settingsSO;
         public VenlySettingsSO Settings => _settingsSO;
@@ -48,11 +45,7 @@ namespace Venly.Editor
 
         private void Initialize()
         {
-            if (!FindSDKRoot()) return;
-            LoadEditorData();
             LoadSettings();
-            VerifySettings();
-
             IsInitialized = true;
         }
 
@@ -66,155 +59,78 @@ namespace Venly.Editor
             }
         }
 
-        private bool FindSDKRoot()
+        public static void VerifyFolder(string path)
         {
-            //SDK Root & Resources 
-            SdkRootPath = SdkPackageRoot;
-            //SdkRootPath = ToolUtils.FindAssetFolder(SDKFolderName);
+            if (AssetDatabase.IsValidFolder(path)) return;
 
-            if (SdkRootPath != null)
+            var splitFolders = path.Split('\\', StringSplitOptions.RemoveEmptyEntries);
+            var parentFolder = splitFolders[0];
+            for (var i = 1; i < splitFolders.Length; i++)
             {
-                //Verify or Create Resources root
-                if (!AssetDatabase.IsValidFolder($"{SdkRootPath}Resources"))
+                var childFolder = splitFolders[i];
+                if (!AssetDatabase.IsValidFolder($"{parentFolder}\\{childFolder}"))
+                    AssetDatabase.CreateFolder(parentFolder, childFolder);
+
+                parentFolder += $"\\{childFolder}";
+            }
+        }
+        
+        //some comme
+        public static T RetrieveOrCreateResource<T>(string soName, string path = null) where T : ScriptableObject
+        {
+            var allResources = Resources.LoadAll<T>("");
+            if (allResources.Any()) //Settings Found
+            {
+                var resource = allResources[0];
+                var p = AssetDatabase.GetAssetPath(resource);
+                if (allResources.Length > 1) //Multiple Settings files
                 {
-                    AssetDatabase.CreateFolder(SdkRootPath, "Resources");
+                    Debug.LogWarning($"[Venly SDK] Multiple \'{typeof(T)}\' resources found. (removing all but one)");
+                    foreach (var loadedSettings in allResources)
+                    {
+                        if (resource != loadedSettings)
+                        {
+                            AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(loadedSettings));
+                        }
+                    }
                 }
 
-                SdkResourcePath = $"{SdkRootPath}Resources\\";
+                return resource;
             }
-            else
+
+            if(path != null)
             {
-                Debug.LogWarning("[Venly SDK] Root Path not found...");
-                return false;
+                VerifyFolder(path);
+                var resource = ScriptableObject.CreateInstance<T>();
+                //resource.hideFlags = HideFlags.NotEditable;
+                AssetDatabase.CreateAsset(resource, $"{path}{soName}.asset");
+                return resource;
             }
 
-            //SDK Editor Resources
-            if (!AssetDatabase.IsValidFolder($"{SdkRootPath}Editor")) return false;
-            _sdkEditorPath = $"{SdkRootPath}Editor\\";
-
-            if (!AssetDatabase.IsValidFolder($"{_sdkEditorPath}Resources"))
-            {
-                AssetDatabase.CreateFolder(_sdkEditorPath, "Resources");
-            }
-
-            _sdkEditorResourcePath = $"{_sdkEditorPath}Resources\\";
-
-            return true;
+            return null;
         }
 
         private void LoadSettings()
         {
-            var allSettings = Resources.LoadAll<VenlySettingsSO>("");
-            if (allSettings.Any()) //Settings Found
+            //Load Settings
+            _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>(EditorDataFilename, null);
+            if (_editorDataSO == null)
             {
-                _settingsSO = allSettings[0];
-                if (allSettings.Length > 1) //Multiple Settings files
-                {
-                    Debug.LogWarning("[Venly SDK Manager] Multiple settings files found... (removing all but one)");
-                    foreach (var loadedSettings in allSettings)
-                    {
-                        if (Settings != loadedSettings)
-                        {
-                            AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(loadedSettings));
-                        }
-                    }
-                }
+                _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>(EditorDataFilename, _defaultResourceRoot);
+                _editorDataSO.PublicResourceRoot = _defaultResourceRoot;
+                _editorDataSO.SdkPackageRoot = _sdkPackageRoot;
+                _editorDataSO.ManagerPackageRoot = _managerPackageRoot;
             }
-            else
-            {
-                _settingsSO = ScriptableObject.CreateInstance<VenlySettingsSO>();
-                //newSettings.hideFlags = HideFlags.NotEditable;
-                AssetDatabase.CreateAsset(Settings, $"{SdkRootPath}{SettingsFilename}.asset");
-            }
-        }
 
-        private void LoadEditorData()
-        {
-            var allSettings = Resources.LoadAll<VenlyEditorDataSO>("");
-            if (allSettings.Any()) //Settings Found
-            {
-                _editorDataSO = allSettings[0];
-                if (allSettings.Length > 1) //Multiple Settings files
-                {
-                    Debug.LogWarning("[Venly SDK Manager] Multiple editor data files found... (removing all but one)");
-                    foreach (var loadedSettings in allSettings)
-                    {
-                        if (Settings != loadedSettings)
-                        {
-                            AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(loadedSettings));
-                        }
-                    }
-                }
-            }
-            else
-            {
-                _editorDataSO = ScriptableObject.CreateInstance<VenlyEditorDataSO>();
-                //newSettings.hideFlags = HideFlags.NotEditable;
-                AssetDatabase.CreateAsset(_editorDataSO, $"{_sdkEditorResourcePath}{EditorDataFilename}.asset");
-            }
-        }
+            _settingsSO = RetrieveOrCreateResource<VenlySettingsSO>(SettingsFilename, _editorDataSO.PublicResourceRoot);
 
-        private void VerifySettings()
-        {
-            //Set SDK Resource Path (Editor Only)
-            Settings.SdkResourcePath = SdkResourcePath;
+            //Verify Settings
+            Settings.SdkPackageRoot = _editorDataSO.SdkPackageRoot;
+            Settings.PublicResourceRoot = _editorDataSO.PublicResourceRoot;
 
-            //Editor Data
-            EditorData.SdkRootPath = SdkRootPath;
-            EditorData.SdkResourcesPath = SdkResourcePath;
-            EditorData.SdkEditorRootPath = _sdkEditorPath;
-            EditorData.SdkEditorResourcesPath = _sdkEditorResourcePath;
-
-            //Sync Settings
             EditorData.SelectedBackend = Settings.BackendProvider;
+            EditorData.PackageInfo = PackageInfo.FindForAssembly(Assembly.GetExecutingAssembly());
         }
-
-        //[MenuItem("Venly/Create Shared Settings", true)]
-        //private static bool ValidateSharedSettings()
-        //{
-        //    return _settings == null;
-        //}
-
-        //[MenuItem("Venly/Create Shared Settings")]
-        //private static void CreateSharedSettings()
-        //{
-        //    VenlySettingsSO asset = ScriptableObject.CreateInstance<VenlySettingsSO>();
-
-        //    //todo: wrap in utitily function
-        //    var lastSeparatorIndex = 0;
-        //    var prevPath = "Assets";
-        //    var appendPath = $"VenlySDK/{RelativeSettingsPath}";
-
-        //    while (true)
-        //    {
-        //        var nextSeperatorIndex = appendPath.IndexOf('/', lastSeparatorIndex);
-        //        if (nextSeperatorIndex == -1) break;
-
-        //        var subStr = appendPath.Substring(lastSeparatorIndex, nextSeperatorIndex - lastSeparatorIndex);
-        //        lastSeparatorIndex = nextSeperatorIndex + 1;
-
-        //        if (!AssetDatabase.IsValidFolder($"{prevPath}/{subStr}"))
-        //        {
-        //            if (string.IsNullOrEmpty(AssetDatabase.CreateFolder(prevPath, subStr)))
-        //            {
-        //                Debug.LogWarning($"Failed to create VenlySettings. (CreateFolder fail | {prevPath}/{subStr})");
-        //            }
-        //        }
-
-        //        prevPath += $"/{subStr}";
-        //    }
-
-        //    //todo: fix path
-        //    AssetDatabase.CreateAsset(asset, $"Assets/VenlySDK/{RelativeSettingsPath}{SettingsFilename}.asset");
-        //    AssetDatabase.SaveAssets();
-
-        //    EditorUtility.FocusProjectWindow();
-
-        //    Selection.activeObject = asset;
-
-        //    //Set current setting instance
-        //    _settingsInstance = asset;
-        //}
 
         public async Task<bool> VerifyAuthSettings(bool forceVerify = true)
         {

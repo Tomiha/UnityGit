@@ -24,7 +24,10 @@ public class VenlySettingsSO : ScriptableObject
     public string ClientSecret;
 
     [HideInInspector]
-    public string SdkResourcePath;
+    public string SdkPackageRoot;
+
+    [HideInInspector]
+    public string PublicResourceRoot;
 #endif
 
     public string ApplicationId;

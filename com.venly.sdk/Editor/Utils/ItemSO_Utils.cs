@@ -34,7 +34,7 @@ namespace Venly.Editor
             newContract.ChangeItemState(eVyItemState.Local);
 
             //todo: move to editor assembly part
-            AssetDatabase.CreateAsset(newContract, $"{VenlySettings.SdkResourcePath}/{contractName}.asset");
+            AssetDatabase.CreateAsset(newContract, $"{VenlySettings.PublicResourceRoot}/{contractName}.asset");
 
             EditorUtility.SetDirty(newContract);
             AssetDatabase.SaveAssetIfDirty(newContract);

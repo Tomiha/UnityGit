@@ -20,7 +20,8 @@ public class VenlySettings
 #if UNITY_EDITOR
     public static string ClientId => Settings.ClientId;
     public static string ClientSecret => Settings.ClientSecret;
-    public static string SdkResourcePath => Settings.SdkResourcePath;
+    public static string SdkPackageRoot => Settings.SdkPackageRoot;
+    public static string PublicResourceRoot => Settings.PublicResourceRoot;
 #endif
 
     public static string ApplicationId => Settings.ApplicationId;
