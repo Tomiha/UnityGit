@@ -39,9 +39,9 @@ namespace Venly.Editor.Tools.ContractManager
 
         public ContractListView()
         {
-            _rootProto = ToolUtils.GetContractManagerUXML("ContractListView");
-            _contractItemProto = ToolUtils.GetContractManagerUXML("ContractItemProto");
-            _tokenTypeItemProto = ToolUtils.GetContractManagerUXML("TokenTypeItemProto");
+            _rootProto = VenlyEditorUtils.GetUXML_ContractManager("ContractListView");
+            _contractItemProto = VenlyEditorUtils.GetUXML_ContractManager("ContractItemProto");
+            _tokenTypeItemProto = VenlyEditorUtils.GetUXML_ContractManager("TokenTypeItemProto");
 
             //Build View
             RefreshView();

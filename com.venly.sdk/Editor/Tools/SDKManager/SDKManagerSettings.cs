@@ -26,6 +26,8 @@ namespace Venly.Editor.Tools.SDKManager
         private VisualElement _groupBackendSettings;
         private SerializedProperty _backendSettings = null;
 
+        private VenlyEditorDataSO.SDKManagerData SdkManagerData => VenlySettingsEd.Instance.EditorData.SDKManager;
+
         #region Cstr
         public new class UxmlFactory : UxmlFactory<SDKManagerSettings, UxmlTraits>
         {
@@ -35,13 +37,13 @@ namespace Venly.Editor.Tools.SDKManager
         {
             this.style.flexGrow = new StyleFloat(1);
 
-            _panelSettingsAuth = ToolUtils.GetSDKManagerUXML("SDKManagerSettings_Auth").CloneTree().Children().First();
+            _panelSettingsAuth = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerSettings_Auth").CloneTree().Children().First();
             _panelSettingsAuth.Bind(new SerializedObject(VenlySettingsEd.Instance.Settings)); //hmm
 
             _panelSettingsAuth.Q<Button>("btn-save-auth").clickable.clicked += onSaveAuth_Clicked;
 
             //Main Settings Elements
-            _panelSettingsMain = ToolUtils.GetSDKManagerUXML("SDKManagerSettings_Main").CloneTree().Children().First();
+            _panelSettingsMain = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerSettings_Main").CloneTree().Children().First();
 
             _selectorBackendProvider = _panelSettingsMain.Q<EnumField>("selector-backendprovider");
             _selectorBackendProvider.RegisterValueChangedCallback(onBackendProvider_Changed);
@@ -74,14 +76,14 @@ namespace Venly.Editor.Tools.SDKManager
             {
                 //MAIN SETTINGS
                 Add(_panelSettingsMain);
-                _selectorAppId.choices = VenlySettingsEd.Instance.EditorData.AvailableAppIds;
+                _selectorAppId.choices = SdkManagerData.AvailableAppIds;
                 _selectorAppId.value = VenlySettings.ApplicationId;
-                if (!VenlySettingsEd.Instance.EditorData.AvailableAppIds.Contains(VenlySettings.ApplicationId))
+                if (!SdkManagerData.AvailableAppIds.Contains(VenlySettings.ApplicationId))
                 {
                     _selectorAppId.index = 0;
                 }
 
-                _selectorBackendProvider.value = VenlySettingsEd.Instance.EditorData.SelectedBackend;
+                _selectorBackendProvider.value = SdkManagerData.SelectedBackend;
                 ValidateApplyVisibility();
                 PopulateBackendSettings();
             }
@@ -98,7 +100,7 @@ namespace Venly.Editor.Tools.SDKManager
             var applyVisible = false;
 
             //Check Backend Changed
-            if (VenlySettingsEd.Instance.EditorData.SelectedBackend != VenlySettings.BackendProvider)
+            if (SdkManagerData.SelectedBackend != VenlySettings.BackendProvider)
             {
                 applyVisible = true;
             }
@@ -106,7 +108,7 @@ namespace Venly.Editor.Tools.SDKManager
             //...
 
             _btnApplySettings.ToggleElement(applyVisible);
-            VenlySettingsEd.Instance.EditorData.UnappliedSettings = applyVisible;
+            SdkManagerData.UnappliedSettings = applyVisible;
         }
 
         #region Events
@@ -119,7 +121,7 @@ namespace Venly.Editor.Tools.SDKManager
         //MAIN SETTINGS EVENTS
         private void onBackendProvider_Changed(ChangeEvent<Enum> eventArgs)
         {
-            VenlySettingsEd.Instance.EditorData.SelectedBackend = (eVyBackendProvider)eventArgs.newValue;
+            SdkManagerData.SelectedBackend = (eVyBackendProvider)eventArgs.newValue;
             ValidateApplyVisibility();
 
             PopulateBackendSettings();
@@ -137,7 +139,7 @@ namespace Venly.Editor.Tools.SDKManager
 
         private void onApplySettings_Clicked()
         {
-            VenlySettingsEd.Instance.ConfigureForBackend(VenlySettingsEd.Instance.EditorData.SelectedBackend);
+            SDKManager.Instance.ConfigureForBackend(SdkManagerData.SelectedBackend);
             ValidateApplyVisibility();
         }
 
@@ -154,7 +156,7 @@ namespace Venly.Editor.Tools.SDKManager
         private void PopulateBackendSettings()
         {
             //Find BackendSettings
-            var settingsName = $"{VenlySettingsEd.Instance.EditorData.SelectedBackend}BackendSettings";
+            var settingsName = $"{SdkManagerData.SelectedBackend}BackendSettings";
             var serializedSettings = new SerializedObject(VenlySettingsEd.Instance.Settings);
             _backendSettings = serializedSettings.FindProperty(settingsName);
 

@@ -28,7 +28,7 @@ namespace Venly.Editor.Tools.ContractManager
         {
             style.flexGrow = new StyleFloat(1);
 
-            var visualElement = ToolUtils.GetContractManagerUXML(parentUxml);
+            var visualElement = VenlyEditorUtils.GetUXML_ContractManager(parentUxml);
             visualElement.CloneTree(this);
 
             _itemDataContainer = this.Q<VisualElement>("item-data");

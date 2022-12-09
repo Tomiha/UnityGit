@@ -16,7 +16,7 @@ namespace Venly.Editor.Tools.Controls
 
         public TypeValueItem()
         {
-            var root = ToolUtils.GetControlUXML("TypeValueItem");
+            var root = VenlyEditorUtils.GetUXML_Controls("TypeValueItem");
             root.CloneTree(this);
 
             _fieldType = this.Q<TextFieldRW>("field-type");

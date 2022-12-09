@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using Venly.Editor;
+using Venly.Editor.Tools.SDKManager;
 
 [CustomEditor(typeof(VenlySettingsSO))]
 public class VenlySettingSO_Editor : Editor
@@ -14,9 +15,7 @@ public class VenlySettingSO_Editor : Editor
         if (GUILayout.Button("Configure For Backend"))
         {
             var so = (VenlySettingsSO)serializedObject.targetObject;
-            VenlySettingsEd.Instance.ConfigureForBackend(so.BackendProvider);
-            //var so = (VenlySettingsSO) serializedObject.targetObject;
-            //so.ConfigureBackendProvider();
+            SDKManager.Instance.ConfigureForBackend(so.BackendProvider);
         }
     }
 }

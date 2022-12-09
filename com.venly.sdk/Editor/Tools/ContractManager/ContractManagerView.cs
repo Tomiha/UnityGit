@@ -19,7 +19,7 @@ namespace Venly.Editor.Tools.ContractManager
         public void CreateGUI()
         {
             // Import UXML 
-            var visualTree = ToolUtils.GetContractManagerUXML("ContractManagerView");
+            var visualTree = VenlyEditorUtils.GetUXML_ContractManager("ContractManagerView");
             visualTree.CloneTree(rootVisualElement);
 
             //Set ClientID & AppID

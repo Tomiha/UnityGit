@@ -1,9 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Packages/com.venly.sdk/Editor/Tools/Resources/Styles/SdkManagerStyles.uss?fileID=7433441132597879392&amp;guid=5f33575ee3979764586437d7a011a2cb&amp;type=3#SdkManagerStyles" />
-    <ui:VisualElement name="root" style="flex-grow: 1; align-items: center; justify-content: center;">
-        <ui:VisualElement style="align-items: center;">
-            <ui:Label text="Venly SDK not installed" display-tooltip-when-elided="true" style="-unity-text-align: upper-center; margin-bottom: 20px; -unity-font-definition: url(&apos;project://database/Packages/com.venly.sdkmanager/UI/Fonts/TTCommons-Medium%20SDF.asset?fileID=11400000&amp;guid=a57f17528c0ba2443b61a5f022e777ee&amp;type=2#TTCommons-Medium SDF&apos;); font-size: 20px;" />
-            <ui:Button text="Install SDK" display-tooltip-when-elided="true" name="btn-install" style="align-items: center; padding-top: 6px; padding-bottom: 4px; padding-left: 10px; padding-right: 10px; -unity-font-definition: url(&apos;project://database/Packages/com.venly.sdkmanager/UI/Fonts/TTCommons-Bold%20SDF.asset?fileID=11400000&amp;guid=a72a29b8716b4bc43bd07e347b738342&amp;type=2#TTCommons-Bold SDF&apos;); font-size: 18px; justify-content: center;" />
-        </ui:VisualElement>
-    </ui:VisualElement>
-</ui:UXML>

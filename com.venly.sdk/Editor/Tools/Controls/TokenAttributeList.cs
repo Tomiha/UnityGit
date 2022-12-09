@@ -48,7 +48,7 @@ namespace Venly.Editor.Tools.Controls
 
         public TokenAttributeList()
         {
-            var root = ToolUtils.GetControlUXML("TokenAttributeList");
+            var root = VenlyEditorUtils.GetUXML_Controls("TokenAttributeList");
             root.CloneTree(this);
 
             _lblName = this.Q<Label>("lbl-name");

@@ -1,8 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <ui:VisualElement name="root" style="flex-grow: 1;">
-        <ui:VisualElement name="panel-header" style="flex-direction: row; justify-content: center; align-items: center; background-color: rgb(121, 39, 255); padding-top: 10px; padding-bottom: 10px;">
-            <ui:Label text="Venly SDK Manager" display-tooltip-when-elided="true" style="-unity-font-style: normal; font-size: 20px; letter-spacing: 10px; word-spacing: 0;" />
-        </ui:VisualElement>
-        <ui:VisualElement name="panel-content" style="flex-grow: 1;" />
-    </ui:VisualElement>
-</ui:UXML>

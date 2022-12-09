@@ -31,11 +31,8 @@ namespace Venly.Editor
         }
 
         public bool IsInitialized { get; private set; }
-        private const string SettingsFilename = "VenlySettings";
-        private const string EditorDataFilename = "VenlyEditorData";
         private const string _defaultResourceRoot = "Assets\\Resources\\";
         private const string _sdkPackageRoot = "Packages\\com.venly.sdk\\";
-        private const string _managerPackageRoot = "Packages\\com.venly.sdkmanager\\";
 
         private VenlySettingsSO _settingsSO;
         public VenlySettingsSO Settings => _settingsSO;
@@ -58,6 +55,34 @@ namespace Venly.Editor
                 _instance.Initialize();
             }
         }
+        //
+        private void LoadSettings()
+        {
+            //Load EditorData
+            _editorDataSO = Resources.Load<VenlyEditorDataSO>("");
+            if (_editorDataSO == null) //First Creation
+            {
+                _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>("VenlyEditorData",$"{_sdkPackageRoot}Resources\\");
+            }
+
+
+
+            //Load VenlySettings
+            _settingsSO = Resources.Load<VenlySettingsSO>("");
+            if (_settingsSO == null) //First Creation
+            {
+                _settingsSO = RetrieveOrCreateResource<VenlySettingsSO>("VenlySettings", $"{_sdkPackageRoot}Resources\\");
+                _settingsSO.PublicResourceRoot = _defaultResourceRoot;
+            }
+
+            //Sync Settings
+            _editorDataSO.PublicResourceRoot = _settingsSO.PublicResourceRoot;
+            _editorDataSO.SDKManager.SelectedBackend = _settingsSO.BackendProvider;
+            _editorDataSO.SdkPackageRoot = _sdkPackageRoot;
+            _editorDataSO.PackageInfo = PackageInfo.FindForAssembly(Assembly.GetExecutingAssembly());
+
+            _settingsSO.SdkPackageRoot = _sdkPackageRoot;
+        }
 
         public static void VerifyFolder(string path)
         {
@@ -75,7 +100,6 @@ namespace Venly.Editor
             }
         }
         
-        //some comme
         public static T RetrieveOrCreateResource<T>(string soName, string path = null) where T : ScriptableObject
         {
             var allResources = Resources.LoadAll<T>("");
@@ -110,28 +134,6 @@ namespace Venly.Editor
             return null;
         }
 
-        private void LoadSettings()
-        {
-            //Load Settings
-            _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>(EditorDataFilename, null);
-            if (_editorDataSO == null)
-            {
-                _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>(EditorDataFilename, _defaultResourceRoot);
-                _editorDataSO.PublicResourceRoot = _defaultResourceRoot;
-                _editorDataSO.SdkPackageRoot = _sdkPackageRoot;
-                _editorDataSO.ManagerPackageRoot = _managerPackageRoot;
-            }
-
-            _settingsSO = RetrieveOrCreateResource<VenlySettingsSO>(SettingsFilename, _editorDataSO.PublicResourceRoot);
-
-            //Verify Settings
-            Settings.SdkPackageRoot = _editorDataSO.SdkPackageRoot;
-            Settings.PublicResourceRoot = _editorDataSO.PublicResourceRoot;
-
-            EditorData.SelectedBackend = Settings.BackendProvider;
-            EditorData.PackageInfo = PackageInfo.FindForAssembly(Assembly.GetExecutingAssembly());
-        }
-
         public async Task<bool> VerifyAuthSettings(bool forceVerify = true)
         {
             if (string.IsNullOrEmpty(Settings.ClientId) || string.IsNullOrEmpty(Settings.ClientSecret))
@@ -140,28 +142,28 @@ namespace Venly.Editor
             }
 
             //Applist refresh needed?
-            if (string.IsNullOrEmpty(EditorData.CurrentClientId) || !EditorData.CurrentClientId.Equals(Settings.ClientId))
+            if (string.IsNullOrEmpty(EditorData.SDKManager.CurrentClientId) || !EditorData.SDKManager.CurrentClientId.Equals(Settings.ClientId))
             {
-                EditorData.AvailableAppIds.Clear();
-                EditorData.CurrentClientId = null;
+                EditorData.SDKManager.AvailableAppIds.Clear();
+                EditorData.SDKManager.CurrentClientId = null;
             }
 
             //Verify Credentials (GetToken)
             var token = await VenlyEditorAPI.GetAccessToken(Settings.ClientId, Settings.ClientSecret);
             if (!token.IsValid)
             {
-                EditorData.CurrentClientId = null;
+                EditorData.SDKManager.CurrentClientId = null;
                 return false;
             }
 
             //Check Apps if necessary
-            if (!EditorData.AvailableAppIds.Any())
+            if (!EditorData.SDKManager.AvailableAppIds.Any())
             {
                 RefreshAvailableApps();
             }
 
             //Swap current client id
-            EditorData.CurrentClientId = Settings.ClientId;
+            EditorData.SDKManager.CurrentClientId = Settings.ClientId;
             return true;
         }
 
@@ -169,39 +171,19 @@ namespace Venly.Editor
         {
             var apps = await VenlyEditorAPI.GetApps();
             
-            EditorData.AvailableAppIds.Clear();
-            EditorData.AvailableAppIds.AddRange(apps.Select(app => app.Id));
+            EditorData.SDKManager.AvailableAppIds.Clear();
+            EditorData.SDKManager.AvailableAppIds.AddRange(apps.Select(app => app.Id));
 
-            if (!EditorData.AvailableAppIds.Any())
+            if (!EditorData.SDKManager.AvailableAppIds.Any())
             {
                 Settings.ApplicationId = null;
                 return;
             }
 
-            if (!EditorData.AvailableAppIds.Contains(Settings.ApplicationId))
+            if (!EditorData.SDKManager.AvailableAppIds.Contains(Settings.ApplicationId))
             {
-                Settings.ApplicationId = EditorData.AvailableAppIds.First();
+                Settings.ApplicationId = EditorData.SDKManager.AvailableAppIds.First();
             }
-        }
-
-        public void ConfigureForBackend(eVyBackendProvider backend)
-        {
-            //Set Defines
-            var buildTarget = NamedBuildTarget.Standalone;
-
-            PlayerSettings.GetScriptingDefineSymbols(buildTarget, out var currentDefines);
-
-            //Clear Current Venly Defines
-            var definesList = currentDefines.ToList();
-            definesList.RemoveAll(define => define.Contains("_VENLY_"));
-
-            //Populate with required Defines
-            if (backend == eVyBackendProvider.PlayFab) definesList.Add("ENABLE_VENLY_PLAYFAB");
-
-            PlayerSettings.SetScriptingDefineSymbols(buildTarget, definesList.ToArray());
-
-            //SET BACKEND
-            Settings.BackendProvider = backend;
         }
     }
 }

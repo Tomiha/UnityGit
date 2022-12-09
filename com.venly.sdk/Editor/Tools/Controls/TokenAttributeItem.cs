@@ -18,7 +18,7 @@ namespace Venly.Editor.Tools.Controls
 
         public TokenAttributeItem()
         {
-            var root = ToolUtils.GetControlUXML("TokenAttributeItem");
+            var root = VenlyEditorUtils.GetUXML_Controls("TokenAttributeItem");
             root.CloneTree(this);
 
             _btnRemoveItem = this.Q<Button>("btn-item-remove");

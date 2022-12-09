@@ -48,7 +48,7 @@ namespace Venly.Editor.Tools.Controls
 
         public TypeValueList()
         {
-            var root = ToolUtils.GetControlUXML("TypeValueList");
+            var root = VenlyEditorUtils.GetUXML_Controls("TypeValueList");
             root.CloneTree(this);
 
             _itemContainer = this.Q<VisualElement>("item-container");

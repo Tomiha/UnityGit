@@ -69,7 +69,7 @@ namespace Venly.Editor.Tools.Controls
         {
             _customReadBinding = customReadBinding;
 
-            var tree = ToolUtils.GetControlUXML(uxml);
+            var tree = VenlyEditorUtils.GetUXML_Controls(uxml);
             tree.CloneTree(this);
 
             _text = this.Q<Label>("name");

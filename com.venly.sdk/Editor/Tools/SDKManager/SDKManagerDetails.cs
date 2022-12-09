@@ -6,7 +6,7 @@ using Venly.Editor.Utils;
 
 namespace Venly.Editor.Tools.SDKManager
 {
-    public class SDKManagerMain : VisualElement
+    public class SDKManagerDetails : VisualElement
     {
         private Label _lblVersion;
         private Label _lblUpdateText;
@@ -16,9 +16,9 @@ namespace Venly.Editor.Tools.SDKManager
         private string _currentVersion;
         private string _latestVersion = null;
 
-        public SDKManagerMain()
+        public SDKManagerDetails()
         {
-            ToolUtils.GetSDKManagerUXML("SDKManagerMain").CloneTree(this);
+            VenlyEditorUtils.GetUXML_SDKManager("SDKManagerDetails").CloneTree(this);
 
             _lblVersion = this.Q<Label>("details-version");
             _lblUpdateText = this.Q<Label>("details-update-text");
@@ -51,7 +51,7 @@ namespace Venly.Editor.Tools.SDKManager
                 $"git+https://github.com/Tomiha/UnityGit?path=com.venly.sdk#{_latestVersion}"
             };
 
-            VenlySDKManager.Instance.UpdatePackages(packages);
+            SDKManager.Instance.UpdatePackages(packages);
 
             //methodInfo.Invoke(sdkManagerInstance, new[] { packages , null});
         }
