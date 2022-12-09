@@ -35,6 +35,7 @@ namespace Venly.Editor.Tools.SDKManager
             _lblVersion.text = $"SDK {_currentVersion}";
 
             RetrieveVersionList();
+            RefreshDetails();
         }
 
         private void OnUpdateSDK_Clicked()
@@ -71,7 +72,7 @@ namespace Venly.Editor.Tools.SDKManager
 
         private void RefreshDetails()
         {
-            var canUpdate = !_currentVersion.Equals(_latestVersion);
+            var canUpdate = !string.IsNullOrEmpty(_latestVersion) && !_currentVersion.Equals(_latestVersion);
 
             if (canUpdate)
             {
@@ -84,7 +85,7 @@ namespace Venly.Editor.Tools.SDKManager
 
             _lblUpdateText.ToggleElement(true);
             _btnUpdateSDK.ToggleElement(canUpdate);
-            _btnCheckUpdate.ToggleElement(!canUpdate);
+            //_btnCheckUpdate.ToggleElement(!canUpdate);
         }
     }
 }
