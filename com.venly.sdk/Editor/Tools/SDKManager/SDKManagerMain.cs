@@ -1,8 +1,5 @@
 using System;
 using System.Linq;
-using System.Reflection;
-using UnityEditor.PackageManager;
-using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UIElements;
 using Venly.Editor.Utils;
@@ -42,10 +39,10 @@ namespace Venly.Editor.Tools.SDKManager
 
         private void OnUpdateSDK_Clicked()
         {
-            var sdkManagerType = Type.GetType("VenlySDKManager,VenlySDK.Manager");
-            var instanceProp = sdkManagerType.GetProperty("Instance");
-            var sdkManagerInstance = instanceProp.GetValue(null);
-            var methodInfo = sdkManagerType?.GetMethod("UpdatePackages");
+            //var sdkManagerType = Type.GetType("VenlySDKManager,VenlySDK.Manager");
+            //var instanceProp = sdkManagerType.GetProperty("Instance");
+            //var sdkManagerInstance = instanceProp.GetValue(null);
+            //var methodInfo = sdkManagerType?.GetMethod("UpdatePackages");
 
             var packages = new[]
             {
@@ -53,7 +50,9 @@ namespace Venly.Editor.Tools.SDKManager
                 $"git+https://github.com/Tomiha/UnityGit?path=com.venly.sdk#{_latestVersion}"
             };
 
-            methodInfo.Invoke(sdkManagerInstance, new[] { packages , null});
+            VenlySDKManager.Instance.UpdatePackages(packages);
+
+            //methodInfo.Invoke(sdkManagerInstance, new[] { packages , null});
         }
 
         private void RetrieveVersionList()
