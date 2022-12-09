@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -151,6 +153,16 @@ namespace Venly.Editor.Utils
             version = version.Replace("v", "");
             version = version.Split('-')[0];
             return Version.Parse(version);
+        }
+
+        public static string GetLatestSemVer(List<string> versions)
+        {
+            if (versions == null) return null;
+
+            var tempDict = new Dictionary<Version, string>();
+            versions.ForEach(v => tempDict.Add(ParseSemVer(v), v));
+
+            return tempDict.OrderBy(kvp => kvp.Key).Last().Value;
         }
         #endregion
     }

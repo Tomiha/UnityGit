@@ -42,6 +42,8 @@ namespace Venly.Editor
 
         private void Initialize()
         {
+            if (IsInitialized) return;
+
             LoadSettings();
             IsInitialized = true;
         }
@@ -64,7 +66,7 @@ namespace Venly.Editor
             {
                 _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>("VenlyEditorData",$"{_sdkPackageRoot}Resources\\");
             }
-
+            VenlyEditorUtils.RestoreBackup(_editorDataSO);
 
 
             //Load VenlySettings
@@ -74,14 +76,22 @@ namespace Venly.Editor
                 _settingsSO = RetrieveOrCreateResource<VenlySettingsSO>("VenlySettings", $"{_sdkPackageRoot}Resources\\");
                 _settingsSO.PublicResourceRoot = _defaultResourceRoot;
             }
+            VenlyEditorUtils.RestoreBackup(_settingsSO);
+
 
             //Sync Settings
             _editorDataSO.PublicResourceRoot = _settingsSO.PublicResourceRoot;
             _editorDataSO.SDKManager.SelectedBackend = _settingsSO.BackendProvider;
             _editorDataSO.SdkPackageRoot = _sdkPackageRoot;
             _editorDataSO.PackageInfo = PackageInfo.FindForAssembly(Assembly.GetExecutingAssembly());
+            _editorDataSO.Version = $"v{_editorDataSO.PackageInfo.version}";
+
+            _editorDataSO.SDKManager.GitReleaseURL = @"https://api.github.com/repos/Tomiha/UnityGit/releases";
+            _editorDataSO.SDKManager.GitSdkURL = @"git+https://github.com/Tomiha/UnityGit.git?path=com.venly.sdk";
 
             _settingsSO.SdkPackageRoot = _sdkPackageRoot;
+
+            Debug.Log("Venly Settings Loaded!");
         }
 
         public static void VerifyFolder(string path)

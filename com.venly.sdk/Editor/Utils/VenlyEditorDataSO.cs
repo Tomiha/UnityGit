@@ -13,7 +13,8 @@ namespace Venly.Editor.Utils
         [Serializable]
         public class SDKManagerData
         {
-            public string UpdateURL;
+            public string GitReleaseURL;
+            public string GitSdkURL;
 
             public bool UnappliedSettings = false;
             public string CurrentClientId = null;
@@ -21,9 +22,10 @@ namespace Venly.Editor.Utils
             public List<string> AvailableAppIds = new();
         }
 
-        [Header("Paths")] 
+        [Header("General")] 
         public string SdkPackageRoot;
         public string PublicResourceRoot;
+        public string Version;
 
         [JsonIgnore][HideInInspector]public PackageInfo PackageInfo;
 

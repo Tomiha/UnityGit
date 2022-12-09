@@ -13,7 +13,6 @@ namespace Venly.Editor.Tools.SDKManager
         private Button _btnUpdateSDK;
         private Button _btnCheckUpdate;
 
-        private string _currentVersion;
         private string _latestVersion = null;
 
         public SDKManagerDetails()
@@ -26,53 +25,40 @@ namespace Venly.Editor.Tools.SDKManager
             _btnUpdateSDK.clickable.clicked += OnUpdateSDK_Clicked;
 
             _btnCheckUpdate = this.Q<Button>("btn-check-update");
-            _btnCheckUpdate.clickable.clicked += RetrieveVersionList;
+            _btnCheckUpdate.clickable.clicked += RetrieveLatestVersion;
 
             _lblUpdateText.HideElement();
             _btnUpdateSDK.HideElement();
 
-            _currentVersion = "v" + VenlySettingsEd.Instance.EditorData.PackageInfo.version;
-            _lblVersion.text = $"SDK {_currentVersion}";
+            RetrieveLatestVersion();
+        }
 
-            RetrieveVersionList();
+        private void RetrieveLatestVersion()
+        {
+            _latestVersion = null;
             RefreshDetails();
-        }
 
-        private void OnUpdateSDK_Clicked()
-        {
-            //var sdkManagerType = Type.GetType("VenlySDKManager,VenlySDK.Manager");
-            //var instanceProp = sdkManagerType.GetProperty("Instance");
-            //var sdkManagerInstance = instanceProp.GetValue(null);
-            //var methodInfo = sdkManagerType?.GetMethod("UpdatePackages");
-
-            var packages = new[]
-            {
-                $"git+https://github.com/TimCassell/ProtoPromise.git?path=ProtoPromise_Unity/Assets/Plugins/ProtoPromise#v2.3.0",
-                $"git+https://github.com/Tomiha/UnityGit?path=com.venly.sdk#{_latestVersion}"
-            };
-
-            SDKManager.Instance.UpdatePackages(packages);
-
-            //methodInfo.Invoke(sdkManagerInstance, new[] { packages , null});
-        }
-
-        private void RetrieveVersionList()
-        {
-            var request = UnityWebRequest.Get("https://raw.githubusercontent.com/Tomiha/UnityGit/main/versions.txt");
-            request.downloadHandler = new DownloadHandlerBuffer();
-
-            request.SendWebRequest().completed += (op) =>
-            {
-                var versions = request.downloadHandler.text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-                _latestVersion = versions.Last();
-
-                RefreshDetails();
-            };
+            SDKManager.Instance.GetLatestVersion()
+                .Then(latestVersion =>
+                {
+                    _latestVersion = latestVersion;
+                    RefreshDetails();
+                }).Forget();
         }
 
         private void RefreshDetails()
         {
-            var canUpdate = !string.IsNullOrEmpty(_latestVersion) && !_currentVersion.Equals(_latestVersion);
+            var currentVersion = VenlySettingsEd.Instance.EditorData.Version;
+            _lblVersion.text = $"SDK {currentVersion}";
+
+            bool canUpdate = false;
+            if (!string.IsNullOrEmpty(_latestVersion))
+            {
+                var currVersion = VenlyEditorUtils.ParseSemVer(currentVersion);
+                var newVersion = VenlyEditorUtils.ParseSemVer(_latestVersion);
+
+                canUpdate = newVersion > currVersion;
+            }
 
             if (canUpdate)
             {
@@ -80,12 +66,23 @@ namespace Venly.Editor.Tools.SDKManager
             }
             else
             {
+                _latestVersion = null;
                 _lblUpdateText.text = "Latest version installed.";
             }
 
             _lblUpdateText.ToggleElement(true);
             _btnUpdateSDK.ToggleElement(canUpdate);
-            //_btnCheckUpdate.ToggleElement(!canUpdate);
+        }
+
+        private void OnUpdateSDK_Clicked()
+        {
+            if (string.IsNullOrEmpty(_latestVersion))
+            {
+                RefreshDetails();
+                return;
+            }
+
+            SDKManager.Instance.UpdateSDK(_latestVersion);
         }
     }
 }

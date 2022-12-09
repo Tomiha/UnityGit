@@ -1,13 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Proto.Promises;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
+using UnityEngine.Networking;
 using Venly.Editor.Utils;
 using Venly.Models;
-using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace Venly.Editor.Tools.SDKManager
 {
@@ -31,6 +34,15 @@ namespace Venly.Editor.Tools.SDKManager
         }
 
         #endregion
+
+        #region GIT Helpers
+        private class GitReleaseInfo
+        {
+            public string name;
+        }
+        #endregion
+
+        private VenlyEditorDataSO.SDKManagerData _managerData => VenlySettingsEd.Instance.EditorData.SDKManager;
 
         #region MenuItem
 
@@ -120,14 +132,48 @@ namespace Venly.Editor.Tools.SDKManager
             VenlySettingsEd.Instance.Settings.BackendProvider = backend;
         }
 
-        public void UpdatePackages(string[] packagesAdd, string[] packagesRemove = null)
+        public Promise<string> GetLatestVersion()
         {
-            OnInstallInitiated?.Invoke();
+            var deferredPromise = Promise<string>.NewDeferred();
 
-            //Monitor Process
-            EditorApplication.update += OnUpdate;
+            UnityWebRequest request = UnityWebRequest.Get(_managerData.GitReleaseURL);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SendWebRequest().completed += (op) =>
+            {
+                if (request.isDone && request.result == UnityWebRequest.Result.Success)
+                {
+                    var gitInfos = JsonConvert.DeserializeObject<GitReleaseInfo[]>(request.downloadHandler.text);
+                    var latestVersion = VenlyEditorUtils.GetLatestSemVer(gitInfos?.Select(gi => gi.name).ToList());
 
-            _packageAddRequest = Client.AddAndRemove(packagesAdd, packagesRemove);
+                    if(string.IsNullOrEmpty(latestVersion)) deferredPromise.Reject("Latest version not found");
+                    else deferredPromise.Resolve(latestVersion);
+                }
+                else
+                {
+                    Debug.LogWarning("[Venly SDK] Failed to retrieve SDK release list.");
+                    deferredPromise.Reject("Failed to retrieve SDK release list");
+                }
+            };
+
+            return deferredPromise.Promise;
+        }
+
+        public void UpdateSDK(string targetVersion)
+        {
+            //Prepare for Update
+            VenlyEditorUtils.StoreBackup(VenlySettingsEd.Instance.Settings);
+            VenlyEditorUtils.StoreBackup(VenlySettingsEd.Instance.EditorData);
+
+            //Update Link
+            var packages = new List<string>();
+
+            //ProtoPromise
+            packages.Add(@"git+https://github.com/TimCassell/ProtoPromise.git?path=ProtoPromise_Unity/Assets/Plugins/ProtoPromise#v2.3.0");
+
+            //Venly SDK
+            packages.Add($"{VenlySettingsEd.Instance.EditorData.SDKManager.GitSdkURL}#{targetVersion}");
+
+            Client.AddAndRemove(packages.ToArray(), null);
         }
         #endregion
     }
