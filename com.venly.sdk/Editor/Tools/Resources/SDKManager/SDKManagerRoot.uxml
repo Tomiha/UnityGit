@@ -1,8 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/VenlySDK/Editor/Tools/Resources/Styles/styleSDKManager.uss?fileID=7433441132597879392&amp;guid=61df8ef11f26bd549ba260717d48373f&amp;type=3#styleSDKManager" />
+    <Style src="project://database/Packages/com.venly.sdk/Editor/Tools/Resources/Styles/styleSDKManager.uss?fileID=7433441132597879392&amp;guid=61df8ef11f26bd549ba260717d48373f&amp;type=3#styleSDKManager" />
     <ui:VisualElement name="root" style="flex-grow: 1;">
         <ui:VisualElement name="panel-header" style="flex-direction: row; align-items: center; justify-content: center; background-color: rgb(185, 185, 185); padding-top: 5px; padding-bottom: 5px; font-size: 14px; -unity-font-style: normal; -unity-text-align: upper-center; -unity-font-definition: resource(&apos;Fonts/TTCommons-Regular SDF&apos;);">
-            <ui:Label text="Update Available!" display-tooltip-when-elided="true" name="lbl-header" style="color: rgb(0, 0, 0); width: 50px;" />
+            <ui:Label text="Update Available! (updated)" display-tooltip-when-elided="true" name="lbl-header" style="color: rgb(0, 0, 0); width: 50px;" />
         </ui:VisualElement>
         <ui:VisualElement name="panel-menu" style="align-items: stretch; flex-direction: column; justify-content: center; padding-top: 5px; padding-bottom: 5px;">
             <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
