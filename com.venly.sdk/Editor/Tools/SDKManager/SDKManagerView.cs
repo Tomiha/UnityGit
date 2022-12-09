@@ -18,6 +18,8 @@ public class SDKManagerView : EditorWindow
 
     public void CreateGUI()
     {
+        VenlySettingsEd.Instance.RefreshSettings();
+
         //Root Tree
         var rootTree = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerView");
         rootTree.CloneTree(rootVisualElement);

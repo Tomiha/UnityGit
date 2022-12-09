@@ -64,52 +64,6 @@ namespace Venly.Editor.Tools.SDKManager
         }
 
         #endregion
-        private AddAndRemoveRequest _packageAddRequest;
-        public event Action OnInstallInitiated;
-        public event Action OnInstallCompleted;
-
-        private void NotifyInstallDone()
-        {
-            EditorWindow.GetWindow<SDKManagerView>().RefreshView();
-            OnInstallCompleted?.Invoke();
-        }
-
-        private void OnUpdate()
-        {
-            if (_packageAddRequest.IsCompleted)
-            {
-                EditorApplication.update -= OnUpdate;
-
-                if (_packageAddRequest.Status == StatusCode.Failure)
-                {
-                    Debug.LogException(new Exception($"Package Install Failed >> {_packageAddRequest.Error.message}"));
-                }
-
-                NotifyInstallDone();
-            }
-
-            //    foreach (var request in _packageAddRequests)
-            //    {
-            //        if (request.Status == StatusCode.InProgress) continue;
-            //        if (request.Status == StatusCode.Failure)
-            //        {
-            //            EditorApplication.update -= OnUpdate;
-            //            _installSdkTask.SetException(new Exception(request.Error.message));
-            //        }
-            //    }
-
-            //    if (_packageAddRequests.All(r => r.Status == StatusCode.Success))
-            //    {
-            //        EditorApplication.update -= OnUpdate;
-            //        _installSdkTask.SetResult(true);
-            //    }
-            //}
-            //else
-            //{
-            //    EditorApplication.update -= OnUpdate;
-            //    _installSdkTask.SetResult(false);
-            //}
-        }
 
         #region MANAGER FUNCTIONS
         public void ConfigureForBackend(eVyBackendProvider backend)

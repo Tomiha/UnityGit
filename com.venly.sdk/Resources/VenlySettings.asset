@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630518fcbea690146a8c9e93adf8c58b, type: 3}
   m_Name: VenlySettings
   m_EditorClassIdentifier: 
-  ClientId: 
-  ClientSecret: 
+  ClientId: ThomasGoussaert-capsule
+  ClientSecret: 5fc61d03-fe33-4588-8d98-8c8a029d29b3
   SdkPackageRoot: Packages\com.venly.sdk\
   PublicResourceRoot: Assets\Resources\
-  ApplicationId: 
+  ApplicationId: 02fed4b5-2df6-4c94-9a72-3b733db4f2cd
   Environment: 0
   BackendProvider: 0
   PlayFabBackendSettings:
-    VenlyAzureFunction: 
+    VenlyAzureFunction: VenlyRelay
   CustomBackendSettings:
     CustomId: 0

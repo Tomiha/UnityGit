@@ -57,7 +57,13 @@ namespace Venly.Editor
                 _instance.Initialize();
             }
         }
-        //
+
+        public void RefreshSettings()
+        {
+            if(string.IsNullOrEmpty(_editorDataSO.SdkPackageRoot)) 
+                LoadSettings();
+        }
+        
         private void LoadSettings()
         {
             //Load EditorData
@@ -90,6 +96,12 @@ namespace Venly.Editor
             _editorDataSO.SDKManager.GitSdkURL = @"git+https://github.com/Tomiha/UnityGit.git?path=com.venly.sdk";
 
             _settingsSO.SdkPackageRoot = _sdkPackageRoot;
+
+            EditorUtility.SetDirty(_editorDataSO);
+            AssetDatabase.SaveAssetIfDirty(_editorDataSO);
+
+            EditorUtility.SetDirty(_settingsSO);
+            AssetDatabase.SaveAssetIfDirty(_settingsSO);
 
             Debug.Log("Venly Settings Loaded!");
         }

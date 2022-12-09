@@ -12,66 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 908d39bce4de86942aa20031e245bd55, type: 3}
   m_Name: VenlyEditorData
   m_EditorClassIdentifier: 
-  SdkPackageRoot: 
-  PublicResourceRoot: 
-  PackageInfo:
-    m_PackageId: 
-    m_IsDirectDependency: 0
-    m_ProjectDependenciesEntry: 
-    m_Version: 
-    m_Source: 0
-    m_ResolvedPath: 
-    m_AssetPath: 
-    m_Name: 
-    m_DisplayName: 
-    m_Category: 
-    m_Type: 
-    m_Description: 
-    m_Status: 0
-    m_Errors: []
-    m_Versions:
-      m_All: []
-      m_Compatible: []
-      m_Verified: 
-    m_Dependencies: []
-    m_ResolvedDependencies: []
-    m_Keywords: []
-    m_Author:
-      m_Name: 
-      m_Email: 
-      m_Url: 
-    m_Registry:
-      m_Id: 
-      m_Name: 
-      m_Url: 
-      m_Scopes: []
-      m_IsDefault: 0
-      m_Capabilities: 0
-    m_HideInEditor: 0
-    m_Entitlements:
-      m_IsAllowed: 0
-      m_LicenseType: 0
-      m_Status: 0
-    m_DatePublishedTicks: 0
-    m_Git:
-      m_Hash: 
-      m_Revision: 
-    m_IsAssetStorePackage: 0
-    m_DocumentationUrl: 
-    m_ChangelogUrl: 
-    m_LicensesUrl: 
-    m_HasRepository: 0
-    m_Repository:
-      m_Type: 
-      m_Url: 
-      m_Revision: 
-      m_Path: 
-    m_UnityLifecycle:
-      m_Version: 
-      m_Nextversion: 
-    m_UpmReserved: 
+  SdkPackageRoot: Packages\com.venly.sdk\
+  PublicResourceRoot: Assets\Resources\
+  Version: v0.1.12-alpha
   SDKManager:
-    UpdateURL: 
+    GitReleaseURL: https://api.github.com/repos/Tomiha/UnityGit/releases
+    GitSdkURL: git+https://github.com/Tomiha/UnityGit.git?path=com.venly.sdk
     UnappliedSettings: 0
     CurrentClientId: 
     SelectedBackend: 0

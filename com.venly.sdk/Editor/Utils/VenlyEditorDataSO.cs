@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using Venly.Models;
@@ -27,7 +26,7 @@ namespace Venly.Editor.Utils
         public string PublicResourceRoot;
         public string Version;
 
-        [JsonIgnore][HideInInspector]public PackageInfo PackageInfo;
+        [JsonIgnore] public PackageInfo PackageInfo { get; set; }
 
         [Header("SDK Manager")] 
         public SDKManagerData SDKManager = new ();
