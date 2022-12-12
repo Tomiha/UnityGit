@@ -114,6 +114,8 @@ namespace Venly.Editor.Tools.SDKManager
 
         public void UpdateSDK(string targetVersion)
         {
+            VenlySDKUpdater.Instance.UpdateSDK(targetVersion);
+
             //Prepare for Update
             VenlyEditorUtils.StoreBackup(VenlySettingsEd.Instance.Settings);
             VenlyEditorUtils.StoreBackup(VenlySettingsEd.Instance.EditorData);
