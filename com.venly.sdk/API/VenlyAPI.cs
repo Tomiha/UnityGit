@@ -157,6 +157,15 @@ namespace Venly
             _requester.SetData(key, data);
         }
 
+        public static void OverrideLocalBackendExtensions(IBackendExtension extensions)
+        {
+            var localProvider = _backendProviders.FirstOrDefault(p => p.ProviderType == eVyBackendProvider.Local);
+            if (localProvider != null)
+            {
+                localProvider.OverrideExtension(extensions);
+            }
+        }
+
 #region Request Helpers
         private static Exception VerifyRequest()
         {

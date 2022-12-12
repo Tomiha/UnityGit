@@ -22,6 +22,7 @@ namespace Venly.Editor
             {
                 if (_instance == null)
                 {
+                    Debug.Log("VenlySettingsEd Singleton Creation");
                     _instance = new VenlySettingsEd();
                     _instance.Initialize();
                 }
@@ -53,6 +54,7 @@ namespace Venly.Editor
         {
             if (_instance == null)
             {
+                Debug.Log("VenlySettingsEd Singleton Creation (Static)");
                 _instance = new VenlySettingsEd();
                 _instance.Initialize();
             }
@@ -66,10 +68,13 @@ namespace Venly.Editor
         
         private void LoadSettings()
         {
+            Debug.Log("VenlySettingsEd LoadSettings Called");
+
             //Load EditorData
             _editorDataSO = Resources.Load<VenlyEditorDataSO>("");
             if (_editorDataSO == null) //First Creation
             {
+                Debug.Log($"VenlySettingsEd \'VenlyEditorDataSO\' being created");
                 _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>("VenlyEditorData",$"{_sdkPackageRoot}Resources\\");
             }
             VenlyEditorUtils.RestoreBackup(_editorDataSO);
@@ -79,12 +84,13 @@ namespace Venly.Editor
             _settingsSO = Resources.Load<VenlySettingsSO>("");
             if (_settingsSO == null) //First Creation
             {
+                Debug.Log($"VenlySettingsEd \'VenlySettingsSO\' being created");
                 _settingsSO = RetrieveOrCreateResource<VenlySettingsSO>("VenlySettings", $"{_sdkPackageRoot}Resources\\");
                 _settingsSO.PublicResourceRoot = _defaultResourceRoot;
             }
             VenlyEditorUtils.RestoreBackup(_settingsSO);
 
-
+            Debug.Log($"VenlySettingsEd Settings SYNC");
             //Sync Settings
             _editorDataSO.PublicResourceRoot = _settingsSO.PublicResourceRoot;
             _editorDataSO.SDKManager.SelectedBackend = _settingsSO.BackendProvider;

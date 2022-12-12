@@ -37,6 +37,11 @@ namespace Venly.Backends
             return false;
         }
 
+        public void OverrideExtension(IBackendExtension extensions)
+        {
+            Extensions = extensions;
+        }
+
         protected abstract void OnInitialize();
         protected abstract void OnDeinitialize();
     }

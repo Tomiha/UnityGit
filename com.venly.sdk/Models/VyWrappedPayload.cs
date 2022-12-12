@@ -28,6 +28,7 @@ public class VyWrappedPayload
         return JsonConvert.DeserializeObject<T>(json);
     }
 
+#if !ENABLE_VENLY_AZURE
     public static VyWrappedPayload Create(HttpMethod method, string uri, eVyApiEndpoint endpoint, HttpContent content, bool requiresWrap)
     {
         byte[] body = null;
@@ -50,4 +51,5 @@ public class VyWrappedPayload
             Method = method
         };
     }
+#endif
 }
