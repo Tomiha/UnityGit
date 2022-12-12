@@ -28,9 +28,14 @@ namespace Venly.Editor.Utils
             Instance.HandlePostUpdate();
         }
 
+        ~VenlySDKUpdater()
+        {
+            Debug.Log("SDK Updater DESTROYED");
+        }
+
         public VenlySDKUpdater()
         {
-            Debug.Log("SDK Editor Created");
+            Debug.Log("SDK Updater CREATED");
 
             //Subscribe to PackageManager Events
             Events.registeringPackages += PackageManager_registeringPackages;
@@ -53,8 +58,8 @@ namespace Venly.Editor.Utils
 
             Debug.Log("Should Refresh Settings - SDK was updated!");
 
-            Debug.Log($"Updating From: {EditorPrefs.HasKey("com.venly.sdk.prevVersion")}");
-            Debug.Log($"Updating From: {EditorPrefs.HasKey("com.venly.sdk.update")}");
+            Debug.Log($"Updating From: {EditorPrefs.GetString("com.venly.sdk.prevVersion")}");
+            Debug.Log($"Updating From: {EditorPrefs.GetString("com.venly.sdk.update")}");
 
             //Clear Keys
             EditorPrefs.DeleteKey("com.venly.sdk.update");
