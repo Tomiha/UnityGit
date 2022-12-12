@@ -12,7 +12,9 @@ namespace Venly.Editor.Utils
             get
             {
                 if (_instance == null)
+                {
                     _instance = new VenlySDKUpdater();
+                }
 
                 return _instance;
             }
@@ -28,6 +30,8 @@ namespace Venly.Editor.Utils
 
         public VenlySDKUpdater()
         {
+            Debug.Log("SDK Editor Created");
+
             //Subscribe to PackageManager Events
             Events.registeringPackages += PackageManager_registeringPackages;
         }
