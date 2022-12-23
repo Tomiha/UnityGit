@@ -91,6 +91,9 @@ namespace VenlySDK.Editor
             EditorUtility.SetDirty(_settingsSO);
             AssetDatabase.SaveAssetIfDirty(_settingsSO);
 
+            //Small reassurance
+            VenlySettings.Load(_settingsSO);
+
             //Serialized Objects
             SerializedSettings = new SerializedObject(_settingsSO);
 

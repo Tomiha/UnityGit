@@ -30,8 +30,17 @@ public class VenlySettings
         AssetDatabase.SaveAssetIfDirty(Settings);
     }
 
-    public static void Load()
+    public static void Load(VenlySettingsSO targetSO = null)
     {
+        if (_settingsSO != null)
+            return;
+
+        if (targetSO != null)
+        {
+            _settingsSO = targetSO;
+            return;
+        }
+
         if(_settingsSO == null)
             RetrieveSettings();
     } //Force Load :p

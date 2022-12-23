@@ -1,21 +1,16 @@
 using UnityEditor;
 using UnityEngine;
-using VenlySDK.Editor;
-using VenlySDK.Editor.Tools.SDKManager;
 
 [CustomEditor(typeof(VenlySettingsSO))]
 public class VenlySettingSO_Editor : Editor
 {
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
-
+        EditorGUILayout.HelpBox(
+            "Keep this file inside a Resources folder at all times. Settings can only be changed through the SDK Manager.", MessageType.Info);
         GUILayout.Space(20);
-        //todo: check current config first, otherwise disable
-        if (GUILayout.Button("Configure For Backend"))
-        {
-            var so = (VenlySettingsSO)serializedObject.targetObject;
-            SDKManager.Instance.ConfigureForBackend(so.BackendProvider);
-        }
+        EditorGUI.BeginDisabledGroup(true);
+        base.OnInspectorGUI();
+        EditorGUI.EndDisabledGroup();
     }
 }
