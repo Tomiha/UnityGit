@@ -58,7 +58,12 @@ namespace VenlySDK.Editor
             //===============
 
             //Load EditorSettings
-            _editorDataSO = LoadSettingsFile<VenlyEditorDataSO>($"{SDKManager.SdkPackageRoot}Editor\\VenlyEditorData.asset");
+            _editorDataSO = Resources.LoadAll<VenlyEditorDataSO>("").FirstOrDefault();
+            if (_editorDataSO == null) //First Creation
+            {
+                _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>("VenlyEditorData",SDKManager.DefaultPublicResourceRoot);
+            }
+
             VenlyEditorUtils.RestoreBackup(_editorDataSO);
             _editorDataSO.hideFlags = HideFlags.NotEditable;
 

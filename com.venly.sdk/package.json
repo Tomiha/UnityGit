@@ -1,6 +1,6 @@
 {
   "name": "com.venly.sdk",
-  "version": "0.1.26-alpha",
+  "version": "0.1.28-alpha",
   "displayName": "Venly SDK",
   "description": "The Venly SDK provides an easy way to communicate with Venly's various API products (Wallet/NFT). The SDK is backend agnostic meaning that you can either use one of the buildin backend extensions (such as PlayFab) or build an extension for your own backend solution.",
   "unity": "2021.3",
