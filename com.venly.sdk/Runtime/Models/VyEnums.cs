@@ -33,6 +33,15 @@ namespace VenlySDK.Models
     [JsonConverter(typeof(StringEnumConverter))]
     public enum eVyChain
     {
+        [EnumMember(Value = "BSC")] Bsc,
+        [EnumMember(Value = "ETHEREUM")] Ethereum,
+        [EnumMember(Value = "HEDERA")] Hedera,
+        [EnumMember(Value = "MATIC")] Matic
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum eVyChainFULL
+    {
         [EnumMember(Value = "AETERNITY")] Aeternity,
         [EnumMember(Value = "AVAC")] Avac,
         [EnumMember(Value = "BITCOIN")] Bitcoin,
@@ -45,7 +54,7 @@ namespace VenlySDK.Models
         [EnumMember(Value = "VECHAIN")] Vechain,
         [EnumMember(Value = "MATIC")] Matic,
         [EnumMember(Value = "NEO")] Neo,
-        [EnumMember(Value = "IMX")] ImmutableX,
+        [EnumMember(Value = "IMX")] ImmutableX
     }
 
     [JsonConverter(typeof(StringEnumConverter))]

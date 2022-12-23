@@ -19,11 +19,8 @@ namespace VenlySDK.Editor.Utils
         }
 
         [Header("General")]
-        public string SdkPackageRoot;
         public string PublicResourceRoot;
         public string Version;
-
-        [JsonIgnore] public PackageInfo PackageInfo { get; set; }
 
         [Header("ChainData")]
         public eVyChain[] SupportedChainsWallet;

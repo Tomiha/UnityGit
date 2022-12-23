@@ -1,6 +1,7 @@
 ﻿using VenlySDK.Core;
 using VenlySDK.Models;
 using VenlySDK.Models.Internal;
+using VenlySDK.Utils;
 
 namespace VenlySDK
 {
@@ -17,11 +18,27 @@ namespace VenlySDK
                 /// [/api/env]
                 /// </summary>
                 /// <returns>List of supported BlockChains</returns>
-                public static VyTask<eVyChain[]> GetChains()
+                public static VyTask<eVyChain[]> GetSupportedChains()
                 {
+                    var taskNotifier = VyTask<eVyChain[]>.Create();
+
                     var reqData = VyRequestData.Get("/api/env", _apiEndpoint)
                         .SelectProperty("supportedChainsForItemCreation");
-                    return Request<eVyChain[]>(reqData);
+
+                    Request<eVyChainFULL[]>(reqData)
+                        .OnComplete(result =>
+                        {
+                            if (result.Success)
+                            {
+                                taskNotifier.NotifySuccess(VenlyUtils.TrimUnsupportedChains(result.Data));
+                            }
+                            else
+                            {
+                                taskNotifier.NotifyFail(result.Exception);
+                            }
+                        });
+
+                    return taskNotifier.Task;
                 }
 
                 /// <summary>
@@ -29,10 +46,10 @@ namespace VenlySDK
                 /// [/api/minter/contracts]
                 /// </summary>
                 /// <returns>List of Contract Information</returns>
-                public static VyTask<VyContract[]> GetContracts()
+                public static VyTask<VyContractDto[]> GetContracts()
                 {
                     var reqData = VyRequestData.Get("/api/minter/contracts", _apiEndpoint);
-                    return Request<VyContract[]>(reqData);
+                    return Request<VyContractDto[]>(reqData);
                 }
 
                 /// <summary>
@@ -41,10 +58,10 @@ namespace VenlySDK
                 /// </summary>
                 /// <param name="contractId">The ID of the contract you want the information from</param>
                 /// <returns>Contract Information</returns>
-                public static VyTask<VyContract> GetContract(int contractId)
+                public static VyTask<VyContractDto> GetContract(int contractId)
                 {
                     var reqData = VyRequestData.Get($"/api/minter/contracts/{contractId}", _apiEndpoint);
-                    return Request<VyContract>(reqData);
+                    return Request<VyContractDto>(reqData);
                 }
 
                 /// <summary>
@@ -120,7 +137,7 @@ namespace VenlySDK
                 }
             }
 
-#if UNITY_EDITOR || UNITY_SERVER || ENABLE_VENLY_API_SERVER
+#if (UNITY_EDITOR || UNITY_SERVER || ENABLE_VENLY_API_SERVER) && !ENABLE_VENLY_PLAYFAB
             public static class Server
             {
                 //todo: remove applicationID in params
@@ -129,11 +146,11 @@ namespace VenlySDK
                 /// [/api/minter/contracts]
                 /// <param name="reqParams">Required parameters for the request</param>
                 /// <returns>The deployed NFT Contract</returns>
-                public static VyTask<VyContract> CreateContract(VyCreateContractDto reqParams)
+                public static VyTask<VyContractDto> CreateContract(VyCreateContractDto reqParams)
                 {
                     var reqData = VyRequestData.Post("/api/minter/contracts", _apiEndpoint)
                         .AddJsonContent(reqParams);
-                    return Request<VyContract>(reqData);
+                    return Request<VyContractDto>(reqData);
                 }
 
                 //todo remove ApplicationID

@@ -25,9 +25,9 @@ namespace VenlySDK.Data
 
         #endregion
 
-        public VyContract ToModel()
+        public VyContractDto ToModel()
         {
-            return new VyContract
+            return new VyContractDto
             {
                 Address = Address,
                 Confirmed = Confirmed,
@@ -45,7 +45,7 @@ namespace VenlySDK.Data
         }
 
 #if UNITY_EDITOR
-        public void UpdateLiveModel(VyContract model)
+        public void UpdateLiveModel(VyContractDto model)
         {
             LiveModel = JsonConvert.SerializeObject(model ?? ToModel());
         }

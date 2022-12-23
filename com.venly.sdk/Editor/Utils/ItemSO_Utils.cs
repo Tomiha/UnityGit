@@ -69,7 +69,7 @@ namespace VenlySDK.Editor
             contract.NotifyItemUpdated();
         }
 
-        public static void FromModel(this VyContractSO contract, VyContract model, bool updateLiveModel = true)
+        public static void FromModel(this VyContractSO contract, VyContractDto model, bool updateLiveModel = true)
         {
             contract.Address = model.Address;
             contract.Confirmed = model.Confirmed;
@@ -283,7 +283,7 @@ namespace VenlySDK.Editor
             {
                 if (item.IsContract)
                 {
-                    var model = JsonConvert.DeserializeObject<VyContract>(item.LiveModel);
+                    var model = JsonConvert.DeserializeObject<VyContractDto>(item.LiveModel);
                     item.AsContract().FromModel(model, false);
                 }
                 else if (item.IsTokenType)
@@ -298,6 +298,7 @@ namespace VenlySDK.Editor
         #region Item Utils
         public static void SaveItem(VyItemSO item, bool force = false)
         {
+            //Todo: Check Refresh Logic (Labels Hack is weird...)
             if (force || EditorUtility.IsDirty(item))
             {
                 var expectedName = $"{item.Id}_{item.Name}";
@@ -307,7 +308,12 @@ namespace VenlySDK.Editor
                 {
                     if (item.IsContract)
                     {
+                        item.name = expectedName;
                         AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(item), expectedName);
+
+                        AssetDatabase.ClearLabels(item);
+                        AssetDatabase.SetLabels(item, new[] { expectedName });
+                        AssetDatabase.Refresh();
                     }
                     else if (item.IsTokenType)
                     {

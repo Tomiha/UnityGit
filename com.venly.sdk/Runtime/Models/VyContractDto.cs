@@ -5,13 +5,13 @@ namespace VenlySDK.Models
 {
     //NFT-API Contract (api v3 scheme)
     [Serializable]
-    public class VyContract
+    public class VyContractDto
     {
         [JsonProperty("name")] public string Name { get; set; }
         [JsonProperty("description")] public string Description { get; set; }
         [JsonProperty("confirmed")] public bool Confirmed { get; set; }
         [JsonProperty("address")] public string Address { get; set; }
-        [JsonProperty("id")] public long Id { get; set; }
+        [JsonProperty("id")] public int Id { get; set; }
         [JsonProperty("secretType")] public eVyChain Chain { get; set; }
         [JsonProperty("symbol")] public string Symbol { get; set; }
         [JsonProperty("externalUrl")] public string ExternalUrl { get; set; }

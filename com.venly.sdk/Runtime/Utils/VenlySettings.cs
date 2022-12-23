@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using VenlySDK.Models;
 
@@ -20,8 +21,14 @@ public class VenlySettings
     public static bool HasCredentials => !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(ClientSecret);
     public static string ClientId => Settings.ClientId;
     public static string ClientSecret => Settings.ClientSecret;
-    public static string SdkPackageRoot => Settings.SdkPackageRoot;
     public static string PublicResourceRoot => Settings.PublicResourceRoot;
+
+    public static void SetCredentials(string clientId, string clientSecret)
+    {
+        Settings.ClientId = clientId;
+        Settings.ClientSecret = clientSecret;
+        AssetDatabase.SaveAssetIfDirty(Settings);
+    }
 
     public static void Load()
     {

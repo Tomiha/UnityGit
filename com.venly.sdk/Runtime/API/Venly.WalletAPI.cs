@@ -1,4 +1,5 @@
-﻿using VenlySDK.Core;
+﻿using System.Threading.Tasks;
+using VenlySDK.Core;
 using VenlySDK.Models;
 using VenlySDK.Models.Internal;
 using VenlySDK.Utils;
@@ -18,10 +19,25 @@ namespace VenlySDK
                 /// [/api/chains]
                 /// </summary>
                 /// <returns>List of supported chains</returns>
-                public static VyTask<eVyChain[]> GetChains()
+                public static VyTask<eVyChain[]> GetSupportedChains()
                 {
+                    var taskNotifier = VyTask<eVyChain[]>.Create();
+
                     var reqData = VyRequestData.Get("/api/chains", _apiEndpoint);
-                    return Request<eVyChain[]>(reqData);
+                    Request<eVyChainFULL[]>(reqData)
+                        .OnComplete(result =>
+                        {
+                            if (result.Success)
+                            {
+                                taskNotifier.NotifySuccess(VenlyUtils.TrimUnsupportedChains(result.Data));
+                            }
+                            else
+                            {
+                                taskNotifier.NotifyFail(result.Exception);
+                            }
+                        });
+
+                    return taskNotifier.Task;
                 }
 
                 /// <summary>
@@ -204,7 +220,7 @@ namespace VenlySDK
                 #endregion
             }
 
-#if UNITY_EDITOR || UNITY_SERVER || ENABLE_VENLY_API_SERVER
+#if (UNITY_EDITOR || UNITY_SERVER || ENABLE_VENLY_API_SERVER) && !ENABLE_VENLY_PLAYFAB
             public static class Server
             {
                 /// <summary>

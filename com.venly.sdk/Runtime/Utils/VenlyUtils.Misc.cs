@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using VenlySDK.Models;
@@ -54,5 +55,19 @@ namespace VenlySDK.Utils
         }
 
         #endregion
+
+        internal static eVyChain[] TrimUnsupportedChains(eVyChainFULL[] input)
+        {
+            var supportedChains = (eVyChain[])Enum.GetValues(typeof(eVyChain));
+            var filteredList = new List<eVyChain>();
+
+            foreach (var supported in supportedChains)
+            {
+                if(input.Any(inputChain => inputChain.GetMemberName() == supported.GetMemberName()))
+                    filteredList.Add(supported);
+            }
+
+            return filteredList.ToArray();
+        }
     }
 }

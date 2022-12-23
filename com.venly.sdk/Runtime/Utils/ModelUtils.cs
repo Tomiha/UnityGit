@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
+using VenlySDK.Models;
 using VenlySDK.Models.Internal;
 
 namespace VenlySDK.Utils
@@ -44,6 +46,30 @@ namespace VenlySDK.Utils
             return objectType == typeof(DateTime);
         }
     }
+
+    //internal sealed class SupportedChainConverter : JsonConverter
+    //{
+    //    public override bool CanConvert(Type objectType)
+    //    {
+    //        return objectType.IsArray && objectType.GetElementType() == typeof(eVyChain);
+    //    }
+
+    //    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    //    {
+    //        if (existingValue is null)
+    //        {
+    //            // Returning empty array???
+    //            return Array.Empty<eVyChain>();
+    //        }
+
+    //        return VenlyUtils.TrimUnsupportedChains((eVyChain[]) existingValue);
+    //    }
+
+    //    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    //    {
+    //        writer.WriteValue(value);
+    //    }
+    //}
 
     public class HttpContentConverter : JsonConverter
     {

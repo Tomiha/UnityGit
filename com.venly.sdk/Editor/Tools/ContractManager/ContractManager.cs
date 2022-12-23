@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Proto.Promises;
+using UnityEditor;
 using UnityEngine;
+using VenlySDK.Core;
 using VenlySDK.Utils;
 using VenlySDK.Data;
 using VenlySDK.Models;
@@ -43,62 +47,117 @@ namespace VenlySDK.Editor.Tools.ContractManager
             _isInitialize = true;
         }
 
-        public async void Sync()
+        public VyTask Sync()
         {
-            var storedContracts = Resources.LoadAll<VyContractSO>("");
-            var pulledContracts = await VenlyEditorAPI.GetContracts().AwaitResult();
+            var taskNotifier = VyTask.Create();
 
-            foreach (var pulledContract in pulledContracts)
+            //Retrieve Data (Async)
+            var loadTaskNotifier = VyTask<Dictionary<VyContractDto, VyTokenTypeDto[]>>.Create();
+            Task.Run(async () =>
             {
-                var tokenTypes = await VenlyEditorAPI.GetTokenTypes((int)pulledContract.Id).AwaitResult();
-                var sameContract = storedContracts.FirstOrDefault(c => c.Id == pulledContract.Id);
+                Dictionary<VyContractDto, VyTokenTypeDto[]> liveContracts = new Dictionary<VyContractDto, VyTokenTypeDto[]>();
 
-                //Create Contract
-                if (sameContract == null)
+                var contractsResult = await VenlyEditorAPI.GetContracts();
+                if (!contractsResult.Success)
                 {
-                    var newContract = ItemSO_Utils.CreateContract();
-                    newContract.ChangeItemState(eVyItemState.Live);
-                    newContract.FromModel(pulledContract);
+                    loadTaskNotifier.NotifyFail("[ContractManager] Failed to retrieve live contracts");
+                    return;
+                }
 
-                    foreach (var pulledTokenType in tokenTypes)
+                foreach (var contractDto in contractsResult.Data)
+                {
+                    var tokenTypesResult = await VenlyEditorAPI.GetTokenTypes(contractDto.Id);
+                    if (!tokenTypesResult.Success)
                     {
-                        var newTokenType = ItemSO_Utils.CreateTokenType(newContract);
-                        newTokenType.ChangeItemState(eVyItemState.Live);
-                        newTokenType.FromModel(pulledTokenType);
-                        
-                        //ItemSO_Utils.SaveItem(newTokenType, true);
+                        loadTaskNotifier.NotifyFail($"[ContractManager] Failed to retrieve live TokenTypes for Contract ({contractDto.Id})");
+                        return;
                     }
 
-                    ItemSO_Utils.SaveItem(newContract, true);
+                    liveContracts.Add(contractDto, tokenTypesResult.Data);
                 }
-                //Update Contract
-                else
+
+                loadTaskNotifier.NotifySuccess(liveContracts);
+            });
+
+            loadTaskNotifier.Task
+                .OnComplete((result) =>
                 {
-                    if(!sameContract.IsEdit) sameContract.FromModel(pulledContract);
-                    else sameContract.UpdateLiveModel(pulledContract);
-
-                    foreach (var pulledTokenType in tokenTypes)
+                    if (!result.Success)
                     {
-                        var sameTokenType = sameContract.TokenTypes.FirstOrDefault(t => t.Id == pulledTokenType.Id);
+                        taskNotifier.NotifyFail(result.Exception);
+                        return;
+                    }
 
-                        if (sameTokenType == null) //Create TokenType
+                    var storedContracts = Resources.LoadAll<VyContractSO>("");
+
+                    //Sync Contracts
+                    foreach (var kvp in result.Data)
+                    {
+                        var pulledContract = kvp.Key;
+                        var tokenTypes = kvp.Value;
+
+                        //TODO: handle invalid contracts...
+                        //Skip if Address is null
+                        if (string.IsNullOrEmpty(pulledContract.Address))
                         {
-                            var newTokenType = ItemSO_Utils.CreateTokenType(sameContract);
-                            newTokenType.ChangeItemState(eVyItemState.Live);
-                            newTokenType.FromModel(pulledTokenType);
-
-                            //ItemSO_Utils.SaveItem(newTokenType, true);
+                            Debug.LogWarning($"[Contract Manager] Skipping Contract (id={pulledContract.Id} | name={pulledContract.Name}) because it has an invalid address (address={pulledContract.Address}).");
+                            continue;
                         }
-                        else //Update TokenType
+
+                        var sameContract = storedContracts.FirstOrDefault(c => c.Id == pulledContract.Id);
+
+                        //Create Contract
+                        if (sameContract == null)
                         {
-                            if(!sameTokenType.IsEdit) sameTokenType.FromModel(pulledTokenType);
-                            else sameTokenType.UpdateLiveModel(pulledTokenType);
+                            var newContract = ItemSO_Utils.CreateContract();
+                            newContract.ChangeItemState(eVyItemState.Live);
+                            newContract.FromModel(pulledContract);
+
+                            foreach (var pulledTokenType in tokenTypes)
+                            {
+                                var newTokenType = ItemSO_Utils.CreateTokenType(newContract);
+                                newTokenType.ChangeItemState(eVyItemState.Live);
+                                newTokenType.FromModel(pulledTokenType);
+
+                                //ItemSO_Utils.SaveItem(newTokenType, true);
+                            }
+
+                            ItemSO_Utils.SaveItem(newContract, true);
+                        }
+                        //Update Contract
+                        else
+                        {
+                            if (!sameContract.IsEdit) sameContract.FromModel(pulledContract);
+                            else sameContract.UpdateLiveModel(pulledContract);
+
+                            foreach (var pulledTokenType in tokenTypes)
+                            {
+                                var sameTokenType = sameContract.TokenTypes.FirstOrDefault(t => t.Id == pulledTokenType.Id);
+
+                                if (sameTokenType == null) //Create TokenType
+                                {
+                                    var newTokenType = ItemSO_Utils.CreateTokenType(sameContract);
+                                    newTokenType.ChangeItemState(eVyItemState.Live);
+                                    newTokenType.FromModel(pulledTokenType);
+
+                                    //ItemSO_Utils.SaveItem(newTokenType, true);
+                                }
+                                else //Update TokenType
+                                {
+                                    if (!sameTokenType.IsEdit) sameTokenType.FromModel(pulledTokenType);
+                                    else sameTokenType.UpdateLiveModel(pulledTokenType);
+                                }
+                            }
+
+                            ItemSO_Utils.SaveItem(sameContract, true);
                         }
                     }
 
-                    ItemSO_Utils.SaveItem(sameContract, true);
-                }
-            }
+                    //AssetDatabase.Refresh();
+                    taskNotifier.NotifySuccess();
+                });
+
+            return taskNotifier.Task;
         }
 
         public void PushItem(VyItemSO item)

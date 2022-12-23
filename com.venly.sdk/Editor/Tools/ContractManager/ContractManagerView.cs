@@ -28,9 +28,15 @@ namespace VenlySDK.Editor.Tools.ContractManager
             //Bind Sync
             rootVisualElement.Q<Button>("btn-sync").clickable.clicked += () =>
             {
-                ContractManager.Instance.Sync();
-                _contractListView.RefreshView();
-                _contractListView.SelectFirst();
+                ContractManager.Instance.Sync()
+                    .OnComplete(result =>
+                    {
+                        if(result.Success) Debug.Log("[ContractManager] Contracts Successfully Synced!");
+                        else Debug.LogException(result.Exception);
+
+                        _contractListView.RefreshView();
+                        _contractListView.SelectFirst();
+                    });
             };
 
             _itemDetailsPanel = rootVisualElement.Q<VisualElement>("item-details-panel");

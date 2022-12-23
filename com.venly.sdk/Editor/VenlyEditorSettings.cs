@@ -7,6 +7,7 @@ using Proto.Promises;
 using UnityEditor;
 using UnityEngine;
 using VenlySDK.Core;
+using VenlySDK.Editor.Tools.SDKManager;
 using VenlySDK.Editor.Utils;
 using AssetDatabase = UnityEditor.AssetDatabase;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
@@ -34,20 +35,12 @@ namespace VenlySDK.Editor
         public bool IsInitialized { get; private set; }
         public bool SettingsLoaded { get; private set; }
 
-        private const string _sdkPackageRoot = "Packages\\com.venly.sdk\\";
-        private const string _sdkEditorDataPath = "Packages\\com.venly.sdk\\Editor\\VenlyEditorData.asset";
-        private const string _defaultResourceRoot = "Assets\\Resources\\";
-        private const string _sdkPublicSettingsRoot = "Assets\\Resources\\";
-
         private VenlySettingsSO _settingsSO;
         public VenlySettingsSO Settings => _settingsSO;
         public SerializedObject SerializedSettings;
 
         private VenlyEditorDataSO _editorDataSO;
         public VenlyEditorDataSO EditorData => _editorDataSO;
-
-        public event Action<VenlySettingsSO> OnSettingsLoaded;
-        public event Action<VenlyEditorDataSO> OnEditorDataLoaded;
 
         private void Initialize()
         {
@@ -61,83 +54,50 @@ namespace VenlySDK.Editor
         {
             VenlyDebugEd.LogDebug("VenlyEditorSettings LoadSettings Called");
 
-            //Load EditorData
-            _editorDataSO = LoadSettingsFile<VenlyEditorDataSO>(_sdkEditorDataPath);
-            _editorDataSO.hideFlags = HideFlags.NotEditable;
+            //EDITOR SETTINGS
+            //===============
+
+            //Load EditorSettings
+            _editorDataSO = LoadSettingsFile<VenlyEditorDataSO>($"{SDKManager.SdkPackageRoot}Editor\\VenlyEditorData.asset");
             VenlyEditorUtils.RestoreBackup(_editorDataSO);
+            _editorDataSO.hideFlags = HideFlags.NotEditable;
 
-            //Load VenlySettings
-            _settingsSO = Resources.LoadAll<VenlySettingsSO>(_sdkPublicSettingsRoot).FirstOrDefault();
-            if (_settingsSO == null) //First Creation
-            {
-                _settingsSO = RetrieveOrCreateResource<VenlySettingsSO>("VenlySettings", _sdkPublicSettingsRoot);
-                _settingsSO.PublicResourceRoot = _defaultResourceRoot;
-            }
+            //Update EditorSettings
+            SDKManager.Instance.UpdateEditorSettings();
 
-            //_settingsSO.hideFlags = HideFlags.HideInInspector;
-            _settingsSO.hideFlags = HideFlags.None;
-
-            VenlyEditorUtils.RestoreBackup(_settingsSO);
-
-            VenlyDebugEd.LogDebug($"VenlyEditorSettings Settings SYNC");
-            //Sync Settings
-            _editorDataSO.PublicResourceRoot = _settingsSO.PublicResourceRoot;
-            _editorDataSO.SDKManager.SelectedBackend = _settingsSO.BackendProvider;
-            _editorDataSO.SdkPackageRoot = _sdkPackageRoot;
-            _editorDataSO.PackageInfo = PackageInfo.FindForAssembly(Assembly.GetExecutingAssembly());
-            _editorDataSO.Version = $"v{_editorDataSO.PackageInfo.version}";
-
-            _settingsSO.SdkPackageRoot = _sdkPackageRoot;
-
+            //Save Changes
             EditorUtility.SetDirty(_editorDataSO);
             AssetDatabase.SaveAssetIfDirty(_editorDataSO);
 
+            //VENLY SETTINGS
+            //==============
+
+            //Load VenlySettings
+            _settingsSO = Resources.LoadAll<VenlySettingsSO>("").FirstOrDefault();
+            if (_settingsSO == null) //First Creation
+            {
+                _settingsSO = RetrieveOrCreateResource<VenlySettingsSO>("VenlySettings", EditorData.PublicResourceRoot);
+                _settingsSO.PublicResourceRoot = EditorData.PublicResourceRoot;
+            }
+
+            VenlyEditorUtils.RestoreBackup(_settingsSO);
+            //_settingsSO.hideFlags = HideFlags.HideInInspector;
+            _settingsSO.hideFlags = HideFlags.None;
+
+            //Update VenlySettings
+            SDKManager.Instance.UpdateVenlySettings(_settingsSO);
+
+            //Save Changes
             EditorUtility.SetDirty(_settingsSO);
             AssetDatabase.SaveAssetIfDirty(_settingsSO);
-
-            //Load Venly Settings
-            VenlySettings.Load();
-
-            VenlyDebugEd.LogDebug("Venly Settings Loaded!");
 
             //Serialized Objects
             SerializedSettings = new SerializedObject(_settingsSO);
 
-            //Refresh Editor Data
-            //todo: invoke refresh event
-            if(VenlySettings.HasCredentials)
-                RefreshEditorData(false);
+            //Load Venly Settings (Static)
+            VenlySettings.Load();
 
             SettingsLoaded = true;
-            OnEditorDataLoaded?.Invoke(_editorDataSO);
-            OnSettingsLoaded?.Invoke(_settingsSO);
-        }
-
-        private void RefreshEditorData(bool force)
-        {
-            //Refresh SupportedChainsWallet
-            if (force ||
-                EditorData.SupportedChainsWallet == null
-                || EditorData.SupportedChainsWallet.Length == 0)
-            {
-                VenlyEditorAPI.GetChainsWALLET()
-                    .OnSucces(chains =>
-                    {
-                        EditorData.SupportedChainsWallet = chains;
-                    });
-            }
-
-            //Refresh SupportedChainsNft
-            if (force ||
-                EditorData.SupportedChainsNft == null
-                || EditorData.SupportedChainsNft.Length == 0)
-            {
-                VenlyEditorAPI.GetChainsNFT()
-                    .OnSucces(chains =>
-                    {
-                        EditorData.SupportedChainsNft = chains;
-                    });
-            }
         }
 
         public static void VerifyFolder(string path)
