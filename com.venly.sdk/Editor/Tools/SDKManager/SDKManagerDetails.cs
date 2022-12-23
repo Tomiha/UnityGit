@@ -48,6 +48,10 @@ namespace VenlySDK.Editor.Tools.SDKManager
                 {
                     _latestVersion = latestVersion;
                     RefreshDetails();
+                })
+                .OnFail((ex) =>
+                {
+                    Debug.LogWarning("[Venly SDK Manager] Failed to retrieve SDK release list.");
                 });
         }
 

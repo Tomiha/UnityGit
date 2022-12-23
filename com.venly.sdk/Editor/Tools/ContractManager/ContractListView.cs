@@ -28,13 +28,6 @@ namespace VenlySDK.Editor.Tools.ContractManager
 
         #region Cstr
 
-        [MenuItem("Window/Venly/Contract Manager")]
-        public static void OpenWindows()
-        {
-            ContractManager.Instance.MainView = EditorWindow.GetWindow<ContractManagerView>();
-            ContractManager.Instance.MainView.titleContent = new GUIContent("Venly Contract Manager");
-        }
-
         public new class UxmlFactory : UxmlFactory<ContractListView, UxmlTraits> {}
 
         public ContractListView()

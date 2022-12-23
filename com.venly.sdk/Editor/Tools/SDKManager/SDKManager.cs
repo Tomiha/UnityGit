@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Reflection;
-using System.Web.UI;
-using Codice.CM.Client.Differences;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.PackageManager;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.Networking;
 using VenlySDK.Core;
@@ -89,18 +85,18 @@ namespace VenlySDK.Editor.Tools.SDKManager
 
         public static readonly string URL_GitHubIssues = @"https://github.com/ArkaneNetwork/Unity-SDK/issues";
         public static readonly string URL_ChangeLog = @"https://github.com/ArkaneNetwork/Unity-SDK/releases";
-        public static readonly string URL_Discord = @"https://www.venly.io";
+        public static readonly string URL_Discord = @"https://discord.com/invite/7Sn2nHC3Ep";
         public static readonly string URL_Guide = @"https://docs.venly.io/venly-unity-sdk/";
 
         private PackageInfo _packageInfo;
         public static readonly string DefaultPublicResourceRoot = "Assets\\Resources\\";
         public static readonly string SdkPackageRoot = "Packages\\com.venly.sdk\\";
 
-        //public static readonly string URL_GitRepository = @"git+https://github.com/ArkaneNetwork/Unity-SDK.git?path=Packages/com.venly.sdk";
-        //public static readonly string URL_GitReleases = @"https://github.com/ArkaneNetwork/Unity-SDK/releases";
+        public static readonly string URL_GitRepository = @"git+https://github.com/ArkaneNetwork/Unity-SDK.git?path=Packages/com.venly.sdk";
+        public static readonly string URL_GitReleases = @"https://api.github.com/repos/ArkaneNetwork/Unity-SDK/releases";
 
-        public static readonly string URL_GitRepository = @"git+https://github.com/Tomiha/UnityGit.git?path=com.venly.sdk";
-        public static readonly string URL_GitReleases = @"https://api.github.com/repos/Tomiha/UnityGit/releases";
+        //public static readonly string URL_GitRepository = @"git+https://github.com/Tomiha/UnityGit.git?path=com.venly.sdk";
+        //public static readonly string URL_GitReleases = @"https://api.github.com/repos/Tomiha/UnityGit/releases";
 
         #endregion
 
@@ -324,15 +320,21 @@ namespace VenlySDK.Editor.Tools.SDKManager
             {
                 if (request.isDone && request.result == UnityWebRequest.Result.Success)
                 {
-                    var gitInfos = JsonConvert.DeserializeObject<GitReleaseInfo[]>(request.downloadHandler.text);
-                    var latestVersion = VenlyEditorUtils.GetLatestSemVer(gitInfos?.Select(gi => gi.name).ToList());
+                    try
+                    {
+                        var gitInfos = JsonConvert.DeserializeObject<GitReleaseInfo[]>(request.downloadHandler.text);
+                        var latestVersion = VenlyEditorUtils.GetLatestSemVer(gitInfos?.Select(gi => gi.name).ToList());
 
-                    if(string.IsNullOrEmpty(latestVersion)) taskNotifier.NotifyFail("Latest version not found");
-                    else taskNotifier.NotifySuccess(latestVersion);
+                        if (string.IsNullOrEmpty(latestVersion)) taskNotifier.NotifyFail("Latest version not found");
+                        else taskNotifier.NotifySuccess(latestVersion);
+                    }
+                    catch (Exception ex)
+                    {
+                        taskNotifier.NotifyFail(ex);
+                    }
                 }
                 else
                 {
-                    Debug.LogWarning("[Venly SDK] Failed to retrieve SDK release list.");
                     taskNotifier.NotifyFail("Failed to retrieve SDK release list");
                 }
             };

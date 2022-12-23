@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Proto.Promises;
 using UnityEditor;
 using UnityEngine;
 using VenlySDK.Core;
-using VenlySDK.Utils;
 using VenlySDK.Data;
 using VenlySDK.Models;
 
@@ -31,6 +29,20 @@ namespace VenlySDK.Editor.Tools.ContractManager
             }
         }
         #endregion
+
+        [MenuItem("Window/Venly/Contract Manager")]
+        public static void ShowContractManager()
+        {
+            var types = new List<Type>()
+            {
+                // first add your preferences
+                typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.SceneView"),
+                typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.GameView")
+            };
+            
+            Instance.MainView = EditorWindow.GetWindow<ContractManagerView>(types.ToArray());
+            Instance.MainView.titleContent = new GUIContent("Venly Contract Manager");
+        }
 
         private bool _isInitialize = false;
         public bool IsInitialize => _isInitialize;

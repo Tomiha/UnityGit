@@ -35,7 +35,6 @@ namespace VenlySDK.Models
     {
         [EnumMember(Value = "BSC")] Bsc,
         [EnumMember(Value = "ETHEREUM")] Ethereum,
-        [EnumMember(Value = "HEDERA")] Hedera,
         [EnumMember(Value = "MATIC")] Matic
     }
 
