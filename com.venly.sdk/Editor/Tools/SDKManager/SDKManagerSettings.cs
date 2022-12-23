@@ -2,31 +2,26 @@ using System;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
-using Venly.Editor.Utils;
-using Venly.Models;
+using VenlySDK.Editor.Utils;
+using VenlySDK.Models;
 
-namespace Venly.Editor.Tools.SDKManager
+namespace VenlySDK.Editor.Tools.SDKManager
 {
     public class SDKManagerSettings : VisualElement
     {
-        private VisualTreeAsset _templateSettingsAuth;
-        private VisualTreeAsset _templateSettingsMain;
-
         private VisualElement _panelSettingsAuth;
         private VisualElement _panelSettingsMain;
 
-        //Auth Settings Elements
-
         //Main Settings Elements
-        private DropdownField _selectorAppId;
         private EnumField _selectorBackendProvider;
         private Button _btnApplySettings;
 
         private VisualElement _groupBackendSettings;
         private SerializedProperty _backendSettings = null;
 
-        private VenlyEditorDataSO.SDKManagerData SdkManagerData => VenlySettingsEd.Instance.EditorData.SDKManager;
+        private VenlyEditorDataSO.SDKManagerData SdkManagerData => VenlyEditorSettings.Instance.EditorData.SDKManager;
 
         #region Cstr
         public new class UxmlFactory : UxmlFactory<SDKManagerSettings, UxmlTraits>
@@ -38,18 +33,16 @@ namespace Venly.Editor.Tools.SDKManager
             this.style.flexGrow = new StyleFloat(1);
 
             _panelSettingsAuth = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerSettings_Auth").CloneTree().Children().First();
-            _panelSettingsAuth.Bind(new SerializedObject(VenlySettingsEd.Instance.Settings)); //hmm
+            _panelSettingsAuth.Bind(VenlyEditorSettings.Instance.SerializedSettings); //hm
 
             _panelSettingsAuth.Q<Button>("btn-save-auth").clickable.clicked += onSaveAuth_Clicked;
 
             //Main Settings Elements
             _panelSettingsMain = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerSettings_Main").CloneTree().Children().First();
+            _panelSettingsMain.Bind(VenlyEditorSettings.Instance.SerializedSettings);
 
             _selectorBackendProvider = _panelSettingsMain.Q<EnumField>("selector-backendprovider");
             _selectorBackendProvider.RegisterValueChangedCallback(onBackendProvider_Changed);
-
-            _selectorAppId = _panelSettingsMain.Q<DropdownField>("selector-app-id");
-            _selectorAppId.RegisterValueChangedCallback(onAppId_Changed);
 
             _panelSettingsMain.Q<Button>("btn-set-id").clickable.clicked += onSetId_Clicked;
 
@@ -57,31 +50,19 @@ namespace Venly.Editor.Tools.SDKManager
             _btnApplySettings.clickable.clicked += onApplySettings_Clicked;
             _btnApplySettings.HideElement();
 
-            _panelSettingsMain.Q<Button>("btn-refresh-apps").clickable.clicked += onRefreshApps_Clicked;
-
             _groupBackendSettings = _panelSettingsMain.Q<VisualElement>("group-backend-settings");
 
-
-            this.Bind(new SerializedObject(VenlySettingsEd.Instance.Settings));
-
-            RefreshPanels();
+            SDKManager.Instance.OnAuthenticatedChanged += (_) => { RefreshView(); };
+            RefreshView();
         }
 
-        private async void RefreshPanels(bool forceAuth = false)
+        private void RefreshView(bool forceAuth = false)
         {
             Clear();
-
-            var authSuccess = await VenlySettingsEd.Instance.VerifyAuthSettings();
-            if (!forceAuth && authSuccess)
+            if (!forceAuth && SDKManager.Instance.IsAuthenticated)
             {
                 //MAIN SETTINGS
                 Add(_panelSettingsMain);
-                _selectorAppId.choices = SdkManagerData.AvailableAppIds;
-                _selectorAppId.value = VenlySettings.ApplicationId;
-                if (!SdkManagerData.AvailableAppIds.Contains(VenlySettings.ApplicationId))
-                {
-                    _selectorAppId.index = 0;
-                }
 
                 _selectorBackendProvider.value = SdkManagerData.SelectedBackend;
                 ValidateApplyVisibility();
@@ -113,9 +94,11 @@ namespace Venly.Editor.Tools.SDKManager
 
         #region Events
         //AUTH EVENTS
-        private void onSaveAuth_Clicked()
+        private async void onSaveAuth_Clicked()
         {
-            RefreshPanels(); //Refresh & Verify
+            var result = await SDKManager.Instance.Authenticate();
+            if(!result.Success)
+                Debug.LogException(result.Exception);
         }
 
         //MAIN SETTINGS EVENTS
@@ -127,14 +110,9 @@ namespace Venly.Editor.Tools.SDKManager
             PopulateBackendSettings();
         }
 
-        private void onAppId_Changed(ChangeEvent<string> eventArgs)
-        {
-            VenlySettingsEd.Instance.Settings.ApplicationId = eventArgs.newValue;
-        }
-
         private void onSetId_Clicked()
         {
-            RefreshPanels(true);
+            RefreshView(true);
         }
 
         private void onApplySettings_Clicked()
@@ -142,22 +120,13 @@ namespace Venly.Editor.Tools.SDKManager
             SDKManager.Instance.ConfigureForBackend(SdkManagerData.SelectedBackend);
             ValidateApplyVisibility();
         }
-
-        private void onRefreshApps_Clicked()
-        {
-            VenlySettingsEd.Instance.RefreshAvailableApps();
-            if (VenlySettings.ApplicationId != null)
-            {
-                _selectorAppId.value = VenlySettings.ApplicationId;
-            }
-        }
         #endregion
 
         private void PopulateBackendSettings()
         {
             //Find BackendSettings
             var settingsName = $"{SdkManagerData.SelectedBackend}BackendSettings";
-            var serializedSettings = new SerializedObject(VenlySettingsEd.Instance.Settings);
+            var serializedSettings = VenlyEditorSettings.Instance.SerializedSettings;
             _backendSettings = serializedSettings.FindProperty(settingsName);
 
             if (_backendSettings == null)

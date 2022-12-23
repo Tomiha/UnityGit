@@ -1,10 +1,8 @@
-using System;
-using System.Linq;
-using UnityEngine.Networking;
+using UnityEngine;
 using UnityEngine.UIElements;
-using Venly.Editor.Utils;
+using VenlySDK.Editor.Utils;
 
-namespace Venly.Editor.Tools.SDKManager
+namespace VenlySDK.Editor.Tools.SDKManager
 {
     public class SDKManagerDetails : VisualElement
     {
@@ -30,6 +28,13 @@ namespace Venly.Editor.Tools.SDKManager
             _lblUpdateText.HideElement();
             _btnUpdateSDK.HideElement();
 
+            //Buttons
+            this.Q<Button>("btn-link-guide").clickable.clicked += () => { Application.OpenURL(SDKManager.URL_Guide); };
+            this.Q<Button>("btn-link-apiref").HideElement();
+            this.Q<Button>("btn-link-bug-feature").clickable.clicked += () => { Application.OpenURL(SDKManager.URL_GitHubIssues); };
+            this.Q<Button>("btn-link-changelog").clickable.clicked += () => { Application.OpenURL(SDKManager.URL_ChangeLog); };
+            this.Q<Button>("btn-link-discord").clickable.clicked += () => { Application.OpenURL(SDKManager.URL_Discord); };
+
             RetrieveLatestVersion();
         }
 
@@ -39,16 +44,16 @@ namespace Venly.Editor.Tools.SDKManager
             RefreshDetails();
 
             SDKManager.Instance.GetLatestVersion()
-                .Then(latestVersion =>
+                .OnSucces(latestVersion =>
                 {
                     _latestVersion = latestVersion;
                     RefreshDetails();
-                }).Forget();
+                });
         }
 
         private void RefreshDetails()
         {
-            var currentVersion = VenlySettingsEd.Instance.EditorData.Version;
+            var currentVersion = VenlyEditorSettings.Instance.EditorData.Version;
             _lblVersion.text = $"SDK {currentVersion}";
 
             bool canUpdate = false;

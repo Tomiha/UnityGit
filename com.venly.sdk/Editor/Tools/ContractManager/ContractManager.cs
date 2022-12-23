@@ -1,11 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Proto.Promises;
 using UnityEngine;
-using Venly.Data;
-using Venly.Models;
-using Venly.Utils;
+using VenlySDK.Utils;
+using VenlySDK.Data;
+using VenlySDK.Models;
 
-namespace Venly.Editor.Tools.ContractManager
+namespace VenlySDK.Editor.Tools.ContractManager
 {
     internal class ContractManager
     {
@@ -42,14 +43,14 @@ namespace Venly.Editor.Tools.ContractManager
             _isInitialize = true;
         }
 
-        public void Sync()
+        public async void Sync()
         {
             var storedContracts = Resources.LoadAll<VyContractSO>("");
-            var pulledContracts = VenlyEditorAPI.GetContracts(VenlySettings.ApplicationId).WaitForResult();
+            var pulledContracts = await VenlyEditorAPI.GetContracts().AwaitResult();
 
             foreach (var pulledContract in pulledContracts)
             {
-                var tokenTypes = VenlyEditorAPI.GetTokenTypes(VenlySettings.ApplicationId, (int)pulledContract.Id).WaitForResult();
+                var tokenTypes = await VenlyEditorAPI.GetTokenTypes((int)pulledContract.Id).AwaitResult();
                 var sameContract = storedContracts.FirstOrDefault(c => c.Id == pulledContract.Id);
 
                 //Create Contract
@@ -149,30 +150,33 @@ namespace Venly.Editor.Tools.ContractManager
         #region Implementations
         private void ArchiveTokenType(VyTokenTypeSO tokenType)
         {
-            VenlyEditorAPI.ArchiveTokenType(VenlySettings.ApplicationId, tokenType.Contract.Id, tokenType.Id)
-                .Then(() =>
+            VenlyEditorAPI.ArchiveTokenType(tokenType.Contract.Id, tokenType.Id)
+                .OnComplete(result =>
                 {
-                    Debug.Log($"TokenType (id={tokenType.Id}) successfully archived!");
+                    if (result.Success) Debug.Log($"TokenType (id={tokenType.Id}) successfully archived!");
+                    else
+                        Debug.LogException(new Exception($"Failed to Archive TokenType (id={tokenType.Id})",
+                            result.Exception));
                 })
-                .CatchAndForget();
+                .OnFail(Debug.LogException);
         }
 
         private void ArchiveContract(VyContractSO contract)
         {
-            VenlyEditorAPI.ArchiveContract(VenlySettings.ApplicationId, contract.Id)
-                .Then(()=>
+            VenlyEditorAPI.ArchiveContract(contract.Id)
+                .OnComplete(result =>
                 {
-                    Debug.Log($"Contract (id={contract.Id}) successfully archived!");
+                    if (result.Success) Debug.Log($"Contract (id={contract.Id}) successfully archived!");
+                    else Debug.LogException(new Exception($"Failed to Archive Contract (id={contract.Id})", result.Exception));
                 })
-                .CatchAndForget();
+                .OnFail(Debug.LogException);
         }
 
         private void UpdateTokenType(VyTokenTypeSO tokenType)
         {
             var model = tokenType.ToModel();
-            VyParam_UpdateTokenTypeMetadata data = new()
+            VyUpdateTokenTypeMetadataDto data = new()
             {
-                ApplicationId = VenlySettings.ApplicationId,
                 ContractId = tokenType.Contract.Id,
                 Name = model.Name,
                 AnimationUrls = model.AnimationUrls,
@@ -185,22 +189,20 @@ namespace Venly.Editor.Tools.ContractManager
             };
 
             VenlyEditorAPI.UpdateTokenTypeMetadata(data)
-                .WaitAsync(SynchronizationOption.Foreground)
-                .Then(tokenTypeMetadata =>
+                .OnSucces(tokenTypeMetadata =>
                 {
                     tokenType.ChangeItemState(eVyItemState.Live);
                     tokenType.FromMetadata(tokenTypeMetadata);
                     tokenType.RefreshTokenTexture();
                 })
-                .CatchAndForget();
+                .OnFail(Debug.LogException);
         }
 
         private void UpdateContract(VyContractSO contract)
         {
             var model = contract.ToModel();
-            VyParam_UpdateContractMetadata data = new()
+            VyUpdateContractMetadataDto data = new()
             {
-                ApplicationId = VenlySettings.ApplicationId,
                 ContractId = (int)model.Id, //todo fix type
                 Name = model.Name,
                 Description = model.Description,
@@ -211,48 +213,44 @@ namespace Venly.Editor.Tools.ContractManager
             };
 
             VenlyEditorAPI.UpdateContractMetadata(data)
-                .WaitAsync(SynchronizationOption.Foreground)
-                .Then(contractMetadata =>
+                .OnSucces(contractMetadata =>
                 {
                     contract.ChangeItemState(eVyItemState.Live);
                     contract.FromMetadata(contractMetadata);
                 })
-                .CatchAndForget();
+                .OnFail(Debug.LogException);
         }
 
         private void RefreshContract(VyContractSO contract)
         {
-            VenlyEditorAPI.GetContract(VenlySettings.ApplicationId, contract.Id)
-                .WaitAsync(SynchronizationOption.Foreground)
-                .Then(updatedContract =>
+            VenlyEditorAPI.GetContract(contract.Id)
+                .OnSucces(updatedContract =>
                 {
                     contract.ChangeItemState(eVyItemState.Live);
                     contract.FromModel(updatedContract);
                 })
-                .CatchAndForget();
+                .OnFail(Debug.LogException);
         }
 
         private void RefreshTokenType(VyTokenTypeSO tokenType)
         {
-            VenlyEditorAPI.GetTokenType(VenlySettings.ApplicationId, tokenType.Contract.Id, tokenType.Id)
-                .WaitAsync(SynchronizationOption.Foreground)
-                .Then(updatedTokenType =>
+            VenlyEditorAPI.GetTokenType(tokenType.Contract.Id, tokenType.Id)
+                .OnSucces(updatedTokenType =>
                 {
                     tokenType.ChangeItemState(eVyItemState.Live);
                     tokenType.FromModel(updatedTokenType);
                     tokenType.RefreshTokenTexture();
                 })
-                .CatchAndForget();
+                .OnFail(Debug.LogException);
         }
 
         private void PushContract(VyContractSO contract)
         {
             var model = contract.ToModel();
-            var data = new VyParam_CreateContract
+            var data = new VyCreateContractDto
             {
                 Name = model.Name,
-                ApplicationId = VenlySettings.ApplicationId,
-                Chain = model.SecretType,
+                Chain = model.Chain,
                 Description = model.Description,
                 ExternalUrl = model.ExternalUrl,
                 Media = model.Media,
@@ -262,22 +260,20 @@ namespace Venly.Editor.Tools.ContractManager
             };
 
             VenlyEditorAPI.CreateContract(data)
-                 .WaitAsync(SynchronizationOption.Foreground)
-                .Then(newContract =>
+                .OnSucces(newContract =>
                 {
                     contract.ChangeItemState(eVyItemState.Live);
                     contract.FromModel(newContract);
                 })
-                .CatchAndForget();
+                ;//.OnFail(Debug.LogException);
         }
 
         private void PushTokenType(VyTokenTypeSO tokenType)
         {
             var model = tokenType.ToModel();
-            var data = new VyParam_CreateTokenType
+            var data = new VyCreateTokenTypeDto
             {
                 Name = model.Name,
-                ApplicationId = VenlySettings.ApplicationId,
                 AnimationUrls = model.AnimationUrls,
                 Attributes = model.Attributes,
                 BackgroundColor = model.BackgroundColor,
@@ -292,14 +288,13 @@ namespace Venly.Editor.Tools.ContractManager
             };
 
             VenlyEditorAPI.CreateTokenType(data)
-                .WaitAsync(SynchronizationOption.Foreground)
-                .Then(newTokenType =>
+                .OnSucces(newTokenType =>
                 {
                     tokenType.ChangeItemState(eVyItemState.Live);
                     tokenType.FromModel(newTokenType);
                     tokenType.RefreshTokenTexture();
                 })
-                .CatchAndForget();
+                .OnFail(Debug.LogException);
         }
         #endregion
     }

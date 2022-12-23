@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.Diagnostics;
 using System.Threading;
 using Proto.Promises;
-using Venly.Models;
-using Venly.Utils;
+using UnityEngine;
+using VenlySDK.Core;
+using VenlySDK.Editor.Utils;
+using VenlySDK.Models;
+using VenlySDK.Models.Internal;
 
-namespace Venly.Editor
+namespace VenlySDK.Editor
 {
 #if UNITY_EDITOR
     internal static class VenlyEditorAPI
     {
         public static bool IsInitialized = false;
         private static VenlyEditorRequester _requester;
-
-        private static bool _useWrapNFT = false;
 
         static VenlyEditorAPI()
         {
@@ -25,8 +26,14 @@ namespace Venly.Editor
         }
 
         #region AUTH
-        public static Promise<VyAccessToken> GetAccessToken(string clientId, string clientSecret)
+        public static VyTask<VyAccessTokenDto> GetAccessToken(string clientId, string clientSecret)
         {
+            if (string.IsNullOrWhiteSpace(clientId))
+                return VyTask<VyAccessTokenDto>.Failed(VyException.Argument("Client-ID cannot be NULL or empty", nameof(clientId)));
+
+            if (string.IsNullOrWhiteSpace(clientSecret))
+                return VyTask<VyAccessTokenDto>.Failed(VyException.Argument("Client-SECRET cannot be NULL or empty", nameof(clientSecret)));
+
             var formData = new Dictionary<string, string>
             {
                 {"grant_type", "client_credentials"},
@@ -34,146 +41,161 @@ namespace Venly.Editor
                 {"client_secret", clientSecret}
             };
 
-            return Request<VyAccessToken>(HttpMethod.Post, "/auth/realms/Arkane/protocol/openid-connect/token", eVyApiEndpoint.Auth, formData, false);
+            var reqData = VyRequestData.Post("/auth/realms/Arkane/protocol/openid-connect/token", eVyApiEndpoint.Auth)
+                .AddFormContent(formData);
+            return Request<VyAccessTokenDto>(reqData);
         }
         #endregion
 
         #region SERVER
         /// <summary>
         /// Deploy a new smart contract (NFT Contract) on a specific BlockChain
-        /// [/api/apps/:applicationId/contracts]
-        /// </summary>
+        /// [/api/minter/contracts]
         /// <param name="reqParams">Required parameters for the request</param>
         /// <returns>The deployed NFT Contract</returns>
-        public static Promise<VyContract> CreateContract(VyParam_CreateContract reqParams)
+        public static VyTask<VyContract> CreateContract(VyCreateContractDto reqParams)
         {
-            return Request_JSON<VyContract, VyParam_CreateContract>(HttpMethod.Post, $"/api/apps/{reqParams.ApplicationId}/contracts", eVyApiEndpoint.Nft, reqParams, _useWrapNFT);
+            var reqData = VyRequestData.Post("/api/minter/contracts", eVyApiEndpoint.Nft)
+                .AddJsonContent(reqParams);
+            return Request<VyContract>(reqData);
         }
 
         /// <summary>
         /// Create an NFT Token-Type (Template) which you can use to mint NFTs from
-        /// [/api/apps/:applicationId/contracts/:contractId/token-types]
+        /// [/api/minter/contracts/:contractId/token-types]
         /// </summary>
         /// <param name="reqParams">Required parameters for the request</param>
         /// <returns>The deployed NFT Token-Type (Template)</returns>
-        public static Promise<VyTokenType> CreateTokenType(VyParam_CreateTokenType reqParams)
+        public static VyTask<VyTokenTypeDto> CreateTokenType(VyCreateTokenTypeDto reqParams)
         {
-            return Request_JSON<VyTokenType, VyParam_CreateTokenType>(HttpMethod.Post, $"/api/apps/{reqParams.ApplicationId}/contracts/{reqParams.ContractId}/token-types", eVyApiEndpoint.Nft, reqParams, _useWrapNFT);
+            var reqData = VyRequestData.Post($"/api/minter/contracts/{reqParams.ContractId}/token-types", eVyApiEndpoint.Nft)
+                .AddJsonContent(reqParams);
+            return Request<VyTokenTypeDto>(reqData);
         }
 
         /// <summary>
         /// Update the metadata of a Token-Type (NFT Template)
-        /// [/api/apps/:applicationId/contracts/:contractId/token-types/:tokenTypeId/metadata]
+        /// [/api/contracts/:contractId/token-types/:tokenTypeId/metadata]
         /// </summary>
         /// <param name="reqParams">Required parameters for the request</param>
         /// <returns>Updated Token-Type (Template)</returns>
-        public static Promise<VyTokenTypeMetadata> UpdateTokenTypeMetadata(VyParam_UpdateTokenTypeMetadata reqParams)
+        public static VyTask<VyTokenTypeMetadataDto> UpdateTokenTypeMetadata(VyUpdateTokenTypeMetadataDto reqParams)
         {
-            return Request_JSON<VyTokenTypeMetadata, VyParam_UpdateTokenTypeMetadata>(HttpMethod.Put, $"/api/apps/{reqParams.ApplicationId}/contracts/{reqParams.ContractId}/token-types/{reqParams.TokenTypeId}/metadata", eVyApiEndpoint.Nft, reqParams, _useWrapNFT);
+            var reqData = VyRequestData.Put($"/api/contracts/{reqParams.ContractId}/token-types/{reqParams.TokenTypeId}/metadata", eVyApiEndpoint.Nft)
+                .AddJsonContent(reqParams);
+            return Request<VyTokenTypeMetadataDto>(reqData);
         }
 
         //todo: check with backend team about this response
         /// <summary>
         /// Update the metadata of a Contract
-        /// [/api/apps/:applicationId/contracts/:contractId/metadata]
+        /// [/api/contracts/:contractId/metadata]
         /// </summary>
         /// <param name="reqParams">Required parameters for the request</param>
         /// <returns>Updated Contract Metadata</returns>
-        public static Promise<VyContractMetadata> UpdateContractMetadata(VyParam_UpdateContractMetadata reqParams)
+        public static VyTask<VyContractMetadataDto> UpdateContractMetadata(VyUpdateContractMetadataDto reqParams)
         {
-            return Request_JSON<VyContractMetadata, VyParam_UpdateContractMetadata>(new HttpMethod("PATCH"), $"/api/apps/{reqParams.ApplicationId}/contracts/{reqParams.ContractId}/metadata", eVyApiEndpoint.Nft, reqParams, _useWrapNFT);
+            var reqData = VyRequestData.Patch($"/api/contracts/{reqParams.ContractId}/metadata", eVyApiEndpoint.Nft)
+                .AddJsonContent(reqParams);
+            return Request<VyContractMetadataDto>(reqData);
         }
 
         /// <summary>
         /// Archive a specific Contract. When a contract is archived it is removed from your account together with all the token-types that are associated to that contract
-        /// [/api/apps/:applicationId/contracts/:contractId]
+        /// [/api/minter/contracts/:contractId]
         /// </summary>
-        /// <param name="applicationId"></param>
         /// <param name="contractId"></param>
         /// <returns> void promise </returns>
-        public static Promise ArchiveContract(string applicationId, int contractId)
+        public static VyTask<VyTaskVoid> ArchiveContract(int contractId)
         {
-            var deferredPromise = Promise.NewDeferred();
-
-            //todo: fix empty response
-            Request<string>(HttpMethod.Delete, $"/api/apps/{applicationId}/contracts/{contractId}", eVyApiEndpoint.Nft, _useWrapNFT)
-                .Then(ret => deferredPromise.Resolve())
-                .CatchAndForget(deferredPromise);
-
-            return deferredPromise.Promise;
+            var reqData = VyRequestData.Delete($"/api/minter/contracts/{contractId}", eVyApiEndpoint.Nft);
+            return Request<VyTaskVoid>(reqData);
         }
 
         /// <summary>
         /// Archive a specific Token Type (Template)
-        /// [/api/apps/:applicationId/contracts/:contractId]
+        /// [/api/minter/contracts/:contractId/token-types/:tokenTypeId]
         /// </summary>
-        /// <param name="applicationId"></param>
         /// <param name="contractId"></param>
         /// <param name="tokenTypeId"></param>
         /// <returns> void promise </returns>
-        public static Promise ArchiveTokenType(string applicationId, int contractId, int tokenTypeId)
+        public static VyTask<VyTaskVoid> ArchiveTokenType(int contractId, int tokenTypeId)
         {
-            var deferredPromise = Promise.NewDeferred();
-
-            //todo: fix empty response
-            Request<string>(HttpMethod.Delete, $"/api/apps/{applicationId}/contracts/{contractId}/token-types/{tokenTypeId}", eVyApiEndpoint.Nft, _useWrapNFT)
-                .Then(ret => deferredPromise.Resolve())
-                .CatchAndForget(deferredPromise);
-
-            return deferredPromise.Promise;
+            var reqData = VyRequestData.Delete($"/api/minter/contracts/{contractId}/token-types/{tokenTypeId}", eVyApiEndpoint.Nft);
+            return Request<VyTaskVoid>(reqData);
         }
         #endregion
 
         #region CLIENT
-        public static Promise<VyApp[]> GetApps()
+        /// <summary>
+        /// Retrieve the supported chains for the Wallet API
+        /// [/api/chains]
+        /// </summary>
+        /// <returns>List of supported chains</returns>
+        public static VyTask<eVyChain[]> GetChainsWALLET()
         {
-            return Request<VyApp[]>(HttpMethod.Get, "/api/apps", eVyApiEndpoint.Nft, _useWrapNFT);
+            var reqData = VyRequestData.Get("/api/chains", eVyApiEndpoint.Wallet);
+            return Request<eVyChain[]>(reqData);
+        }
+
+        /// <summary>
+        /// Retrieve a list of all the BlockChains that are supported by the NFT API
+        /// [/api/env]
+        /// </summary>
+        /// <returns>List of supported BlockChains</returns>
+        public static VyTask<eVyChain[]> GetChainsNFT()
+        {
+            var reqData = VyRequestData.Get("/api/env", eVyApiEndpoint.Nft)
+                .SelectProperty("supportedChainsForItemCreation");
+            return Request<eVyChain[]>(reqData);
         }
 
         /// <summary>
         /// Retrieve information of all the NFT contracts associated with a specific application ID
-        /// [/api/apps/:applicationId/contracts]
+        /// [/api/minter/contracts]
         /// </summary>
-        /// <param name="applicationId">The applicationID associated with the retrieved contracts</param>
         /// <returns>List of Contract Information</returns>
-        public static Promise<VyContract[]> GetContracts(string applicationId)
+        public static VyTask<VyContract[]> GetContracts()
         {
-            return Request<VyContract[]>(HttpMethod.Get, $"/api/apps/{applicationId}/contracts", eVyApiEndpoint.Nft, _useWrapNFT);
+            var reqData = VyRequestData.Get("/api/minter/contracts", eVyApiEndpoint.Nft);
+            return Request<VyContract[]>(reqData);
         }
 
         /// <summary>
         /// Retrieve information of a single NFT contract associated with a specific application ID
-        /// [/api/apps/:applicationId/contracts/:contractId]
+        /// [/api/minter/contracts/:contractId]
         /// </summary>
-        /// <param name="applicationId">The applicationID associated with the retrieved contract</param>
         /// <param name="contractId">The ID of the contract you want the information from</param>
         /// <returns>Contract Information</returns>
-        public static Promise<VyContract> GetContract(string applicationId, int contractId)
+        public static VyTask<VyContract> GetContract(int contractId)
         {
-            return Request<VyContract>(HttpMethod.Get, $"/api/apps/{applicationId}/contracts/{contractId}", eVyApiEndpoint.Nft, _useWrapNFT);
+            var reqData = VyRequestData.Get($"/api/minter/contracts/{contractId}", eVyApiEndpoint.Nft);
+            return Request<VyContract>(reqData);
         }
 
         /// <summary>
         /// Retrieve information of all NFT token types (templates) from one of your contracts
+        /// [/api/minter/contracts/:contractId/token-types]
         /// </summary>
-        /// <param name="applicationId">The applicationID associated with the contract</param>
         /// <param name="contractId">The ID of the contract you want the token type information from</param>
         /// <returns>List NFT token type (template) information</returns>
-        public static Promise<VyTokenType[]> GetTokenTypes(string applicationId, int contractId)
+        public static VyTask<VyTokenTypeDto[]> GetTokenTypes(int contractId)
         {
-            return Request<VyTokenType[]>(HttpMethod.Get, $"/api/apps/{applicationId}/contracts/{contractId}/token-types", eVyApiEndpoint.Nft, _useWrapNFT);
+            var reqData = VyRequestData.Get($"/api/minter/contracts/{contractId}/token-types", eVyApiEndpoint.Nft);
+            return Request<VyTokenTypeDto[]>(reqData);
         }
 
         /// <summary>
         /// Retrieve information of a single token type (template) from one of your contracts
+        /// [/api/minter/contracts/:contractId/token-types/:tokenTypeId]
         /// </summary>
-        /// <param name="applicationId">The ID of the application</param>
         /// <param name="contractId">The ID of the contract</param>
         /// <param name="tokenTypeId">The ID of the token type (template)</param>
         /// <returns>NFT token type (template) Information</returns>
-        public static Promise<VyTokenType> GetTokenType(string applicationId, int contractId, int tokenTypeId)
+        public static VyTask<VyTokenTypeDto> GetTokenType(int contractId, int tokenTypeId)
         {
-            return Request<VyTokenType>(HttpMethod.Get, $"/api/apps/{applicationId}/contracts/{contractId}/token-types/{tokenTypeId}", eVyApiEndpoint.Nft, _useWrapNFT);
+            var reqData = VyRequestData.Get($"/api/minter/contracts/{contractId}/token-types/{tokenTypeId}", eVyApiEndpoint.Nft);
+            return Request<VyTokenTypeDto>(reqData);
         }
         #endregion
 
@@ -181,40 +203,24 @@ namespace Venly.Editor
         #region Request Helpers
         private static Exception VerifyRequest()
         {
-            if (!IsInitialized) return new VenlyException("VenlyEditorAPI not yet initialized!");
-            if (_requester == null) return new VenlyException("VenlyAPI requester is null");
+            if (!VenlyEditorSettings.Instance.SettingsLoaded)
+            {
+                VenlySettings.Load(); //Force Settings Load
+                VenlyDebugEd.LogDebug("[VenlyEditorAPI] VenlySettings Force Loading", 1);
+            }
+
+            if (!IsInitialized) return new VyException("VenlyEditorAPI not yet initialized!");
+            if (_requester == null) return new VyException("VenlyAPI requester is null");
 
             return null!;
         }
 
-        private static Promise<T> Request<T>(HttpMethod method, string uri, eVyApiEndpoint endpoint, Dictionary<string, object> jsonData, bool wrap = true)
+        private static VyTask<T> Request<T>(VyRequestData requestData)
         {
             var ex = VerifyRequest();
-            return ex != null ? Promise<T>.Rejected(ex) : _requester.Request<T>(method, uri, endpoint, jsonData, wrap);
-        }
-
-        private static Promise<T> Request<T>(HttpMethod method, string uri, eVyApiEndpoint endpoint, Dictionary<string, string> formData, bool wrap = true)
-        {
-            var ex = VerifyRequest();
-            return ex != null ? Promise<T>.Rejected(ex) : _requester.Request<T>(method, uri, endpoint, formData, wrap);
-        }
-
-        private static Promise<T> Request<T>(HttpMethod method, string uri, eVyApiEndpoint endpoint, bool wrap = true)
-        {
-            var ex = VerifyRequest();
-            return ex != null ? Promise<T>.Rejected(ex) : _requester.Request<T>(method, uri, endpoint, wrap);
-        }
-
-        private static Promise<T> Request_FORM<T, TBody>(HttpMethod method, string uri, eVyApiEndpoint endpoint, TBody body, bool wrap = true)
-        {
-            var ex = VerifyRequest();
-            return ex != null ? Promise<T>.Rejected(ex) : _requester.Request_FORM<T, TBody>(method, uri, endpoint, body, wrap);
-        }
-
-        private static Promise<T> Request_JSON<T, TBody>(HttpMethod method, string uri, eVyApiEndpoint endpoint, TBody body, bool wrap = true)
-        {
-            var ex = VerifyRequest();
-            return ex != null ? Promise<T>.Rejected(ex) : _requester.Request_JSON<T, TBody>(method, uri, endpoint, body, wrap);
+            //requestData.StackTrace = new StackTrace(true);
+            //requestData.CallingOrigin = requestData.StackTrace.GetFrame(1).ToString();
+            return ex != null ? VyTask<T>.Failed(ex) : _requester.MakeRequest<T>(requestData);
         }
         #endregion
     }

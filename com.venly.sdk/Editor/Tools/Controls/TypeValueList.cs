@@ -3,10 +3,10 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Venly.Data;
-using Venly.Editor.Utils;
+using VenlySDK.Data;
+using VenlySDK.Editor.Utils;
 
-namespace Venly.Editor.Tools.Controls
+namespace VenlySDK.Editor.Tools.Controls
 {
     public class TypeValueList : ControlBaseRW
     {

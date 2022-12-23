@@ -3,10 +3,10 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using Venly.Data;
-using Venly.Editor.Utils;
+using VenlySDK.Data;
+using VenlySDK.Editor.Utils;
 
-namespace Venly.Editor.Tools.ContractManager
+namespace VenlySDK.Editor.Tools.ContractManager
 {
     public class ContractManagerView : EditorWindow
     {
@@ -24,7 +24,6 @@ namespace Venly.Editor.Tools.ContractManager
 
             //Set ClientID & AppID
             rootVisualElement.Q<Label>("lbl-client-id").text = $"Client ID: {VenlySettings.ClientId}";
-            rootVisualElement.Q<Label>("lbl-app-id").text = $"App ID: {VenlySettings.ApplicationId}";
 
             //Bind Sync
             rootVisualElement.Q<Button>("btn-sync").clickable.clicked += () =>

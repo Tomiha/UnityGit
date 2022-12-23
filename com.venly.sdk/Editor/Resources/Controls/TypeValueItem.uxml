@@ -3,8 +3,8 @@
     <ui:VisualElement name="item-root" style="flex-direction: row; margin-bottom: 10px; flex-grow: 0; flex-shrink: 0; white-space: normal;">
         <ui:VisualElement class="container-line" />
         <ui:VisualElement style="flex-grow: 1; align-items: stretch; white-space: nowrap;">
-            <Venly.Editor.Tools.Controls.TextFieldRW name="field-type" text="Type" />
-            <Venly.Editor.Tools.Controls.TextFieldRW name="field-value" text="Value" />
+            <VenlySDK.Editor.Tools.Controls.TextFieldRW name="field-type" text="Type" />
+            <VenlySDK.Editor.Tools.Controls.TextFieldRW name="field-value" text="Value" />
         </ui:VisualElement>
         <ui:VisualElement style="justify-content: space-around; align-items: flex-end; flex-shrink: 0;">
             <ui:Button text="-" display-tooltip-when-elided="true" name="btn-item-remove" style="width: 20px; height: 20px; align-items: center; justify-content: center;" />

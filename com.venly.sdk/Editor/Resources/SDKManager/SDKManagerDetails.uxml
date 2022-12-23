@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Packages/com.venly.sdk/Editor/Tools/Resources/Styles/styleSDKManager.uss?fileID=7433441132597879392&amp;guid=61df8ef11f26bd549ba260717d48373f&amp;type=3#styleSDKManager" />
+    <Style src="project://database/Packages/com.venly.sdk/Editor/Resources/Styles/styleSDKManager.uss?fileID=7433441132597879392&amp;guid=61df8ef11f26bd549ba260717d48373f&amp;type=3#styleSDKManager" />
     <ui:VisualElement name="root" style="flex-grow: 1;">
         <ui:VisualElement name="sdk-details" style="align-items: center;">
             <ui:Label text="SDK v0.1.0-Alpha" display-tooltip-when-elided="true" name="details-version" style="font-size: 20px; -unity-font-style: normal; -unity-font-definition: resource(&apos;Fonts/TTCommons-Bold SDF&apos;);" />
@@ -12,9 +12,9 @@
         <ui:VisualElement name="sdk-resources" style="margin-top: 20px; align-items: stretch; margin-left: 20px; margin-right: 20px;">
             <ui:Button text="SDK Guide" display-tooltip-when-elided="true" name="btn-link-guide" />
             <ui:Button text="API Reference" display-tooltip-when-elided="true" name="btn-link-apiref" />
-            <ui:Button text="Report Bug" display-tooltip-when-elided="true" name="btn-link-bug" />
-            <ui:Button text="Request Feature" display-tooltip-when-elided="true" name="btn-link-feature" />
+            <ui:Button text="Bugs and Features" display-tooltip-when-elided="true" name="btn-link-bug-feature" />
             <ui:Button text="View Changelog" display-tooltip-when-elided="true" name="btn-link-changelog" />
+            <ui:Button text="Join our Discord!" display-tooltip-when-elided="true" name="btn-link-discord" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

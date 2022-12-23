@@ -3,9 +3,9 @@
     <ui:VisualElement name="item-root" style="flex-direction: row; margin-bottom: 10px;">
         <ui:VisualElement class="container-line" />
         <ui:VisualElement style="flex-grow: 1;">
-            <Venly.Editor.Tools.Controls.EnumFieldRW name="field-type" type="Venly.Models.eVyTokenAttributeType,VenlySDK" text="Type" />
-            <Venly.Editor.Tools.Controls.TextFieldRW text="Name" name="field-name" />
-            <Venly.Editor.Tools.Controls.TextFieldRW text="Value" name="field-value" />
+            <VenlySDK.Editor.Tools.Controls.EnumFieldRW name="field-type" type="VenlySDK.Models.eVyTokenAttributeType,VenlySDK" text="Type" />
+            <VenlySDK.Editor.Tools.Controls.TextFieldRW text="Name" name="field-name" />
+            <VenlySDK.Editor.Tools.Controls.TextFieldRW text="Value" name="field-value" />
         </ui:VisualElement>
         <ui:VisualElement style="justify-content: center;">
             <ui:Button text="-" display-tooltip-when-elided="true" name="btn-item-remove" style="width: 20px; height: 20px; align-items: center; justify-content: center;" />

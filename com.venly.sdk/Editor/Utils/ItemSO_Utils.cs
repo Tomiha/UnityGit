@@ -3,10 +3,10 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
-using Venly.Data;
-using Venly.Models;
+using VenlySDK.Data;
+using VenlySDK.Models;
 
-namespace Venly.Editor
+namespace VenlySDK.Editor
 {
     public static class ItemSO_Utils
     {
@@ -50,7 +50,7 @@ namespace Venly.Editor
                 AssetDatabase.DeleteAsset(path);
         }
 
-        public static void FromMetadata(this VyContractSO contract, VyContractMetadata model, bool updateLiveModel = true)
+        public static void FromMetadata(this VyContractSO contract, VyContractMetadataDto model, bool updateLiveModel = true)
         {
             contract.Name = model.Name;
             contract.Symbol = model.Symbol;
@@ -79,7 +79,7 @@ namespace Venly.Editor
             contract.ImageUrl = model.Image;
             contract.Name = model.Name;
             contract.Owner = model.Owner;
-            contract.Chain = model.SecretType;
+            contract.Chain = model.Chain;
             contract.TransactionHash = model.TransactionHash;
             contract.Symbol = model.Symbol;
 
@@ -176,12 +176,18 @@ namespace Venly.Editor
             {
                 var currUrl = tokenType.ImageUrl;
                 VenlyUnityUtils.DownloadImage(currUrl)
-                    .Then(tex => tokenType.UpdateTokenTextureAsset(tex, currUrl))
-                    .Catch((Exception ex) =>
+                    .OnComplete(result =>
                     {
-                        tokenType.UpdateTokenTextureAsset(null);
-                    })
-                    .Forget();
+                        if (result.Success)
+                        {
+                            tokenType.UpdateTokenTextureAsset(result.Data, currUrl);
+                        }
+                        else
+                        {
+                            tokenType.UpdateTokenTextureAsset(null);
+                            Debug.LogWarning($"Fail to Download Token Image from \'{currUrl}\' (TokenType=\'{tokenType.Name}\')");
+                        }
+                    });
             }
         }
 
@@ -207,7 +213,7 @@ namespace Venly.Editor
             tokenType.NotifyTextureUpdated();
         }
 
-        public static void FromMetadata(this VyTokenTypeSO tokenType, VyTokenTypeMetadata model, bool updateLiveModel = true)
+        public static void FromMetadata(this VyTokenTypeSO tokenType, VyTokenTypeMetadataDto model, bool updateLiveModel = true)
         {
             tokenType.Name = model.Name;
             tokenType.BackgroundColor = model.BackgroundColor;
@@ -234,7 +240,7 @@ namespace Venly.Editor
             tokenType.NotifyItemUpdated();
         }
 
-        public static void FromModel(this VyTokenTypeSO tokenType, VyTokenType model, bool updateLiveModel = true)
+        public static void FromModel(this VyTokenTypeSO tokenType, VyTokenTypeDto model, bool updateLiveModel = true)
         {
             tokenType.Name = model.Name;
             tokenType.BackgroundColor = model.BackgroundColor;
@@ -282,7 +288,7 @@ namespace Venly.Editor
                 }
                 else if (item.IsTokenType)
                 {
-                    var model = JsonConvert.DeserializeObject<VyTokenType>(item.LiveModel);
+                    var model = JsonConvert.DeserializeObject<VyTokenTypeDto>(item.LiveModel);
                     item.AsTokenType().FromModel(model, false);
                 }
             }

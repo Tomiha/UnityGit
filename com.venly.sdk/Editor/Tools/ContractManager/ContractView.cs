@@ -1,8 +1,8 @@
 using UnityEngine.UIElements;
-using Venly.Data;
-using Venly.Editor.Tools.Controls;
+using VenlySDK.Data;
+using VenlySDK.Editor.Tools.Controls;
 
-namespace Venly.Editor.Tools.ContractManager
+namespace VenlySDK.Editor.Tools.ContractManager
 {
     public class ContractView : ItemViewBase
     {

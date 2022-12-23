@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using UnityEditor;
+using UnityEditor.Compilation;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-namespace Venly.Editor.Utils
+namespace VenlySDK.Editor.Utils
 {
     internal class VenlySDKUpdater
     {
@@ -30,12 +31,12 @@ namespace Venly.Editor.Utils
 
         ~VenlySDKUpdater()
         {
-            Debug.Log("SDK Updater DESTROYED");
+            VenlyDebugEd.LogDebug("SDK Updater DESTROYED");
         }
 
         public VenlySDKUpdater()
         {
-            Debug.Log("SDK Updater CREATED");
+            VenlyDebugEd.LogDebug("SDK Updater CREATED");
 
             //Subscribe to PackageManager Events
             Events.registeringPackages += PackageManager_registeringPackages;
@@ -56,10 +57,10 @@ namespace Venly.Editor.Utils
         {
             if (!EditorPrefs.HasKey("com.venly.sdk.update")) return;
 
-            Debug.Log("Should Refresh Settings - SDK was updated!");
+            VenlyDebugEd.LogDebug("Should Refresh Settings - SDK was updated!");
 
-            Debug.Log($"Updating From: {EditorPrefs.GetString("com.venly.sdk.prevVersion")}");
-            Debug.Log($"Updating From: {EditorPrefs.GetString("com.venly.sdk.update")}");
+            VenlyDebugEd.LogDebug($"Updating From: {EditorPrefs.GetString("com.venly.sdk.prevVersion")}");
+            VenlyDebugEd.LogDebug($"Updating From: {EditorPrefs.GetString("com.venly.sdk.update")}");
 
             //Clear Keys
             EditorPrefs.DeleteKey("com.venly.sdk.update");
@@ -69,7 +70,7 @@ namespace Venly.Editor.Utils
         public void UpdateSDK(string newVersion)
         {
             EditorPrefs.SetString("com.venly.sdk.update", newVersion);
-            EditorPrefs.SetString("com.venly.sdk.prevVersion", VenlySettingsEd.Instance.EditorData.Version);
+            EditorPrefs.SetString("com.venly.sdk.prevVersion", VenlyEditorSettings.Instance.EditorData.Version);
         }
     }
 }

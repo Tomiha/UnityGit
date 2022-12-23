@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
-using Venly.Editor;
-using Venly.Editor.Tools.SDKManager;
+using VenlySDK.Editor;
+using VenlySDK.Editor.Tools.SDKManager;
 
 [CustomEditor(typeof(VenlySettingsSO))]
 public class VenlySettingSO_Editor : Editor

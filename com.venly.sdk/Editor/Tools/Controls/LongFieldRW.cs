@@ -1,7 +1,7 @@
 ﻿using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Venly.Editor.Tools.Controls
+namespace VenlySDK.Editor.Tools.Controls
 {
     public class LongFieldRW : ControlBaseRW<LongField>
     {

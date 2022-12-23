@@ -4,10 +4,10 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Venly.Data;
-using Venly.Editor.Utils;
+using VenlySDK.Data;
+using VenlySDK.Editor.Utils;
 
-namespace Venly.Editor.Tools.ContractManager
+namespace VenlySDK.Editor.Tools.ContractManager
 {
     public class ContractListView : VisualElement
     {
