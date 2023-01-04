@@ -1,5 +1,4 @@
 .item-status {
-    border: greenyellow;
     border-radius: 20px;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
