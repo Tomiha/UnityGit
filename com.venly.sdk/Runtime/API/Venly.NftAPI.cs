@@ -1,6 +1,5 @@
 ﻿using VenlySDK.Core;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
 using VenlySDK.Utils;
 
 namespace VenlySDK
@@ -98,14 +97,14 @@ namespace VenlySDK
                 /// <param name="contractId">Contract ID related to the token type (nft-template)</param>
                 /// <param name="tokenTypeId">ID of the token type (nft-template)</param>
                 /// <returns>NFT token type (template) Information including metadata</returns>
-                public static VyTask<VyNonFungibleTokenDto> GetTokenTypeMetadata(int contractId, int tokenTypeId)
+                public static VyTask<VyMultiTokenDto> GetTokenTypeMetadata(int contractId, int tokenTypeId)
                 {
                     var reqData = VyRequestData.Get($"/api/contracts/{contractId}/token-types/{tokenTypeId}/metadata",
                         _apiEndpoint);
-                    return Request<VyNonFungibleTokenDto>(reqData);
+                    return Request<VyMultiTokenDto>(reqData);
                 }
 
-                //todo: check name/data mangling between VyNonFungibleTokenDto & VyTokenTypeDto (including metadata)...
+                //todo: check name/data mangling between VyMultiTokenDto & VyTokenTypeDto (including metadata)...
                 /// <summary>
                 /// Retrieve information (+ metadata) of a single token from one of your contracts
                 /// [/api/contracts/:contractId/tokens/:tokenId/metadata]
@@ -113,11 +112,11 @@ namespace VenlySDK
                 /// <param name="contractId">Contract ID related to the token</param>
                 /// <param name="tokenId">ID of the token</param>
                 /// <returns>NFT token Information including metadata</returns>
-                public static VyTask<VyNonFungibleTokenDto> GetTokenMetadata(int contractId, int tokenId)
+                public static VyTask<VyMultiTokenDto> GetTokenMetadata(int contractId, int tokenId)
                 {
                     var reqData = VyRequestData.Get($"/api/contracts/{contractId}/tokens/{tokenId}/metadata",
                         _apiEndpoint);
-                    return Request<VyNonFungibleTokenDto>(reqData);
+                    return Request<VyMultiTokenDto>(reqData);
                 }
 
                 /// <summary>
@@ -128,12 +127,12 @@ namespace VenlySDK
                 /// <param name="contractId">Contract ID related to the token-type (nft-template)</param>
                 /// <param name="tokenTypeId">ID of the token-type (nft-template)</param>
                 /// <returns>List of all the Tokens associated with the given token-type (nft-template)</returns>
-                public static VyTask<VyNonFungibleTokenDto[]> GetTokensForType(int contractId, int tokenTypeId)
+                public static VyTask<VyMultiTokenDto[]> GetTokensForType(int contractId, int tokenTypeId)
                 {
                     var reqData =
                         VyRequestData.Get($"/api/minter/contracts/{contractId}/token-types/{tokenTypeId}/tokens",
                             _apiEndpoint);
-                    return Request<VyNonFungibleTokenDto[]>(reqData);
+                    return Request<VyMultiTokenDto[]>(reqData);
                 }
             }
 

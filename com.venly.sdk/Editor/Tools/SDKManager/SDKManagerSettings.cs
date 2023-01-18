@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -17,6 +18,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
         //Main Settings Elements
         private EnumField _selectorBackendProvider;
         private Button _btnApplySettings;
+        private Label _lblRealmAccess;
 
         private VisualElement _groupBackendSettings;
         private SerializedProperty _backendSettings = null;
@@ -52,6 +54,8 @@ namespace VenlySDK.Editor.Tools.SDKManager
 
             _groupBackendSettings = _panelSettingsMain.Q<VisualElement>("group-backend-settings");
 
+            _lblRealmAccess = _panelSettingsMain.Q<Label>("lbl-realm-access");
+
             SDKManager.Instance.OnAuthenticatedChanged += (_) => { RefreshView(); };
             RefreshView();
         }
@@ -65,6 +69,13 @@ namespace VenlySDK.Editor.Tools.SDKManager
                 Add(_panelSettingsMain);
 
                 _selectorBackendProvider.value = SdkManagerData.SelectedBackend;
+
+                var realms = new List<string>();
+                if(VenlySettings.HasWalletApiAccess)realms.Add("WALLET");
+                if(VenlySettings.HasNftApiAccess)realms.Add("NFT");
+                if(VenlySettings.HasMarketApiAccess)realms.Add("MARKET");
+                _lblRealmAccess.text = string.Join(" | ", realms);
+
                 ValidateApplyVisibility();
                 PopulateBackendSettings();
             }

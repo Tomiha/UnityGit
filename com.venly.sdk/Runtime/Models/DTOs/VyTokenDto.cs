@@ -61,9 +61,13 @@ namespace VenlySDK.Models
         [JsonProperty("attributes")] public VyTokenAttribute[] Attributes { get; set; }
     }
 
-    //WALLET-API NFT-TOKEN (API v3 scheme)
+    /// <summary>
+    /// ERC721 or ERC1155 Token
+    /// ERC1155: True MultiToken, can be Fungible or Non-Fungible
+    /// ERC721: Can only be Non-Fungible (So a 'MultiToken' but limited to Non-Fungible only)
+    /// </summary>
     [Serializable]
-    public class VyNonFungibleTokenDto
+    public class VyMultiTokenDto
     {
         [JsonProperty("id")] public string Id { get; set; }
         [JsonProperty("name")] public string Name { get; set; }
@@ -98,9 +102,11 @@ namespace VenlySDK.Models
         }
     }
 
-    //WALLET-API TOKEN (API v3 scheme)
+    /// <summary>
+    /// ERC20 Token
+    /// </summary>
     [Serializable]
-    public class VyFungibleTokenDto
+    public class VyCryptoToken
     {
         [JsonProperty("tokenAddress")] public string TokenAddress { get; set; }
         [JsonProperty("rawBalance")] public string RawBalance { get; set; }

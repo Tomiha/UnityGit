@@ -1,16 +1,15 @@
 using System;
-using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PlayFab;
 using PlayFab.CloudScriptModels;
 using VenlySDK.Core;
-using VenlySDK.Models;
-using VenlySDK.Models.Internal;
+using VenlySDK.Utils;
 
 namespace VenlySDK.Backends.PlayFab
 {
-    public class VyPlayfabRequester : IVenlyRequester
+    public class VyPlayfabRequester : VyRequester
     {
         //CloudScript Vars
         private PlayFabAuthenticationContext _authContext = null;
@@ -35,52 +34,59 @@ namespace VenlySDK.Backends.PlayFab
             }
 
             var taskNotifier = VyTask<T>.Create();
-            var serializedRequestData = requestData.Serialize();
+            //var serializedRequestData = requestData.Serialize();
 
             ExecuteFunctionRequest request = new ExecuteFunctionRequest
             {
                 FunctionName = VenlySettings.PlayFabBackendSettings.VenlyAzureFunction,
                 AuthenticationContext = _authContext,
-                FunctionParameter = serializedRequestData
+                FunctionParameter = requestData
             };
 
             PlayFabCloudScriptAPI.ExecuteFunction(request,
                 (result) =>
                 {
-                    VyTaskResult<T> taskResult;
                     if (result.Error == null)
                     {
                         try
                         {
-                            var azureResponse = JsonConvert.DeserializeObject<VyPlayFabAzureResponse<T>>(result.FunctionResult.ToString());
+                            var azureResponse = JsonConvert.DeserializeObject<VyPlayFabAzureResponse>(result.FunctionResult.ToString());
+                            VyTaskResult<T> taskResult;
+
                             if (azureResponse is {Success: true})
                             {
-                                taskResult = new VyTaskResult<T>(azureResponse.Data);
+                                if (azureResponse.IsRawResponse)
+                                {
+                                    //Small trick to safely unescape the JSON encoded JSON string...
+                                    object decodedJsonString = JsonConvert.DeserializeObject(azureResponse.Data);
+                                    taskResult = VenlyUtils.ProcessApiResponse<T>(decodedJsonString.ToString(), azureResponse.StatusCode, requestData);
+                                    taskNotifier.Notify(taskResult);
+                                    return;
+                                }
+
+                                T data = JsonConvert.DeserializeObject<T>(azureResponse.Data);
+                                taskResult = new VyTaskResult<T>(data);
+                                taskNotifier.Notify(taskResult);
+                                return;
                             }
-                            else
-                            {
-                                taskResult =
-                                    new VyTaskResult<T>(
-                                        new VyException(azureResponse.ErrorMessage));
-                            }
+                            
+                            taskResult = new VyTaskResult<T>(new VyException(azureResponse.ErrorMessage));
+                            taskNotifier.Notify(taskResult);
+                            return;
                         }
                         catch (Exception ex)
                         {
-                            taskResult = new VyTaskResult<T>(new VyException(ex));
+                            taskNotifier.NotifyFail(new VyException(ex));
+                            return;
                         }
                     }
-                    else
-                    {
-                        taskResult =
-                            new VyTaskResult<T>(new VyException($"[Playfab Azure Error] {result.Error.Message}"));
-                    }
-
-                    //Make sure the promise wasn't rejected before
-                    taskNotifier.Notify(taskResult);
-
+                    
+                    //PlayFay Result contains Error
+                    taskNotifier.NotifyFail(new VyException($"[Playfab Azure Error] {result.Error.Message}"));
                 },
                 (error) =>
                 {
+                    //PlayFab Error
                     taskNotifier.NotifyFail(new VyException($"[Playfab Azure Error] {error.ErrorMessage}"));
                 });
 

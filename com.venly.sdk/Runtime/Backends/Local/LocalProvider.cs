@@ -1,9 +1,12 @@
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using VenlySDK.Models;
 
 namespace VenlySDK.Backends.Local
 {
-    public class LocalProvider : BackendProvider
+    public class LocalProvider : VyBackendProvider
     {
         public LocalProvider() : base(eVyBackendProvider.DevMode)
         {
@@ -11,6 +14,7 @@ namespace VenlySDK.Backends.Local
 
 #if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        [InitializeOnLoadMethod]
         private static void RegisterProvider()
         {
             Venly.RegisterProvider(new LocalProvider());

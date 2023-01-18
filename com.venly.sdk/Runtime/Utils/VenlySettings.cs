@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using VenlySDK.Models;
+using VenlySDK.Utils;
 
 public class VenlySettings
 {
@@ -23,11 +24,24 @@ public class VenlySettings
     public static string ClientSecret => Settings.ClientSecret;
     public static string PublicResourceRoot => Settings.PublicResourceRoot;
 
+    public static bool HasNftApiAccess => Settings.HasNftApiAccess;
+    public static bool HasWalletApiAccess => Settings.HasWalletApiAccess;
+    public static bool HasMarketApiAccess => Settings.HasMarketApiAccess;
+
+
     public static void SetCredentials(string clientId, string clientSecret)
     {
         Settings.ClientId = clientId;
         Settings.ClientSecret = clientSecret;
         AssetDatabase.SaveAssetIfDirty(Settings);
+    }
+
+    public static void SetAccessAndEnvironment(VyJwtInfo jwtInfo)
+    {
+        Settings.HasWalletApiAccess = jwtInfo.HasWalletAccess;
+        Settings.HasNftApiAccess = jwtInfo.HasNftAccess;
+        Settings.HasMarketApiAccess = jwtInfo.HasWalletAccess;
+        Settings.Environment = jwtInfo.Environment;
     }
 
     public static void Load(VenlySettingsSO targetSO = null)

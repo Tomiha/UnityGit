@@ -1,28 +1,38 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using VenlySDK.Utils;
+using VenlySDK.Models;
 
-namespace VenlySDK.Models.Internal
+namespace VenlySDK.Core
 {
     public class VyRequestData
     {
+        public enum eVyRequestContentType
+        {
+            None,
+            Json,
+            UrlEncoded,
+            Binary,
+            String
+        }
+
         [JsonProperty("uri")] public string Uri { get; private set; }
         [JsonProperty("method")] public HttpMethod Method { get; private set; }
-        [JsonProperty("contentString")] public string ContentString { get; private set; }
-        [JsonIgnore] public HttpContent Content { get; private set; }
         [JsonProperty("endpoint")] public eVyApiEndpoint Endpoint { get; private set; }
         [JsonProperty("environment")] public eVyEnvironment Environment { get; private set; }
         [JsonProperty("requiresWrapping")] public bool RequiresWrapping { get; private set; }
 
+        [JsonProperty("contentType")] public eVyRequestContentType ContentType { get; private set; } = eVyRequestContentType.None;
+        [JsonProperty("contentStr")] public string ContentStr { get; private set; }
+
         [JsonProperty("selectPropertyName")] public string SelectPropertyName { get; private set; }
         [JsonIgnore] public bool MustSelectProperty => !string.IsNullOrEmpty(SelectPropertyName);
 
-        [JsonIgnore] public string CallingOrigin { get; set; }
-        [JsonIgnore] public StackTrace StackTrace { get; set; }
+        [JsonIgnore] public bool MustProcessResponse { get; set; } = true;
+        //[JsonIgnore] public string CallingOrigin { get; set; }
+        //[JsonIgnore] public StackTrace StackTrace { get; set; }
 
         private VyRequestData() {}
 
@@ -79,81 +89,109 @@ namespace VenlySDK.Models.Internal
         #endregion
 
         #region Content
-        public VyRequestData AddContent(byte[] content)
+        public VyRequestData AddBinaryContent(byte[] content)
         {
             if (content == null) return this;
 
-            Content = new ByteArrayContent(content);
+            ContentType = eVyRequestContentType.Binary;
+            ContentStr = Encoding.UTF8.GetString(content);
             return this;
+
+            //Content = new ByteArrayContent(content);
+            //return this;
         }
 
         public VyRequestData AddJsonContent<T>(T content)
         {
-            Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
+            ContentType = eVyRequestContentType.Json;
+            ContentStr = JsonConvert.SerializeObject(content);
             return this;
+
+            //Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
+            //return this;
         }
 
         public VyRequestData AddFormContent<T>(T content)
         {
-            if (content is Dictionary<string, string> contentDictionary)
-            {
-                Content = new FormUrlEncodedContent(contentDictionary);
-            }
-            else
-            {
-                var data = new Dictionary<string, string>();
-                foreach (var property in JObject.FromObject(content))
-                {
-                    if (property.Value != null)
-                        data.Add(property.Key, property.Value.ToString());
-                }
-
-                Content = new FormUrlEncodedContent(data);
-            }
-
+            ContentType = eVyRequestContentType.UrlEncoded;
+            ContentStr = JsonConvert.SerializeObject(content);
             return this;
+
+
+            //if (content is Dictionary<string, string> contentDictionary)
+            //{
+            //    Content = new FormUrlEncodedContent(contentDictionary);
+            //}
+            //else
+            //{
+            //    var data = new Dictionary<string, string>();
+            //    foreach (var property in JObject.FromObject(content))
+            //    {
+            //        if (property.Value != null)
+            //            data.Add(property.Key, property.Value.ToString());
+            //    }
+
+            //    Content = new FormUrlEncodedContent(data);
+            //}
+
+            //return this;
+        }
+
+        public T GetJsonContent<T>()
+        {
+            if (ContentType != eVyRequestContentType.Json)
+                throw new Exception($"VyRequestData::GetJsonContent > ContentType is not JSON (type={ContentType})");
+
+            return JsonConvert.DeserializeObject<T>(ContentStr);
+        }
+
+        public Dictionary<string, string> GetFormContent()
+        {
+            if (ContentType != eVyRequestContentType.UrlEncoded)
+                throw new Exception($"VyRequestData::GetJsonContent > ContentType is not FormUrlEncoded (type={ContentType})");
+
+            return JsonConvert.DeserializeObject<Dictionary<string,string>>(ContentStr);
+        }
+
+        public byte[] GetBinaryContent()
+        {
+            if (ContentType != eVyRequestContentType.UrlEncoded)
+                throw new Exception($"VyRequestData::GetJsonContent > ContentType is not FormUrlEncoded (type={ContentType})");
+
+            return Encoding.UTF8.GetBytes(ContentStr);
+        }
+
+        public string GetContent()
+        {
+            return ContentStr;
+        }
+
+        public HttpContent GetHttpContent()
+        {
+            switch (ContentType)
+            {
+                case eVyRequestContentType.Json: 
+                    return new StringContent(ContentStr, Encoding.UTF8, "application/json");
+                case eVyRequestContentType.UrlEncoded:
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(ContentStr);
+                    return new FormUrlEncodedContent(dict);
+                case eVyRequestContentType.Binary:
+                    var bytes = Encoding.UTF8.GetBytes(ContentStr);
+                    return new ByteArrayContent(bytes);
+                case eVyRequestContentType.String:
+                    return new StringContent(ContentStr, Encoding.UTF8);
+            }
+
+            return null;
         }
 
         #endregion
 
         #region Misc
-
         public VyRequestData SelectProperty(string propertyName)
         {
             SelectPropertyName = propertyName;
             return this;
-        }
-
-        public byte[] Serialize()
-        {
-            if (Content != null)
-            {
-                var bytes = Content.ReadAsByteArrayAsync().Result;
-                ContentString = Encoding.UTF8.GetString(bytes);
-            }
-
-            var serializedThis = JsonConvert.SerializeObject(this);
-            var result =  Encoding.UTF8.GetBytes(serializedThis);
-
-            return result;
-        }
-
-        public static VyRequestData Deserialize(byte[] data)
-        {
-            var dataString = Encoding.UTF8.GetString(data);
-            var newData = JsonConvert.DeserializeObject<VyRequestData>(dataString);
-
-            if(!string.IsNullOrEmpty(newData.ContentString))
-                newData.Content = new StringContent(newData.ContentString, Encoding.UTF8, "application/json");
-
-            return newData;
-        }
-
-        public T JsonContentTo<T>()
-        {
-            var contentStr = Content.ReadAsStringAsync().Result;
-            //var json = Encoding.UTF8.GetString(Content);
-            return JsonConvert.DeserializeObject<T>(contentStr);
         }
         #endregion
     }

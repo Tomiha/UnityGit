@@ -1,6 +1,7 @@
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using VenlySDK.Utils;
 
 namespace VenlySDK.Models
 {
@@ -30,9 +31,10 @@ namespace VenlySDK.Models
         //Ethereum
     }
 
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(SupportedChainConverter))]
     public enum eVyChain
     {
+        [EnumMember(Value = "INVALID")] NotSupported,
         [EnumMember(Value = "BSC")] Bsc,
         [EnumMember(Value = "ETHEREUM")] Ethereum,
         [EnumMember(Value = "MATIC")] Matic

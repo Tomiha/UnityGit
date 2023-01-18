@@ -206,6 +206,20 @@ namespace VenlySDK.Models
         [JsonProperty("recoverable")] public bool Recoverable { get; set; }
     }
 
+    [Serializable]
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
+    public class VyUpdateWalletMetadataDto
+    {
+        private VyUpdateWalletMetadataDto() { }
+        public VyUpdateWalletMetadataDto(string walletId)
+        { WalletId = walletId;}
+
+        [JsonIgnore] public string WalletId { get; set; }
+        [JsonProperty("description")] public string Description { get; set; }
+        [JsonProperty("primary")] public bool? Primary { get; set; }
+        [JsonProperty("archived")] public bool? Archived { get; set; }
+    }
+
     //todo: check required/optional params (autoapproved...,storage)
     [Serializable]
     public class VyCreateContractDto

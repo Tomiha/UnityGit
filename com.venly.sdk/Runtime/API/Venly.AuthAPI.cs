@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using VenlySDK.Core;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
 
 namespace VenlySDK
 {

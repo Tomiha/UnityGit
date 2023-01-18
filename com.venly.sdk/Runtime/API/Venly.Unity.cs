@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
-using Proto.Promises;
 using VenlySDK.Backends;
 using VenlySDK.Core;
 using VenlySDK.Models;
@@ -10,8 +8,11 @@ namespace VenlySDK{
     public static partial class Venly
     {
         //Register a Provider that can be used during API Initialization
-        public static void RegisterProvider(BackendProvider provider)
+        public static void RegisterProvider(VyBackendProvider provider)
         {
+            if (IsProviderRegistered(provider))
+                return;
+
             //Check if singleInstance type provider is already registered...
             if (provider.ProviderType != eVyBackendProvider.Custom)
             {
@@ -26,17 +27,22 @@ namespace VenlySDK{
             _backendProviders.Add(provider);
         }
 
-        public static void Initialize()
+        private static bool IsProviderRegistered(VyBackendProvider provider)
+        {
+            return _backendProviders.Any(p => p.ProviderType == provider.ProviderType && p.CustomId == provider.CustomId);
+        }
+
+        public static void Initialize(IBackendExtension extensionsOverride = null)
         {
             var customId = -1;
             if (VenlySettings.BackendProvider == eVyBackendProvider.Custom)
                 customId = VenlySettings.CustomBackendSettings.CustomId;
 
-            Initialize(VenlySettings.BackendProvider, customId);
+            Initialize(VenlySettings.BackendProvider, extensionsOverride, customId);
         }
 
         //Provider Specific Initialization (Only if registered)
-        public static void Initialize(eVyBackendProvider type, int customId = -1)
+        public static void Initialize(eVyBackendProvider type, IBackendExtension extensionsOverride = null, int customId = -1)
         {
             //Deinitialize if required
             Deinitialize();
@@ -53,6 +59,10 @@ namespace VenlySDK{
                 //Provider INIT
                 provider.Initialize(); //todo error handling during provider init (promise? ret val?)
 
+                //Override Backend Extensions if required
+                if (extensionsOverride != null)
+                    provider.OverrideExtension(extensionsOverride);
+
                 //API INIT
                 Initialize(provider, VenlySettings.Environment);
 
@@ -64,7 +74,7 @@ namespace VenlySDK{
                 $"Provider with type \'{type}\' is not registered.\nVenlyAPI Initialization Failed!");
         }
 
-        public static void Initialize(BackendProvider provider)
+        public static void Initialize(VyBackendProvider provider)
         {
             Initialize(provider, VenlySettings.Environment);
         }
@@ -74,12 +84,15 @@ namespace VenlySDK{
             return _currentProvider != null && _currentProvider.HandleError(err);
         }
 
-        public static void OverrideLocalBackendExtensions(IBackendExtension extensions)
+        public static void OverrideBackendExtensions(IBackendExtension extensions, eVyBackendProvider providerType = eVyBackendProvider.DevMode, int customId = -1)
         {
-            var localProvider = _backendProviders.FirstOrDefault(p => p.ProviderType == eVyBackendProvider.DevMode);
-            if (localProvider != null)
+            VyBackendProvider provider = null;
+            if(providerType != eVyBackendProvider.Custom) provider = _backendProviders.FirstOrDefault(p => p.ProviderType == providerType);
+            else provider = _backendProviders.FirstOrDefault(p => (p.ProviderType == providerType) && (p.CustomId == customId));
+
+            if (provider != null)
             {
-                localProvider.OverrideExtension(extensions);
+                provider.OverrideExtension(extensions);
             }
         }
     }

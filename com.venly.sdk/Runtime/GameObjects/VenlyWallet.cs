@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using VenlySDK.Core;
@@ -18,8 +22,8 @@ namespace VenlySDK.GameObjects
         public float PollInterval = 10.0f;
 
         [HideInInspector] public VyWalletDto WalletDto;
-        [HideInInspector] public VyFungibleTokenDto[] FungibleTokensDto;
-        [HideInInspector] public VyNonFungibleTokenDto[] NonFungibleTokensDto;
+        [HideInInspector] public VyCryptoToken[] FungibleTokensDto;
+        [HideInInspector] public VyMultiTokenDto[] NonFungibleTokensDto;
         [HideInInspector] public VyWalletEventDto[] WalletEventsDto;
 
         public UnityEvent OnWalletInitialized;
@@ -71,11 +75,11 @@ namespace VenlySDK.GameObjects
                     //Retrieve Wallet Data
                     WalletDto = await Venly.WalletAPI.Client.GetWallet(walletId).AwaitResult();
 
-                    //Retrieve Fungible Token Data
-                    FungibleTokensDto = await Venly.WalletAPI.Client.GetTokenBalances(walletId).AwaitResult();
+                    //Retrieve CryptoTokens
+                    FungibleTokensDto = await Venly.WalletAPI.Client.GetCryptoTokenBalances(walletId).AwaitResult();
 
-                    //Retrieve NonFungible Token Data
-                    NonFungibleTokensDto = await Venly.WalletAPI.Client.GetNftTokenBalances(walletId).AwaitResult();
+                    //Retrieve MultiTokens
+                    NonFungibleTokensDto = await Venly.WalletAPI.Client.GetMultiTokenBalances(walletId).AwaitResult();
 
                     //Retrieve WalletEvents
                     WalletEventsDto = await Venly.WalletAPI.Client.GetWalletEvents(walletId).AwaitResult();

@@ -1,6 +1,3 @@
-using System;
-using Proto.Promises;
-
 namespace VenlySDK.Utils
 {
 //Method Extension Utilities

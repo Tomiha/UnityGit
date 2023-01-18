@@ -1,28 +1,31 @@
-using System.Net.Http;
 using VenlySDK.Core;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
 
 namespace VenlySDK.Backends.PlayFab
 {
     public class VyPlayFabExtension:IBackendExtension
     {
-        private readonly IVenlyRequester _requester;
+        private readonly VyRequester _requester;
 
         public VyPlayFabExtension(VyPlayfabRequester requester)
         {
             _requester = requester;
         }
 
-        public VyTask<VyWalletDto> CreateWalletForUser(VyCreateWalletDto reqParams)
+        public VyTask<T> Invoke<T>(VyExtensionRequestData requestData)
         {
-            var reqData = VyRequestData.Get("user_create_wallet", eVyApiEndpoint.Extension).AddJsonContent(reqParams);
+            return _requester.MakeRequest<T>(requestData);
+        }
+
+        public VyTask<VyWalletDto> CreateWalletForUser(VyCreateWalletDto reqParams, object customData = null)
+        {
+            var reqData = VyExtensionRequestData.Create("user_create_wallet").AddJsonContent(reqParams);
             return _requester.MakeRequest<VyWalletDto>(reqData);
         }
 
-        public VyTask<VyWalletDto> GetWalletForUser()
+        public VyTask<VyWalletDto> GetWalletForUser(object customData = null)
         {
-            var reqData = VyRequestData.Get("user_get_wallet", eVyApiEndpoint.Extension);
+            var reqData = VyExtensionRequestData.Create("user_get_wallet");
             return _requester.MakeRequest<VyWalletDto>(reqData);
         }
     }

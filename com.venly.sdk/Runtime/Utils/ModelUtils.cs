@@ -1,10 +1,13 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using VenlySDK.Core;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
 
 namespace VenlySDK.Utils
 {
@@ -21,7 +24,6 @@ namespace VenlySDK.Utils
     #endregion
 
     #region JSON Converters
-
     public class ExpireConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -44,6 +46,62 @@ namespace VenlySDK.Utils
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(DateTime);
+        }
+    }
+
+    public class SupportedChainConverter : JsonConverter
+    {
+        private static Dictionary<eVyChain, string> _chainNameLUT = null;
+
+        private static void CacheChainNames()
+        {
+            _chainNameLUT = new Dictionary<eVyChain, string>();
+            var fields = typeof(eVyChain).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+            foreach (var fieldInfo in fields)
+            {
+                var att = fieldInfo.GetCustomAttribute<EnumMemberAttribute>();
+                if (att != null)
+                {
+                    var enumVal = (eVyChain)fieldInfo.GetValue(null);
+                    var enumName = att.Value;
+
+                    _chainNameLUT.Add(enumVal, enumName);
+                }
+            }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+            }
+            else
+            {
+                if(_chainNameLUT==null)
+                    CacheChainNames();
+
+                eVyChain chain = (eVyChain)value;
+                writer.WriteValue(_chainNameLUT[chain]);
+            }
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
+            JsonSerializer serializer)
+        {
+            var chainString = reader.Value as string;
+
+            if (Enum.TryParse<eVyChain>(chainString, true, out var result))
+            {
+                return result;
+            }
+            
+            return eVyChain.NotSupported;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(eVyChain);
         }
     }
 

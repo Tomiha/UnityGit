@@ -1,10 +1,10 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
 
 namespace VenlySDK.Core
 {
@@ -54,19 +54,18 @@ namespace VenlySDK.Core
                 $"[HTTP Response] Code {msg.StatusCode} : {msg.ReasonPhrase}\nNo Request Details available.");
         }
 
-        public static VyException ApiResponseError(VyResponseDto apiResponse, HttpResponseMessage responseMsg,
+        public static VyException ApiResponseError(VyResponseDto apiResponse, HttpStatusCode statusCode,
             VyRequestData requestData)
         {
             var sb = new StringBuilder();
 
-            if (apiResponse.Errors == null)
+            if (apiResponse.Errors == null || !apiResponse.Errors.Any())
             {
-                return new VyException(
-                    $"[API Response] The reponse for {requestData.Uri} returned an error ({responseMsg.ReasonPhrase})");
+                return new VyException($"[API Response] The reponse for {requestData.Uri} returned an error ({statusCode})");
             }
 
             sb.AppendLine(
-                $"[API Response] The reponse for {requestData.Uri} returned {apiResponse.Errors.Length} error(s). ({responseMsg.ReasonPhrase})");
+                $"[API Response] The reponse for {requestData.Uri} returned {apiResponse.Errors.Length} error(s). ({statusCode})");
 
             int counter = 1;
             foreach (var err in apiResponse.Errors)

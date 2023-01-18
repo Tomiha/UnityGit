@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using Proto.Promises;
-using UnityEngine;
 using VenlySDK.Core;
 using VenlySDK.Editor.Utils;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
-using VenlySDK.Utils;
+
 
 namespace VenlySDK.Editor
 {
@@ -16,11 +13,11 @@ namespace VenlySDK.Editor
     internal static class VenlyEditorAPI
     {
         public static bool IsInitialized = false;
-        private static VenlyEditorRequester _requester;
+        private static VyEditorRequester _requester;
 
         static VenlyEditorAPI()
         {
-            _requester = new VenlyEditorRequester();
+            _requester = new VyEditorRequester();
             IsInitialized = true;
 
             Promise.Config.ForegroundContext = SynchronizationContext.Current;

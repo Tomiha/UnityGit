@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Newtonsoft.Json.Linq;
 using VenlySDK.Core;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
 using VenlySDK.Utils;
 
 namespace VenlySDK
@@ -80,54 +79,85 @@ namespace VenlySDK
                 }
 
                 /// <summary>
-                /// Retrieves all the Fungible Tokens from a specific wallet
+                /// Retrieves all the ERC20 Tokens (CryptoTokens) from a specific wallet
                 /// [/api/wallets/:walletId/balance/tokens]
                 /// </summary>
                 /// <param name="walletId">The ID of the wallet</param>
-                /// <returns>List of Fungible Tokens</returns>
-                public static VyTask<VyFungibleTokenDto[]> GetTokenBalances(string walletId)
+                /// <returns>List of CryptoTokens (ERC21)</returns>
+                public static VyTask<VyCryptoToken[]> GetCryptoTokenBalances(string walletId)
                 {
                     if (string.IsNullOrEmpty(walletId))
-                        return VyTask<VyFungibleTokenDto[]>.Failed(
+                        return VyTask<VyCryptoToken[]>.Failed(
                             VyException.Argument("Parameter cannot be NULL or empty", nameof(walletId)));
 
                     var reqData = VyRequestData.Get($"/api/wallets/{walletId}/balance/tokens", _apiEndpoint);
-                    return Request<VyFungibleTokenDto[]>(reqData);
+                    return Request<VyCryptoToken[]>(reqData);
                 }
 
                 /// <summary>
-                /// Retrieves all the Non-Fungible Tokens from a specific wallet
+                /// Retrieves the Native Balance of a wallet (Native Tokens, ETH/BTC/MATIC/...)
+                /// </summary>
+                /// <param name="walletId">The Id of the wallet</param>
+                /// <returns>Native Balance Information</returns>
+                public static VyTask<VyWalletBalanceDto> GetNativeBalance(string walletId)
+                {
+                    if (string.IsNullOrEmpty(walletId))
+                        return VyTask<VyWalletBalanceDto>.Failed(
+                            VyException.Argument("Parameter cannot be NULL or empty", nameof(walletId)));
+
+                    var reqData = VyRequestData.Get($"/api/wallets/{walletId}/balance", _apiEndpoint);
+                    return Request<VyWalletBalanceDto>(reqData);
+                }
+
+                /// <summary>
+                /// Retrieves the Native Balance of a wallet (Native Tokens, ETH/BTC/MATIC/...)
+                /// </summary>
+                /// <param name="chain">The associated Blockchain</param>
+                /// <param name="walletAddress">The address of the wallet on the associated Blockchain</param>
+                /// <returns>Native Balance Information</returns>
+                public static VyTask<VyWalletBalanceDto> GetNativeBalance(eVyChain chain, string walletAddress)
+                {
+                    if (string.IsNullOrEmpty(walletAddress))
+                        return VyTask<VyWalletBalanceDto>.Failed(
+                            VyException.Argument("Parameter cannot be NULL or empty", nameof(walletAddress)));
+
+                    var reqData = VyRequestData.Get($"/api/wallets/{chain.GetMemberName()}/{walletAddress}/balance", _apiEndpoint);
+                    return Request<VyWalletBalanceDto>(reqData);
+                }
+
+                /// <summary>
+                /// Retrieves all the ERC1155/ERC721 tokens ('MultiTokens') from a wallet
                 /// [/api/wallets/:walletId/nonfungibles]
                 /// </summary>
                 /// <param name="walletId">The ID of the wallet</param>
-                /// <returns>List of Non-Fungible Tokens</returns>
-                public static VyTask<VyNonFungibleTokenDto[]> GetNftTokenBalances(string walletId)
+                /// <returns>List of MultiTokens (ERC1155/721)</returns>
+                public static VyTask<VyMultiTokenDto[]> GetMultiTokenBalances(string walletId)
                 {
                     if (string.IsNullOrEmpty(walletId))
-                        return VyTask<VyNonFungibleTokenDto[]>.Failed(
+                        return VyTask<VyMultiTokenDto[]>.Failed(
                             VyException.Argument("Parameter cannot be NULL or empty", nameof(walletId)));
 
                     var reqData = VyRequestData.Get($"/api/wallets/{walletId}/nonfungibles", _apiEndpoint);
-                    return Request<VyNonFungibleTokenDto[]>(reqData);
+                    return Request<VyMultiTokenDto[]>(reqData);
                 }
 
                 /// <summary>
-                /// Retrieves all the Non-Fungible Tokens from a specific wallet for a specific BlockChain
+                /// Retrieves all the ERC1155/ERC721 tokens ('MultiTokens') from a wallet for a specific BlockChain
                 /// [/api/wallets/:chain/:walletAddress/nonfungibles]
                 /// </summary>
                 /// <param name="walletAddress">The address of the wallet</param>
                 /// <param name="chain">The associated BlockChain</param>
-                /// <returns>List of Non-Fungible Tokens</returns>
-                public static VyTask<VyNonFungibleTokenDto[]> GetNftTokenBalances(eVyChain chain, string walletAddress)
+                /// <returns>List of MultiTokens (ERC1155/721)</returns>
+                public static VyTask<VyMultiTokenDto[]> GetMultiTokenBalances(eVyChain chain, string walletAddress)
                 {
                     if (string.IsNullOrEmpty(walletAddress))
-                        return VyTask<VyNonFungibleTokenDto[]>.Failed(
+                        return VyTask<VyMultiTokenDto[]>.Failed(
                             VyException.Argument("Parameter cannot be NULL or empty", nameof(walletAddress)));
 
                     var reqData = VyRequestData.Get(
                         $"/api/wallets/{chain.GetMemberName()}/{walletAddress}/nonfungibles",
                         _apiEndpoint);
-                    return Request<VyNonFungibleTokenDto[]>(reqData);
+                    return Request<VyMultiTokenDto[]>(reqData);
                 }
 
                 /// <summary>
@@ -333,6 +363,43 @@ namespace VenlySDK
                     var reqData = VyRequestData.Post("/api/wallets/import", _apiEndpoint)
                         .AddJsonContent(reqParams);
                     return Request<VyWalletDto>(reqData);
+                }
+
+                /// <summary>
+                /// Update the metadata of a Wallet (Primary, Archived, Description)
+                /// [/api/wallets/:walletId/metadata]
+                /// </summary>
+                /// <param name="reqParams">Required parameters for the request</param>
+                /// <returns>Updated Parameters</returns>
+                public static VyTask<VyWalletMetadataResponseDto> UpdateWalletMetadata(VyUpdateWalletMetadataDto reqParams)
+                {
+                    var reqData = VyRequestData.Patch($"/api/wallets/{reqParams.WalletId}", _apiEndpoint)
+                        .AddJsonContent(reqParams);
+                    return Request<VyWalletMetadataResponseDto>(reqData);
+                }
+
+                /// <summary>
+                /// Archive a wallet
+                /// [/api/wallets/:walletId/metadata]
+                /// </summary>
+                /// <param name="reqParams">Required parameters for the request</param>
+                /// <returns>Updated Parameters</returns>
+                public static VyTask<VyWalletMetadataResponseDto> ArchiveWallet(string walletId)
+                {
+                    var reqParams = new VyUpdateWalletMetadataDto(walletId) { Archived = true };
+                    return UpdateWalletMetadata(reqParams);
+                }
+
+                /// <summary>
+                /// Unarchive a wallet
+                /// [/api/wallets/:walletId/metadata]
+                /// </summary>
+                /// <param name="reqParams">Required parameters for the request</param>
+                /// <returns>Updated Parameters</returns>
+                public static VyTask<VyWalletMetadataResponseDto> UnarchiveWallet(string walletId)
+                {
+                    var reqParams = new VyUpdateWalletMetadataDto(walletId) {Archived = false};
+                    return UpdateWalletMetadata(reqParams);
                 }
 
                 /// <summary>

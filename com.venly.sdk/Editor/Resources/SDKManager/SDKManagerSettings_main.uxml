@@ -3,15 +3,18 @@
     <ui:VisualElement style="flex-grow: 1; align-items: center; margin-top: 10px; margin-left: 20px; margin-right: 20px;">
         <ui:VisualElement style="width: 100%; align-items: stretch;">
             <ui:VisualElement style="flex-direction: row; justify-content: flex-start; align-items: center;" />
-            <ui:VisualElement name="group-client-id" style="flex-direction: row; align-items: center;">
+            <ui:VisualElement name="group-client-id" style="flex-direction: row; align-items: flex-start;">
                 <ui:Label text="Client ID: " display-tooltip-when-elided="true" class="settings-label-spacing settings-label" />
                 <ui:Label display-tooltip-when-elided="true" name="lbl-client-id" binding-path="ClientId" class="settings-value" style="flex-wrap: wrap; flex-grow: 1; white-space: normal; flex-shrink: 1;" />
                 <ui:Button text="Set ID" display-tooltip-when-elided="true" name="btn-set-id" style="align-items: center; font-size: 12px; margin-left: 0;" />
             </ui:VisualElement>
-            <ui:VisualElement name="spacer" style="flex-direction: row; align-items: center; margin-top: 20px;" />
-            <ui:VisualElement name="group-env" style="flex-direction: row; align-items: center;">
+            <ui:VisualElement name="group-env" style="flex-direction: row; align-items: center; margin-bottom: 5px;">
                 <ui:Label text="Environment: " display-tooltip-when-elided="true" class="settings-label-spacing settings-label" />
-                <uie:EnumField value="staging" type="VenlySDK.Models.eVyEnvironment, VenlySDK" binding-path="Environment" class="settings-value" style="margin-left: 0; flex-shrink: 1;" />
+                <ui:Label display-tooltip-when-elided="true" binding-path="Environment" class="settings-value" style="flex-shrink: 1;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="group-realm" style="flex-direction: row; align-items: center; margin-bottom: 5px;">
+                <ui:Label text="Realm Access:" display-tooltip-when-elided="true" class="settings-label-spacing settings-label" />
+                <ui:Label display-tooltip-when-elided="true" name="lbl-realm-access" class="settings-value" style="flex-shrink: 1;" />
             </ui:VisualElement>
             <ui:VisualElement name="group-backend" style="flex-direction: row; align-items: center;">
                 <ui:Label text="Backend: " display-tooltip-when-elided="true" class="settings-label-spacing settings-label" />

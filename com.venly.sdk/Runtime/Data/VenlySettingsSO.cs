@@ -25,6 +25,10 @@ public class VenlySettingsSO : ScriptableObject
     public string ClientId;
     public string ClientSecret;
 
+    public bool HasNftApiAccess;
+    public bool HasWalletApiAccess;
+    public bool HasMarketApiAccess;
+
     [HideInInspector] public string SdkPackageRoot;
 
     [HideInInspector] public string PublicResourceRoot;

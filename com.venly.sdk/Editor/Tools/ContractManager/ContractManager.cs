@@ -47,14 +47,14 @@ namespace VenlySDK.Editor.Tools.ContractManager
         private bool _isInitialize = false;
         public bool IsInitialize => _isInitialize;
 
-        private VenlyEditorRequester _requester;
+        private VyEditorRequester _requester;
         public ContractManagerView MainView { get; internal set; }
 
         private void Initialize()
         {
             if (_isInitialize) return;
 
-            _requester = new VenlyEditorRequester();
+            _requester = new VyEditorRequester();
 
             _isInitialize = true;
         }
@@ -260,7 +260,7 @@ namespace VenlySDK.Editor.Tools.ContractManager
             };
 
             VenlyEditorAPI.UpdateTokenTypeMetadata(data)
-                .OnSucces(tokenTypeMetadata =>
+                .OnSuccess(tokenTypeMetadata =>
                 {
                     tokenType.ChangeItemState(eVyItemState.Live);
                     tokenType.FromMetadata(tokenTypeMetadata);
@@ -284,7 +284,7 @@ namespace VenlySDK.Editor.Tools.ContractManager
             };
 
             VenlyEditorAPI.UpdateContractMetadata(data)
-                .OnSucces(contractMetadata =>
+                .OnSuccess(contractMetadata =>
                 {
                     contract.ChangeItemState(eVyItemState.Live);
                     contract.FromMetadata(contractMetadata);
@@ -295,7 +295,7 @@ namespace VenlySDK.Editor.Tools.ContractManager
         private void RefreshContract(VyContractSO contract)
         {
             VenlyEditorAPI.GetContract(contract.Id)
-                .OnSucces(updatedContract =>
+                .OnSuccess(updatedContract =>
                 {
                     contract.ChangeItemState(eVyItemState.Live);
                     contract.FromModel(updatedContract);
@@ -306,7 +306,7 @@ namespace VenlySDK.Editor.Tools.ContractManager
         private void RefreshTokenType(VyTokenTypeSO tokenType)
         {
             VenlyEditorAPI.GetTokenType(tokenType.Contract.Id, tokenType.Id)
-                .OnSucces(updatedTokenType =>
+                .OnSuccess(updatedTokenType =>
                 {
                     tokenType.ChangeItemState(eVyItemState.Live);
                     tokenType.FromModel(updatedTokenType);
@@ -331,7 +331,7 @@ namespace VenlySDK.Editor.Tools.ContractManager
             };
 
             VenlyEditorAPI.CreateContract(data)
-                .OnSucces(newContract =>
+                .OnSuccess(newContract =>
                 {
                     contract.ChangeItemState(eVyItemState.Live);
                     contract.FromModel(newContract);
@@ -359,7 +359,7 @@ namespace VenlySDK.Editor.Tools.ContractManager
             };
 
             VenlyEditorAPI.CreateTokenType(data)
-                .OnSucces(newTokenType =>
+                .OnSuccess(newTokenType =>
                 {
                     tokenType.ChangeItemState(eVyItemState.Live);
                     tokenType.FromModel(newTokenType);

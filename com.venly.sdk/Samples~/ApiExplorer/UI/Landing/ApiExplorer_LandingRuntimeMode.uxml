@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Sample_Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="justify-content: flex-start; flex-grow: 1;">
+        <SampleControl_Header header-title="API Features Sample" show-navigate-back="true" name="view-header" />
+        <ui:VisualElement name="tools" style="justify-content: center; flex-grow: 1;">
+            <ui:VisualElement name="user-tools" style="align-items: center;">
+                <ui:Button text="Admin" display-tooltip-when-elided="true" name="btn-admin" class="main-button-style" />
+                <ui:Button text="User Wallet" display-tooltip-when-elided="true" name="btn-user-wallet" class="main-button-style" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="admin-details" style="align-items: center; margin-bottom: 30px;">
+            <ui:Label text="User" display-tooltip-when-elided="true" style="-unity-font-style: bold; padding-bottom: 0;" />
+            <ui:Label text="user@venly.io" display-tooltip-when-elided="true" name="lbl-user-mail" style="-unity-font-style: normal; margin-top: 0; padding-top: 0;" />
+            <ui:Label text="Backend Provider" display-tooltip-when-elided="true" style="-unity-font-style: bold; padding-bottom: 0;" />
+            <ui:Label text="PlayFab" display-tooltip-when-elided="true" name="lbl-backend-provider" style="-unity-font-style: normal; margin-top: 0; padding-top: 0;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

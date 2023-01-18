@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using VenlySDK.Backends;
 using VenlySDK.Core;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
+
 #if ENABLE_VENLY_AZURE
 using VenlySDK.Azure;
 #endif
@@ -16,13 +16,13 @@ namespace VenlySDK
         public static eVyEnvironment CurrentEnvironement { get; private set; }
 
         public static IBackendExtension BackendExtension => _currentProvider?.Extensions;
-        private static IVenlyRequester _requester => _currentProvider?.Requester;
+        private static VyRequester _requester => _currentProvider?.Requester;
 
-        private static readonly List<BackendProvider> _backendProviders = new();
-        private static BackendProvider _currentProvider;
+        private static readonly List<VyBackendProvider> _backendProviders = new();
+        private static VyBackendProvider _currentProvider;
 
         //Custom Initialization
-        internal static void Initialize(BackendProvider provider, eVyEnvironment env)
+        internal static void Initialize(VyBackendProvider provider, eVyEnvironment env)
         {
             //Deinitialize if required
             Deinitialize();
@@ -41,7 +41,7 @@ namespace VenlySDK
             CurrentEnvironement = env;
 
             //Configure Task System (Synchronization Context)
-            VyTask.Configure();
+            VyTaskBase.Initialize();
 
             //Set IsInitialized flag!
             IsInitialized = true;

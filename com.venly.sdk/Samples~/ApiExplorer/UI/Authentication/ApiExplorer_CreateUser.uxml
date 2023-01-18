@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Sample_Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="justify-content: flex-start; flex-grow: 1;">
+        <SampleControl_Header header-title="API Features Sample" show-navigate-back="true" name="view-header" />
+        <ui:VisualElement style="align-items: center; flex-grow: 1; justify-content: center;">
+            <ui:VisualElement style="margin-bottom: 50px; margin-left: 20px; margin-right: 20px; justify-content: flex-start; flex-direction: column; min-width: 400px;">
+                <ui:TextField picking-mode="Ignore" label="E-Mail" name="txt-email" />
+                <ui:TextField picking-mode="Ignore" label="Password" name="txt-password" password="true" />
+                <ui:TextField picking-mode="Ignore" label="Pincode" name="txt-pincode" password="false" />
+            </ui:VisualElement>
+            <ui:Button text="Create" display-tooltip-when-elided="true" name="btn-create" class="main-button-style" />
+        </ui:VisualElement>
+        <ui:VisualElement name="admin-details" style="align-items: center; margin-bottom: 30px;">
+            <ui:Label text="Backend Provider" display-tooltip-when-elided="true" style="-unity-font-style: bold; padding-bottom: 0;" />
+            <ui:Label text="DevMode" display-tooltip-when-elided="true" name="lbl-backend-provider" style="-unity-font-style: normal; margin-top: 0; padding-top: 0;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

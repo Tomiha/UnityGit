@@ -9,35 +9,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace VenlySDK.Backends.PlayFab
 {
-    public class VyPlayFabAzureResponse<T>
+    public class VyPlayFabAzureResponse
     {
         [JsonProperty("success")] public bool Success { get; private set; }
-        [JsonProperty("data")] public T Data { get; private set; }
+        [JsonProperty("data")] public string Data { get; private set; }
         [JsonProperty("errorMessage")] public string ErrorMessage { get; private set; }
+        [JsonProperty("statusCode")] public HttpStatusCode StatusCode { get; private set; }
+        [JsonProperty("isRawResponse")] public bool IsRawResponse { get; private set; }
+
 
 #if ENABLE_VENLY_AZURE
-        public static JsonResult FromObject<T0>(T0 obj)
-        {
-            var response = new VyPlayFabAzureResponse<T0>
-            {
-                Success = true,
-                Data = obj
-            };
-
-            return new JsonResult(response)
-            {
-                StatusCode = (int)HttpStatusCode.OK
-            };
-        }
-
-        public static JsonResult FromTaskResult<T0>(VyTaskResult<T0> taskResult)
+        public static JsonResult FromTaskResult<T>(VyTaskResult<T> taskResult, bool isRawResponse = false)
         {
             if (taskResult.Success)
             {
-                var response = new VyPlayFabAzureResponse<T0>
+                var response = new VyPlayFabAzureResponse
                 {
                     Success = true,
-                    Data = taskResult.Data
+                    Data = JsonConvert.SerializeObject(taskResult.Data),
+                    StatusCode = taskResult.StatusCode??HttpStatusCode.OK,
+                    IsRawResponse = isRawResponse
                 };
 
                 return new JsonResult(response)
@@ -49,17 +40,19 @@ namespace VenlySDK.Backends.PlayFab
             return FromException(taskResult.Exception);
         }
 
-        public static JsonResult FromException(Exception ex)
+        public static JsonResult FromException(Exception ex, bool isRawResponse = false)
         {
-            var response = new VyPlayFabAzureResponse<object>
+            var response = new VyPlayFabAzureResponse
             {
                 Success = false,
-                ErrorMessage = ex.Message
+                ErrorMessage = ex.Message,
+                StatusCode = HttpStatusCode.InternalServerError,
+                IsRawResponse = isRawResponse
             };
 
             return new JsonResult(response)
             {
-                StatusCode = (int)HttpStatusCode.InternalServerError
+                StatusCode = (int)HttpStatusCode.OK
             };
         }
 #endif

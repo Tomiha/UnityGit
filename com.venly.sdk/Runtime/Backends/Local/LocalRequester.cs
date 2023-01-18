@@ -4,12 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using VenlySDK.Core;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
 using VenlySDK.Utils;
 
 namespace VenlySDK.Backends.Local
 {
-    public class LocalRequester : IVenlyRequester
+    public class LocalRequester : VyRequester
     {
         private VyAccessTokenDto _accessToken;
         private readonly string _clientId;
@@ -28,7 +27,7 @@ namespace VenlySDK.Backends.Local
             //var deferred = VyDeferredTask<bool>.Create();
 
             Venly.AuthAPI.GetAccessToken(_clientId, _clientSecret)
-                .OnSucces(token =>
+                .OnSuccess(token =>
                 {
                     _accessToken = token;
                     taskNotifier.NotifySuccess();

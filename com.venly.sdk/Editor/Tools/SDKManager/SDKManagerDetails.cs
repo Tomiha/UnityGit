@@ -44,7 +44,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
             RefreshDetails();
 
             SDKManager.Instance.GetLatestVersion()
-                .OnSucces(latestVersion =>
+                .OnSuccess(latestVersion =>
                 {
                     _latestVersion = latestVersion;
                     RefreshDetails();

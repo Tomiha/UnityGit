@@ -11,6 +11,7 @@ using UnityEngine.Networking;
 using VenlySDK.Core;
 using VenlySDK.Editor.Utils;
 using VenlySDK.Models;
+using VenlySDK.Utils;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace VenlySDK.Editor.Tools.SDKManager
@@ -70,19 +71,21 @@ namespace VenlySDK.Editor.Tools.SDKManager
             wnd.titleContent = new GUIContent("Venly SDK Manager");
         }
 
-        //[MenuItem("Window/Venly/Force Close Manager")]
-        //public static void ForceCloseManager()
-        //{
-        //    SDKManagerView wnd = EditorWindow.GetWindow<SDKManagerView>();
-        //    if (wnd != null)
-        //    {
-        //        wnd.Close();
-        //    }
-        //}
+#if VENLYSDK_DEBUG
+        [MenuItem("Window/Venly/Debug/Force Close Manager")]
+        public static void ForceCloseManager()
+        {
+            SDKManagerView wnd = EditorWindow.GetWindow<SDKManagerView>();
+            if (wnd != null)
+            {
+                wnd.Close();
+            }
+        }
+#endif
 
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         public bool IsInitialized { get; private set; }
         public bool IsAuthenticated { get; private set; }
@@ -92,7 +95,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
 
         public static readonly string URL_GitHubIssues = @"https://github.com/ArkaneNetwork/Unity-SDK/issues";
         public static readonly string URL_ChangeLog = @"https://github.com/ArkaneNetwork/Unity-SDK/releases";
-        public static readonly string URL_Discord = @"https://discord.com/invite/7Sn2nHC3Ep";
+        public static readonly string URL_Discord = @"https://discord.gg/rKUFbUWMaw";
         public static readonly string URL_Guide = @"https://docs.venly.io/venly-unity-sdk/";
 
         private PackageInfo _packageInfo;
@@ -105,9 +108,9 @@ namespace VenlySDK.Editor.Tools.SDKManager
         //public static readonly string URL_GitRepository = @"git+https://github.com/Tomiha/UnityGit.git?path=com.venly.sdk";
         //public static readonly string URL_GitReleases = @"https://api.github.com/repos/Tomiha/UnityGit/releases";
 
-        #endregion
+#endregion
 
-        #region Events
+#region Events
 
         public event Action OnSettingsLoaded;
         public event Action<bool> OnAuthenticatedChanged;
@@ -115,6 +118,9 @@ namespace VenlySDK.Editor.Tools.SDKManager
 
         #endregion
 
+#if VENLYSDK_DEBUG
+        [MenuItem("Window/Venly/Debug/Force SDK Manager Init")]
+#endif
         [InitializeOnLoadMethod]
         static void InitializeStatic()
         {
@@ -127,7 +133,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
         private async void Initialize()
         {
             //Thread Context
-            VyTask.Configure();
+            VyTaskBase.Initialize();
 
             //Load Settings
             SettingsLoaded = false;
@@ -147,14 +153,14 @@ namespace VenlySDK.Editor.Tools.SDKManager
             IsAuthenticated = false;
             if (VenlySettings.HasCredentials)
             {
-                await Authenticate().AwaitResult(false);
+                await Authenticate().AwaitResult();
             }
 
             IsInitialized = true;
             OnInitialized?.Invoke();
         }
 
-        #region MANAGER FUNCTIONS
+#region MANAGER FUNCTIONS
         private void ResetSettings()
         {
             var performReset = true;
@@ -198,10 +204,14 @@ namespace VenlySDK.Editor.Tools.SDKManager
         }
 
         //Only called if Authentication succeeded
-        internal void UpdateEditorSettings_PostAuthentication(string clientId, string clientSecret)
+        internal void UpdateEditorSettings_PostAuthentication(string clientId, string clientSecret, VyAccessTokenDto token)
         {
             //VenlySettings
             VenlySettings.SetCredentials(clientId, clientSecret);
+
+            //JWT Decoding
+            var jwtInfo = VenlyUtils.JWT.ExtractInfoFromToken(token);
+            VenlySettings.SetAccessAndEnvironment(jwtInfo);
 
             //Current ClientId
             EditorSettings.SDKManager.CurrentClientId = clientId;
@@ -212,7 +222,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
                 || EditorSettings.SupportedChainsWallet.Length == 0)
             {
                 VenlyEditorAPI.GetChainsWALLET()
-                    .OnSucces(chains =>
+                    .OnSuccess(chains =>
                     {
                         EditorSettings.SupportedChainsWallet = chains;
                         AssetDatabase.SaveAssetIfDirty(EditorSettings);
@@ -224,7 +234,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
                 || EditorSettings.SupportedChainsNft.Length == 0)
             {
                 VenlyEditorAPI.GetChainsNFT()
-                    .OnSucces(chains =>
+                    .OnSuccess(chains =>
                     {
                         EditorSettings.SupportedChainsNft = chains;
                         AssetDatabase.SaveAssetIfDirty(EditorSettings);
@@ -241,12 +251,13 @@ namespace VenlySDK.Editor.Tools.SDKManager
             return Authenticate(VenlySettings.ClientId, VenlySettings.ClientSecret);
         }
 
+        //SDK Manager Authentication (Sets IsAuthenticated if success)
         public VyTask Authenticate(string clientId, string clientSecret)
         {
             IsAuthenticated = false;
             VenlyEditorSettings.Instance.EditorData.SDKManager.CurrentClientId = null;
 
-            var taskNotifier = VyTask.Create();
+            var taskNotifier = VyTask.Create("SDKManager_Authenticate");
 
             VenlyEditorAPI.GetAccessToken(clientId, clientSecret)
                 .OnComplete(result =>
@@ -254,11 +265,13 @@ namespace VenlySDK.Editor.Tools.SDKManager
                     IsAuthenticated = result.Success;
                     if (IsAuthenticated)
                     {
-                        UpdateEditorSettings_PostAuthentication(clientId, clientSecret);
+                        UpdateEditorSettings_PostAuthentication(clientId, clientSecret, result.Data);
                     }
+                    
+                    //Debug.Log($"[SDK MANAGER] Authentication Completed. IsAuthenticated={IsAuthenticated}");
 
                     OnAuthenticatedChanged?.Invoke(IsAuthenticated);
-                    taskNotifier.Notify(result.ToVoidResult());
+                    taskNotifier.Notify(result);
                 });
 
             return taskNotifier.Task;
@@ -365,6 +378,6 @@ namespace VenlySDK.Editor.Tools.SDKManager
 
             Client.AddAndRemove(packages.ToArray(), null);
         }
-        #endregion
+#endregion
     }
 }

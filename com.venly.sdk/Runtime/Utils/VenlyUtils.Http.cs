@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VenlySDK.Core;
 using VenlySDK.Models;
-using VenlySDK.Models.Internal;
 
 namespace VenlySDK.Utils
 {
@@ -16,7 +15,7 @@ namespace VenlySDK.Utils
         {
             var requestMsg = new HttpRequestMessage(data.Method,GetUrl(data.Uri, data.Endpoint, data.Environment))
             {
-                Content = data.Content
+                Content = data.GetHttpContent()
             };
 
             requestMsg.Headers.Add("Accept", "application/json");
@@ -29,137 +28,107 @@ namespace VenlySDK.Utils
             return requestMsg;
         }
 
-        public static VyTaskResult<T> ProcessHttpResponse<T>(HttpResponseMessage response, VyRequestData requestData)
+        public static VyTaskResult<T> ProcessApiResponse<T>(string response, HttpStatusCode statusCode, VyRequestData requestData)
         {
-            var result = new VyTaskResult<T>()
+            #region Parse Error
+            if (statusCode != HttpStatusCode.OK)
             {
-                Success = false
-            };
-
-            //Error Handling
-            string responsePayload = string.Empty;
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                try
-                {
-                    responsePayload = response.Content.ReadAsStringAsync().Result;
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-
-                if (string.IsNullOrEmpty(responsePayload))
-                {
-                    result.Exception = VyException.HttpResponseError(response, requestData);
-                    return result;
-                }
-
-                //Temp hack
                 VyResponseDto apiResponse = null;
-                if (responsePayload.StartsWith("["))
+                if (response.StartsWith("["))
                 {
                     apiResponse = new VyResponseDto()
                     {
                         Success = false,
-                        Errors = JArray.Parse(responsePayload).ToObject<VyReponseError[]>()
+                        Errors = JArray.Parse(response).ToObject<VyReponseError[]>()
                     };
                 }
                 else
                 {
-                    apiResponse = JsonConvert.DeserializeObject<VyResponseDto>(responsePayload);
+                    apiResponse = JsonConvert.DeserializeObject<VyResponseDto>(response);
                 }
 
-                result.Exception = VyException.ApiResponseError(apiResponse, response, requestData);
-                return result;
+                return new VyTaskResult<T>(VyException.ApiResponseError(apiResponse, statusCode, requestData));
+            }
+            #endregion
+
+            #region Parse Response
+            T data;
+            if (!requestData.RequiresWrapping)
+            {
+                //NO WRAPPING REQUIRED
+                if (requestData.MustSelectProperty)
+                {
+                    //SELECT PROPERTY
+                    var json = JObject.Parse(response);
+                    if (json.ContainsKey(requestData.SelectPropertyName))
+                    {
+                        data = JsonConvert.DeserializeObject<T>(json[requestData.SelectPropertyName].ToString());
+                        return new VyTaskResult<T>(data);
+                    }
+
+                    //Key Not Found
+                    var ex = VyException.ParsingError($"Property \'{requestData.SelectPropertyName}\' was not found in the response data");
+                    return new VyTaskResult<T>(ex);
+                }
+
+                data = JsonConvert.DeserializeObject<T>(response);
+                return new VyTaskResult<T>(data);
             }
 
+            //WRAPPING REQUIRED
+            if (requestData.MustSelectProperty)
+            {
+                //SELECT PROPERTY
+                var wrappedResponseRaw = JsonConvert.DeserializeObject<VyResponseDto<JObject>>(response);
+                if (wrappedResponseRaw is {Success: true})
+                {
+                    if (wrappedResponseRaw.Data.ContainsKey(requestData.SelectPropertyName))
+                    {
+                        data = JsonConvert.DeserializeObject<T>(wrappedResponseRaw.Data[requestData.MustSelectProperty].ToString());
+                        return new VyTaskResult<T>(data);
+                    }
+
+                    //Key Not Found
+                    var ex = VyException.ParsingError($"Property \'{requestData.SelectPropertyName}\' was not found in the response data");
+                    return new VyTaskResult<T>(ex);
+                }
+
+                //Unsuccessful ApiResponse
+                return new VyTaskResult<T>(VyException.ApiResponseError(wrappedResponseRaw, statusCode, requestData));
+            }
+
+            //NO PROPERTY SELECTION
+            var wrappedResponse = JsonConvert.DeserializeObject<VyResponseDto<T>>(response);
+            if (wrappedResponse is {Success: true})
+            {
+                return new VyTaskResult<T>(wrappedResponse.Data);
+            }
+
+            //Unsuccessful ApiResponse
+            return new VyTaskResult<T>(VyException.ApiResponseError(wrappedResponse, statusCode, requestData));
+            #endregion
+        }
+
+        public static VyTaskResult<T> ProcessHttpResponse<T>(HttpResponseMessage response, VyRequestData requestData)
+        {
             //Response Parsing
+            var responsePayload = string.Empty;
             try
             {
                 responsePayload = response.Content.ReadAsStringAsync().Result;
-
-                if (!requestData.RequiresWrapping)
-                {
-                    //NO WRAPPING REQUIRED
-                    if (requestData.MustSelectProperty)
-                    {
-                        //SELECT PROPERTY
-                        var json = JObject.Parse(responsePayload);
-                        if (json.ContainsKey(requestData.SelectPropertyName))
-                        {
-                            result.Data =
-                                JsonConvert.DeserializeObject<T>(json[requestData.SelectPropertyName].ToString());
-                            result.Success = true;
-                        }
-                        else
-                        {
-                            result.Exception = VyException.ParsingError(
-                                $"Property \'{requestData.SelectPropertyName}\' was not found in the response data");
-                        }
-                    }
-                    else
-                    {
-                        //NO PROPERTY SELECTION
-                        result.Data = JsonConvert.DeserializeObject<T>(responsePayload);
-                        result.Success = true;
-                    }
-                }
-                else
-                {
-                    //WRAPPING REQUIRED
-                    if (requestData.MustSelectProperty)
-                    {
-                        //SELECT PROPERTY
-                        var apiResponse = JsonConvert.DeserializeObject<VyResponseDto<JObject>>(responsePayload);
-                        if (apiResponse.Success)
-                        {
-                            if (apiResponse.Data.ContainsKey(requestData.SelectPropertyName))
-                            {
-                                result.Data =
-                                    JsonConvert.DeserializeObject<T>(apiResponse.Data[requestData.MustSelectProperty]
-                                        .ToString());
-                                result.Success = true;
-                            }
-                            else
-                            {
-                                result.Exception = VyException.ParsingError(
-                                    $"Property \'{requestData.SelectPropertyName}\' was not found in the response data");
-                            }
-                        }
-                        else
-                        {
-                            result.Exception = VyException.ApiResponseError(apiResponse, response, requestData);
-                        }
-                    }
-                    else
-                    {
-                        //NO PROPERTY SELECTION
-                        var apiResponse = JsonConvert.DeserializeObject<VyResponseDto<T>>(responsePayload);
-                        if (apiResponse.Success)
-                        {
-                            result.Data = apiResponse.Data;
-                            result.Success = true;
-                        }
-                        else
-                        {
-                            result.Exception = VyException.ApiResponseError(apiResponse, response, requestData);
-                        }
-                    }
-                }
+                return ProcessApiResponse<T>(responsePayload, response.StatusCode, requestData);
             }
             catch (Exception e)
             {
-                result.Exception = VyException.ParsingError(
-                    $"Failed to parse the response.\nErrorMsg = {e.Message}\n\nResponseText = {responsePayload}))");
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    //Bad Response, and failed to retrieve errors
+                    return new VyTaskResult<T>(VyException.HttpResponseError(response, requestData));
+                }
+
+                //OK Response, but failed to parse the payload
+                return new VyTaskResult<T>(VyException.ParsingError($"Failed to parse the response.\nErrorMsg = {e.Message}\n\nResponseText = {responsePayload}))"));
             }
-
-            return result;
         }
-
-        //public static VyTaskResult<T> ProcessResponseString<T>(string response, VyRequestData requestData)
-        //{
-
-        //}
     }
 }

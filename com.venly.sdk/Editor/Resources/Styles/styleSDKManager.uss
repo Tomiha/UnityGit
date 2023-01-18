@@ -12,7 +12,7 @@
 }
 
 .settings-label {
-    width: 90px;
+    width: 100px;
     -unity-font-style: bold;
 }
 

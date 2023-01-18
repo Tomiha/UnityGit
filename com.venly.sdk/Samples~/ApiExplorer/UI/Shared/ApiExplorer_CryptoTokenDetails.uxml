@@ -1,0 +1,35 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Sample_Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header />
+        <ui:VisualElement name="container-details" style="margin-left: 20px; margin-right: 20px; margin-bottom: 20px; margin-top: 20px;">
+            <ui:VisualElement name="details-name" class="main-labelfield-container" style="flex-direction: row;">
+                <ui:Label text="Name:" display-tooltip-when-elided="true" class="main-labelfield-key" />
+                <ui:Label display-tooltip-when-elided="true" name="lbl-token-name" class="main-labelfield-value" />
+            </ui:VisualElement>
+            <ui:VisualElement name="details-symbol" class="main-labelfield-container" style="flex-direction: row;">
+                <ui:Label text="Symbol:" display-tooltip-when-elided="true" class="main-labelfield-key" />
+                <ui:Label display-tooltip-when-elided="true" name="lbl-token-symbol" class="main-labelfield-value" />
+            </ui:VisualElement>
+            <ui:VisualElement name="details-balance" class="main-labelfield-container" style="flex-direction: row;">
+                <ui:Label text="Balance:" display-tooltip-when-elided="true" class="main-labelfield-key" />
+                <ui:Label display-tooltip-when-elided="true" name="lbl-token-balance" class="main-labelfield-value" />
+            </ui:VisualElement>
+            <ui:VisualElement name="details-decimals" class="main-labelfield-container" style="flex-direction: row;">
+                <ui:Label text="Decimals:" display-tooltip-when-elided="true" class="main-labelfield-key" />
+                <ui:Label display-tooltip-when-elided="true" name="lbl-token-decimals" class="main-labelfield-value" />
+            </ui:VisualElement>
+            <ui:VisualElement name="details-transferable" class="main-labelfield-container" style="flex-direction: row;">
+                <ui:Label text="Transferable:" display-tooltip-when-elided="true" class="main-labelfield-key" />
+                <ui:Label display-tooltip-when-elided="true" name="lbl-token-transferable" class="main-labelfield-value" />
+            </ui:VisualElement>
+            <ui:VisualElement name="details-address" class="main-labelfield-container" style="flex-direction: row;">
+                <ui:Label text="Address:" display-tooltip-when-elided="true" class="main-labelfield-key" />
+                <ui:Label display-tooltip-when-elided="true" name="lbl-token-address" class="main-labelfield-value" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="align-items: center; margin-top: 20px; display: none;">
+            <ui:Button text="Transfer" display-tooltip-when-elided="true" name="btn-transfer" class="main-button-style" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

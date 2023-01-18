@@ -1,0 +1,64 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Sample_Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header />
+        <ui:VisualElement style="margin-left: 10px; margin-right: 10px; margin-bottom: 10px;">
+            <ui:VisualElement name="container-details" style="margin-left: 0; margin-right: 0; margin-top: 10px; margin-bottom: 20px; border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; flex-shrink: 0;">
+                <ui:VisualElement name="details-chain" class="main-labelfield-container" style="flex-direction: row;">
+                    <ui:Label text="Chain:" display-tooltip-when-elided="true" class="main-labelfield-key" />
+                    <ui:Label display-tooltip-when-elided="true" name="lbl-wallet-chain" class="main-labelfield-value" />
+                </ui:VisualElement>
+                <ui:VisualElement name="details-address" class="main-labelfield-container" style="flex-direction: row;">
+                    <ui:Label text="Address: " display-tooltip-when-elided="true" class="main-labelfield-key" />
+                    <ui:Label display-tooltip-when-elided="true" name="lbl-wallet-address" class="main-labelfield-value" />
+                </ui:VisualElement>
+                <ui:VisualElement name="details-id" class="main-labelfield-container" style="flex-direction: row;">
+                    <ui:Label text="Id:" display-tooltip-when-elided="true" class="main-labelfield-key" />
+                    <ui:Label display-tooltip-when-elided="true" name="lbl-wallet-id" class="main-labelfield-value" />
+                </ui:VisualElement>
+                <ui:VisualElement name="details-description" class="main-labelfield-container" style="flex-direction: row;">
+                    <ui:Label text="Description:" display-tooltip-when-elided="true" class="main-labelfield-key" />
+                    <ui:Label display-tooltip-when-elided="true" name="lbl-wallet-description" class="main-labelfield-value" />
+                </ui:VisualElement>
+                <ui:VisualElement name="details-identifier" class="main-labelfield-container" style="flex-direction: row;">
+                    <ui:Label text="Identifier: " display-tooltip-when-elided="true" class="main-labelfield-key" />
+                    <ui:Label display-tooltip-when-elided="true" name="lbl-wallet-identifier" class="main-labelfield-value" />
+                </ui:VisualElement>
+                <ui:VisualElement name="details-recoverable" class="main-labelfield-container" style="flex-direction: row;">
+                    <ui:Label text="Recoverable: " display-tooltip-when-elided="true" class="main-labelfield-key" />
+                    <ui:Label display-tooltip-when-elided="true" name="lbl-wallet-recoverable" class="main-labelfield-value" />
+                </ui:VisualElement>
+                <ui:VisualElement name="details-balance" class="main-labelfield-container" style="flex-direction: row;">
+                    <ui:Label text="Balance: " display-tooltip-when-elided="true" class="main-labelfield-key" />
+                    <ui:Label display-tooltip-when-elided="true" name="lbl-wallet-balance" class="main-labelfield-value" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: column; margin-top: 10px; justify-content: center; align-items: center;">
+                    <ui:Button text="Archive" display-tooltip-when-elided="true" name="btn-archive" class="main-button-style" style="min-width: auto;" />
+                </ui:VisualElement>
+                <ui:Label text="[ARCHIVED]" display-tooltip-when-elided="true" name="lbl-archived" style="color: rgb(255, 0, 0); -unity-font-style: bold; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; position: absolute; top: 10px; right: 10px; display: none;" />
+            </ui:VisualElement>
+            <ui:Foldout text="Crypto Tokens [ERC20]" name="fld-crypto-tokens">
+                <ui:VisualElement>
+                    <ui:ListView focusable="true" virtualization-method="DynamicHeight" name="lst-crypto-tokens" />
+                </ui:VisualElement>
+            </ui:Foldout>
+            <ui:Foldout text="Multi Tokens [ERC1155/721]" name="fld-multi-tokens">
+                <ui:Foldout text="Non Fungible (NFT)" name="fld-multi-nonfungible">
+                    <ui:VisualElement>
+                        <ui:ListView focusable="true" virtualization-method="DynamicHeight" name="lst-multi-nonfungible" />
+                    </ui:VisualElement>
+                </ui:Foldout>
+                <ui:Foldout text="Fungible (FT)" name="fld-multi-fungible">
+                    <ui:VisualElement>
+                        <ui:ListView focusable="true" virtualization-method="DynamicHeight" name="lst-multi-fungible" />
+                    </ui:VisualElement>
+                </ui:Foldout>
+            </ui:Foldout>
+            <ui:Foldout text="Events" name="fld-wallet-events">
+                <ui:VisualElement>
+                    <ui:ListView focusable="true" virtualization-method="DynamicHeight" name="lst-wallet-events" />
+                </ui:VisualElement>
+            </ui:Foldout>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

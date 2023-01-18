@@ -2,8 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
-using Proto.Promises;
-using VenlySDK.Core;
 #if UNITY_2017_1_OR_NEWER
 using Debug = UnityEngine.Debug;
 #endif

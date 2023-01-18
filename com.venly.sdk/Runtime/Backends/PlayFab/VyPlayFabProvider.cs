@@ -6,7 +6,7 @@ using VenlySDK.Models;
 
 namespace VenlySDK.Backends.PlayFab
 {
-    public class VyPlayFabProvider : BackendProvider
+    public class VyPlayFabProvider : VyBackendProvider
     {
         public VyPlayFabProvider() : base(eVyBackendProvider.PlayFab)
         {
@@ -21,13 +21,13 @@ namespace VenlySDK.Backends.PlayFab
         protected override void OnInitialize()
         {
             Requester = new VyPlayfabRequester();
-            Extensions = new VyPlayFabExtension(Requester as VyPlayfabRequester);
+            OverrideExtension(new VyPlayFabExtension(Requester as VyPlayfabRequester));
         }
 
         protected override void OnDeinitialize()
         {
             Requester = null;
-            Extensions = null;
+            OverrideExtension(null);
         }
 
         public override bool HandleError(object err)

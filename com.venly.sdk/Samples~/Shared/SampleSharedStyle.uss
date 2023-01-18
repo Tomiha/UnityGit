@@ -1,0 +1,67 @@
+.sample-main-background {
+    background-color: rgb(176, 176, 176);
+}
+
+.control-header-background {
+    background-color: rgb(99, 99, 99);
+}
+
+.main-button-style {
+    min-width: 250px;
+    background-color: rgb(99, 99, 99);
+    color: rgb(197, 197, 197);
+    border-top-left-radius: 22px;
+    border-bottom-left-radius: 22px;
+    border-top-right-radius: 22px;
+    border-bottom-right-radius: 22px;
+    -unity-font-style: bold;
+    font-size: 20px;
+}
+
+.list-item-style {
+    border-left-color: rgb(38, 36, 36);
+    border-right-color: rgb(38, 36, 36);
+    border-top-color: rgb(38, 36, 36);
+    border-bottom-color: rgb(38, 36, 36);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: rgb(188, 188, 188);
+}
+
+.main-labelfield-key {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    min-width: 100px;
+    -unity-font-style: bold;
+}
+
+.main-labelfield-value {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    flex-shrink: 1;
+    white-space: normal;
+}
+
+.main-labelfield-container {
+    flex-wrap: wrap;
+}

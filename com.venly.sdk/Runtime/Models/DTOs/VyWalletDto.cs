@@ -16,6 +16,20 @@ namespace VenlySDK.Models
     }
 
     [Serializable]
+    public class VyWalletMetadataResponseDto
+    {
+        [JsonProperty("id")] public string Id { get; private set; }
+        [JsonProperty("address")] public string Address { get; private set; }
+        [JsonProperty("walletType")] public eVyWalletType WalletType { get; private set; }
+        [JsonProperty("secretType")] public eVyChain Chain { get; private set; }
+        [JsonProperty("createdAt")] public DateTime CreatedAt { get; private set; }
+        [JsonProperty("archived")] public bool Archived { get; private set; }
+        [JsonProperty("description")] public string Description { get; private set; }
+        [JsonProperty("primary")] public bool Primary { get; private set; }
+        [JsonProperty("hasCustomerPin")] public bool HasCustomerPin { get; private set; }
+    }
+
+    [Serializable]
     public class VyWalletDto
     {
         [JsonProperty("id")] public string Id { get; private set; }
@@ -23,14 +37,26 @@ namespace VenlySDK.Models
         [JsonProperty("walletType")] public eVyWalletType WalletType { get; private set; }
         [JsonProperty("secretType")] public eVyChain Chain { get; private set; }
         [JsonProperty("createdAt")] public DateTime CreatedAt { get; private set; }
-        [JsonProperty("archived")] public string Archived { get; private set; }
+        [JsonProperty("archived")] public bool Archived { get; private set; }
         [JsonProperty("description")] public string Description { get; private set; }
         [JsonProperty("primary")] public bool Primary { get; private set; }
         [JsonProperty("hasCustomerPin")] public bool HasCustomerPin { get; private set; }
         [JsonProperty("identifier")] public string Identifier { get; private set; }
         [JsonProperty("balance")] public VyWalletBalanceDto Balance {get; private set; }
+
+        public void UpdateFromMetadataResponse(VyWalletMetadataResponseDto metadataResponse)
+        {
+            if (Id != metadataResponse.Id) return;
+
+            Archived = metadataResponse.Archived;
+            Description = metadataResponse.Description;
+            Primary = metadataResponse.Primary;
+        }
     }
 
+    /// <summary>
+    /// Native Wallet Balance (Native Tokens, eg ETH, BTC, ...)
+    /// </summary>
     [Serializable]
     public class VyWalletBalanceDto
     {
