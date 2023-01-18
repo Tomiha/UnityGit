@@ -78,6 +78,7 @@ public class SampleControl_WalletListView : VisualElement
             e.SetDisplay("lbl-wallet-archived", walletData.Archived);
         };
         _listView.itemsSource = wallets;
+        _listView.RefreshItems();
     }
 
     public void PopulateListViewMock()
