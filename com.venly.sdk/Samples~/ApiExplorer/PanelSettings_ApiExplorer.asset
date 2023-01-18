@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 19101, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: PanelSettings_FeaturesAPI
+  m_Name: PanelSettings_ApiExplorer
   m_EditorClassIdentifier: 
-  themeUss: {fileID: -4733365628477956816, guid: 4142e20fe5dbe264a9b7899e69d50966, type: 3}
+  themeUss: {fileID: -4733365628477956816, guid: df9c0ae8b9cde9e4f9742c565cf3f6cd, type: 3}
   m_TargetTexture: {fileID: 0}
   m_ScaleMode: 2
   m_Scale: 1
