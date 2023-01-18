@@ -22,5 +22,12 @@
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.0.2"
   },
+  "samples": [
+    {
+      "displayName": "API Explorer",
+      "description": "A small sample app that showcases several features of the Venly SDK for Unity.",
+      "path": "Samples~"
+    }
+  ],
   "type": "library"
 }
