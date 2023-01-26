@@ -37,9 +37,8 @@ public abstract class ApiExplorer_ViewTokensBaseVC<T, TListView, TListItem> : Sa
         if (HasBlackboardData("tokenList"))
         {
             _tokenList = GetBlackBoardData<T[]>("tokenList").ToList();
-        }
-        
-        if (HasBlackboardData("sourceWallet"))
+        } 
+        else if (HasBlackboardData("sourceWallet"))
         {
             _sourceWallet = GetBlackBoardData<VyWalletDto>("sourceWallet");
             ShowRefresh = true; //Wallet present, refresh is possible
@@ -75,13 +74,13 @@ public abstract class ApiExplorer_ViewTokensBaseVC<T, TListView, TListItem> : Sa
                     })
                     .OnFail(ViewManager.HandleException)
                     .Finally(ViewManager.Loader.Hide);
+
+                return;
             }
         }
-        else
-        {
-            _lastWalletId = null;
-            _tokenListView.SetItemSource(_tokenList);
-        }
+        else _lastWalletId = null;
+        
+        _tokenListView.SetItemSource(_tokenList);
     }
 
     protected override void OnClick_Refresh()
