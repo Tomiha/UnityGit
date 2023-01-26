@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header />
+        <ui:VisualElement style="margin-top: 10px; margin-bottom: 40px; margin-left: 20px; margin-right: 20px;">
+            <ui:VisualElement style="flex-direction: row; justify-content: flex-start;">
+                <LabelField label="Source Wallet" text="select wallet" name="lbl-source-wallet" style="flex-direction: row; flex-grow: 1;" />
+                <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-source-wallet" class="main-button-style button-select" />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-direction: row; justify-content: flex-start;">
+                <LabelField label="Source Token" text="select token" name="lbl-source-token" style="flex-direction: row; flex-grow: 1;" />
+                <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-source-token" class="main-button-style button-select" />
+            </ui:VisualElement>
+            <LabelField label="Balance" text="select wallet" name="lbl-balance" style="margin-left: 15px;" />
+            <ui:TextField picking-mode="Ignore" label="Pincode" name="txt-pincode" password="true" style="margin-left: 19px;" />
+            <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between; margin-top: 15px;">
+                <ui:TextField picking-mode="Ignore" label="Target Address" name="txt-target-address" style="margin-top: 2px; flex-grow: 1; flex-shrink: 1;" />
+                <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-target" class="main-button-style button-select" />
+            </ui:VisualElement>
+            <ui:TextField picking-mode="Ignore" label="Amount" multiline="false" name="txt-amount" style="flex-shrink: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="align-items: center;">
+            <ui:Button text="Transfer" display-tooltip-when-elided="true" name="btn-transfer" class="main-button-style" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

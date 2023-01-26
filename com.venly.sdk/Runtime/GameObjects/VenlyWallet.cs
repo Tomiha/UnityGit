@@ -22,7 +22,7 @@ namespace VenlySDK.GameObjects
         public float PollInterval = 10.0f;
 
         [HideInInspector] public VyWalletDto WalletDto;
-        [HideInInspector] public VyCryptoToken[] FungibleTokensDto;
+        [HideInInspector] public VyCryptoTokenDto[] FungibleTokensDto;
         [HideInInspector] public VyMultiTokenDto[] NonFungibleTokensDto;
         [HideInInspector] public VyWalletEventDto[] WalletEventsDto;
 

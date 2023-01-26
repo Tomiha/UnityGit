@@ -2,7 +2,7 @@
     <ui:VisualElement name="root" style="flex-grow: 1; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.82);">
         <ui:VisualElement>
             <ui:VisualElement style="flex-grow: 1; align-items: center; justify-content: center; margin-bottom: 20px;">
-                <ui:VisualElement name="loader-visual" style="width: 70px; height: 70px; background-image: url(&apos;project://database/Assets/Samples/Sample_Shared/Icons/loader_spinner.png?fileID=21300000&amp;guid=b6f059072d844034fa1dab07cb9d84c7&amp;type=3#loader_spinner&apos;); -unity-background-image-tint-color: rgba(255, 255, 255, 255);" />
+                <ui:VisualElement name="loader-visual" style="width: 70px; height: 70px; background-image: resource(&apos;Icons/loader_spinner&apos;); -unity-background-image-tint-color: rgba(255, 255, 255, 255);" />
             </ui:VisualElement>
             <ui:VisualElement style="align-items: center;">
                 <ui:Label text="Loading..." display-tooltip-when-elided="true" name="loader-text" style="-unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-align: upper-left; white-space: normal;" />

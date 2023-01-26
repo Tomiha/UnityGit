@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VenlySDK.Core;
 
+[RequireComponent(typeof(UIDocument))]
 public abstract class SampleViewBase<T> : MonoBehaviour where T : Enum
 {
     private Dictionary<string, object> _blackboard = new ();
@@ -12,15 +14,18 @@ public abstract class SampleViewBase<T> : MonoBehaviour where T : Enum
 
     [HideInInspector] public SampleViewManager<T> ViewManager;
     [HideInInspector] public SampleViewBase<T> PreviousView { get; set; }
+
     protected UIDocument View;
     protected VisualElement ViewRoot => View?.rootVisualElement;
 
     protected bool ShowNavigateBack = false;
     protected bool ShowNavigateHome = false;
     protected bool ShowRefresh = false;
+    protected bool IsSelectionMode { get; private set; }
     protected string ViewTitle = "untitled";
 
     private SampleControl_Header _viewHeader;
+    private VyTaskNotifier<object> _selectionNotifier;
 
     protected SampleViewBase(T viewId)
     {
@@ -33,12 +38,12 @@ public abstract class SampleViewBase<T> : MonoBehaviour where T : Enum
         element?.ToggleDisplay(visible);
     }
 
-    protected void GetElement<T0>(out T0 element, string elementName) where T0 : VisualElement
+    protected void GetElement<T0>(out T0 element, string elementName = null) where T0 : VisualElement
     {
         element = GetElement<T0>(elementName);
     }
 
-    protected T0 GetElement<T0>(string elementName) where T0 : VisualElement
+    protected T0 GetElement<T0>(string elementName = null) where T0 : VisualElement
     {
         var element = ViewRoot.Q<T0>(elementName);
         if (element == null)
@@ -59,6 +64,12 @@ public abstract class SampleViewBase<T> : MonoBehaviour where T : Enum
         _blackboard[key] = value;
     }
 
+    public void ClearBlackboardData(string key)
+    {
+        if (_blackboard.ContainsKey(key))
+            _blackboard.Remove(key);
+    }
+
     public object GetBlackboardDataRaw(string key)
     {
         return _blackboard[key];
@@ -69,15 +80,27 @@ public abstract class SampleViewBase<T> : MonoBehaviour where T : Enum
         return GetBlackboardDataRaw(key) as T0;
     }
 
+    protected void BindButton_SwitchView(string elementName, T viewId)
+    {
+        BindButton(elementName, () =>
+        {
+            ViewManager.SwitchView(viewId);
+        });
+    }
+
     protected void BindButton(string elementName, Action targetFunction)
     {
         var button = GetElement<Button>(elementName);
         button.clickable.clicked += targetFunction;
     }
+
     protected void SetLabel(string elementName, string txt)
     {
-        var label = GetElement<Label>(elementName);
-        label.text = txt;
+        var el = GetElement<VisualElement>(elementName);
+        if(el is Label label) label.text = txt;
+        else if (el is LabelField labelField) labelField.UpdateText(txt);
+        else if (el is Button btn) btn.text = txt;
+        else throw new Exception($"Element \'{elementName}\' is not a Label or LabelField...");
     }
 
     public void Activate()
@@ -92,8 +115,10 @@ public abstract class SampleViewBase<T> : MonoBehaviour where T : Enum
             return;
         }
 
+        View.sortingOrder = IsSelectionMode ? 1000 : 0;
+
         _viewHeader = GetElement<SampleControl_Header>(null);
-        _viewHeader.OnNavigateBack += OnClick_NavigateBack;
+        _viewHeader.OnNavigateBack += OnClick_NavigateBackInternal;
         _viewHeader.OnNavigateHome += OnClick_NavigateHome;
         _viewHeader.OnRefresh += OnClick_Refresh;
 
@@ -103,16 +128,64 @@ public abstract class SampleViewBase<T> : MonoBehaviour where T : Enum
         OnActivate();
 
         //Update Header
-        _viewHeader.HeaderTitle = ViewTitle;
+        UpdateHeader(ViewTitle);
+    }
+
+    private void UpdateHeader(string viewTitle)
+    {
+        _viewHeader.HeaderTitle = viewTitle;
         _viewHeader.ShowNavigateBack = ShowNavigateBack;
         _viewHeader.ShowNavigateHome = ShowNavigateHome;
         _viewHeader.ShowRefresh = ShowRefresh;
         _viewHeader.RefreshControl();
     }
+
     public void Deactivate()
     {
         OnDeactivate();
         gameObject.SetActive(false);
+    }
+
+    public VyTask<object> SelectionMode(string newTitle = null)
+    {
+        _selectionNotifier = VyTask<object>.Create();
+        IsSelectionMode = true;
+
+        Activate();
+
+        ShowNavigateBack = true;
+        ShowNavigateHome = false;
+
+        UpdateHeader(newTitle ?? ViewTitle);
+
+        return _selectionNotifier.Task;
+    }
+
+    protected void FinishSelection(object result)
+    {
+        _selectionNotifier.NotifySuccess(result);
+        OnClick_NavigateBackInternal();
+    }
+
+    protected void CancelSelection()
+    {
+        _selectionNotifier.NotifyCancel();
+        OnClick_NavigateBackInternal();
+    }
+
+    private void OnClick_NavigateBackInternal()
+    {
+        if (IsSelectionMode)
+        {
+            if (_selectionNotifier.NotificationPending)
+            {
+                _selectionNotifier.NotifyCancel();
+            }
+
+            IsSelectionMode = false;
+            Deactivate();
+        }
+        else OnClick_NavigateBack();
     }
 
     protected virtual void OnClick_NavigateBack()
@@ -148,6 +221,8 @@ public abstract class SampleViewBase<T> : MonoBehaviour where T : Enum
 
     #region Interface
     protected abstract void OnActivate();
-    protected abstract void OnDeactivate();
+    protected virtual void OnDeactivate()
+    {
+    }
     #endregion
 }

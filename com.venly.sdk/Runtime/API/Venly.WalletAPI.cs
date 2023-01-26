@@ -84,14 +84,14 @@ namespace VenlySDK
                 /// </summary>
                 /// <param name="walletId">The ID of the wallet</param>
                 /// <returns>List of CryptoTokens (ERC21)</returns>
-                public static VyTask<VyCryptoToken[]> GetCryptoTokenBalances(string walletId)
+                public static VyTask<VyCryptoTokenDto[]> GetCryptoTokenBalances(string walletId)
                 {
                     if (string.IsNullOrEmpty(walletId))
-                        return VyTask<VyCryptoToken[]>.Failed(
+                        return VyTask<VyCryptoTokenDto[]>.Failed(
                             VyException.Argument("Parameter cannot be NULL or empty", nameof(walletId)));
 
                     var reqData = VyRequestData.Get($"/api/wallets/{walletId}/balance/tokens", _apiEndpoint);
-                    return Request<VyCryptoToken[]>(reqData);
+                    return Request<VyCryptoTokenDto[]>(reqData);
                 }
 
                 /// <summary>
@@ -213,6 +213,44 @@ namespace VenlySDK
                     return Request<VyWalletValidationDto>(reqData);
                 }
 
+                #region Transfer (Requires Pincode)
+                /// <summary>
+                /// Transfer Native Tokens
+                /// </summary>
+                /// <param name="reqParams">(Required) parameters for the request</param>
+                /// <returns>Transfer Transaction Info</returns>
+                public static VyTask<VyTransferInfoDto> ExecuteNativeTokenTransfer(VyExecuteNativeTokenTransferDto reqParams)
+                {
+                    var reqData = VyRequestData.Post("/api/transactions/execute", _apiEndpoint)
+                        .AddJsonContent(reqParams);
+                    return Request<VyTransferInfoDto>(reqData);
+                }
+
+                /// <summary>
+                /// Transfer ERC20 Tokens
+                /// </summary>
+                /// <param name="reqParams">(Required) parameters for the request</param>
+                /// <returns>Transfer Transaction Info</returns>
+                public static VyTask<VyTransferInfoDto> ExecuteCryptoTokenTransfer(VyExecuteCryptoTokenTransferDto reqParams)
+                {
+                    var reqData = VyRequestData.Post("/api/transactions/execute", _apiEndpoint)
+                        .AddJsonContent(reqParams);
+                    return Request<VyTransferInfoDto>(reqData);
+                }
+
+                /// <summary>
+                /// Transfer ERC1155 or ERC721 Tokens
+                /// </summary>
+                /// <param name="reqParams">(Required) parameters for the request</param>
+                /// <returns>Transfer Transaction Info</returns>
+                public static VyTask<VyTransferInfoDto> ExecuteMultiTokenTransfer(VyExecuteMultiTokenTransferDto reqParams)
+                {
+                    var reqData = VyRequestData.Post("/api/transactions/execute", _apiEndpoint)
+                        .AddJsonContent(reqParams);
+                    return Request<VyTransferInfoDto>(reqData);
+                }
+                #endregion
+
                 #region SWAP
 
                 public static class Swap
@@ -263,42 +301,6 @@ namespace VenlySDK
                     var reqData = VyRequestData.Post("/api/wallets", _apiEndpoint)
                         .AddJsonContent(reqParams);
                     return Request<VyWalletDto>(reqData);
-                }
-
-                /// <summary>
-                /// Transfer a native token
-                /// </summary>
-                /// <param name="reqParams">(Required) parameters for the request</param>
-                /// <returns>Transfer Transaction Info</returns>
-                public static VyTask<VyTransferInfoDto> ExecuteTransfer(VyExecuteTransferDto reqParams)
-                {
-                    var reqData = VyRequestData.Post("/api/transactions/execute", _apiEndpoint)
-                        .AddJsonContent(reqParams);
-                    return Request<VyTransferInfoDto>(reqData);
-                }
-
-                /// <summary>
-                /// Transfer a Fungible Token (FT)
-                /// </summary>
-                /// <param name="reqParams">(Required) parameters for the request</param>
-                /// <returns>Transfer Transaction Info</returns>
-                public static VyTask<VyTransferInfoDto> ExecuteTokenTransfer(VyExecuteTokenTransferDto reqParams)
-                {
-                    var reqData = VyRequestData.Post("/api/transactions/execute", _apiEndpoint)
-                        .AddJsonContent(reqParams);
-                    return Request<VyTransferInfoDto>(reqData);
-                }
-
-                /// <summary>
-                /// Transfer a Non Fungible Token (NFT)
-                /// </summary>
-                /// <param name="reqParams">(Required) parameters for the request</param>
-                /// <returns>Transfer Transaction Info</returns>
-                public static VyTask<VyTransferInfoDto> ExecuteNftTransfer(VyExecuteNftTransferDto reqParams)
-                {
-                    var reqData = VyRequestData.Post("/api/transactions/execute", _apiEndpoint)
-                        .AddJsonContent(reqParams);
-                    return Request<VyTransferInfoDto>(reqData);
                 }
 
                 /// <summary>

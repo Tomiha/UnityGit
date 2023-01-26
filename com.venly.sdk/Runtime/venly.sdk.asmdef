@@ -1,9 +1,7 @@
 {
     "name": "VenlySDK",
     "rootNamespace": "",
-    "references": [
-        "VenlySDK.ThirdParty"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

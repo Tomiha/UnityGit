@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement class="unity-base-field" style="flex-direction: row;">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="lbl-label" class="unity-base-field__label" />
+        <ui:Label text="Valueasdfasfasfasfasfsfsfsfsfsfasfasfasfsf" display-tooltip-when-elided="true" name="lbl-text" class="unity-base-field__label" style="flex-grow: 1; white-space: normal; flex-shrink: 1;" />
+    </ui:VisualElement>
+</ui:UXML>

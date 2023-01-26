@@ -1,9 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Samples/Sample_Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
     <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
         <SampleControl_Header />
         <ui:VisualElement style="margin-left: 10px; margin-right: 10px; margin-bottom: 10px;">
-            <ui:VisualElement name="container-details" style="margin-left: 0; margin-right: 0; margin-top: 10px; margin-bottom: 20px; border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; flex-shrink: 0;">
+            <ui:VisualElement name="wallet-details" style="margin-left: 0; margin-right: 0; margin-top: 10px; margin-bottom: 20px; border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; flex-shrink: 0;">
                 <ui:VisualElement name="details-chain" class="main-labelfield-container" style="flex-direction: row;">
                     <ui:Label text="Chain:" display-tooltip-when-elided="true" class="main-labelfield-key" />
                     <ui:Label display-tooltip-when-elided="true" name="lbl-wallet-chain" class="main-labelfield-value" />
@@ -32,33 +32,38 @@
                     <ui:Label text="Balance: " display-tooltip-when-elided="true" class="main-labelfield-key" />
                     <ui:Label display-tooltip-when-elided="true" name="lbl-wallet-balance" class="main-labelfield-value" />
                 </ui:VisualElement>
-                <ui:VisualElement style="flex-direction: column; margin-top: 10px; justify-content: center; align-items: center;">
-                    <ui:Button text="Archive" display-tooltip-when-elided="true" name="btn-archive" class="main-button-style" style="min-width: auto;" />
-                </ui:VisualElement>
                 <ui:Label text="[ARCHIVED]" display-tooltip-when-elided="true" name="lbl-archived" style="color: rgb(255, 0, 0); -unity-font-style: bold; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; position: absolute; top: 10px; right: 10px; display: none;" />
             </ui:VisualElement>
-            <ui:Foldout text="Crypto Tokens [ERC20]" name="fld-crypto-tokens">
-                <ui:VisualElement>
-                    <ui:ListView focusable="true" virtualization-method="DynamicHeight" name="lst-crypto-tokens" />
+            <ui:VisualElement name="list-details">
+                <ui:VisualElement style="align-items: center; flex-direction: row; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
+                    <ui:Label text="CryptoTokens (ERC20)" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 15px;" />
+                    <ui:VisualElement style="flex-grow: 1; align-items: center;" />
+                    <ui:Label text="0 Tokens" display-tooltip-when-elided="true" name="lbl-cryptotoken-amount" />
+                    <ui:Button text="View" display-tooltip-when-elided="true" name="btn-cryptotokens" class="main-button-style" style="min-width: auto; padding-left: 20px; padding-right: 20px; font-size: 15px;" />
                 </ui:VisualElement>
-            </ui:Foldout>
-            <ui:Foldout text="Multi Tokens [ERC1155/721]" name="fld-multi-tokens">
-                <ui:Foldout text="Non Fungible (NFT)" name="fld-multi-nonfungible">
-                    <ui:VisualElement>
-                        <ui:ListView focusable="true" virtualization-method="DynamicHeight" name="lst-multi-nonfungible" />
-                    </ui:VisualElement>
-                </ui:Foldout>
-                <ui:Foldout text="Fungible (FT)" name="fld-multi-fungible">
-                    <ui:VisualElement>
-                        <ui:ListView focusable="true" virtualization-method="DynamicHeight" name="lst-multi-fungible" />
-                    </ui:VisualElement>
-                </ui:Foldout>
-            </ui:Foldout>
-            <ui:Foldout text="Events" name="fld-wallet-events">
-                <ui:VisualElement>
-                    <ui:ListView focusable="true" virtualization-method="DynamicHeight" name="lst-wallet-events" />
+                <ui:VisualElement style="align-items: center; flex-direction: row; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
+                    <ui:Label text="MultiTokens FT (ERC1155)" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 15px;" />
+                    <ui:VisualElement style="flex-grow: 1; align-items: center;" />
+                    <ui:Label text="0 Tokens" display-tooltip-when-elided="true" name="lbl-multitoken-ft-amount" />
+                    <ui:Button text="View" display-tooltip-when-elided="true" name="btn-multitokens-f" class="main-button-style" style="min-width: auto; padding-left: 20px; padding-right: 20px; font-size: 15px;" />
                 </ui:VisualElement>
-            </ui:Foldout>
+                <ui:VisualElement style="align-items: center; flex-direction: row; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
+                    <ui:Label text="MultiTokens NFT (ERC1155/720)" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 15px;" />
+                    <ui:VisualElement style="flex-grow: 1; align-items: center;" />
+                    <ui:Label text="0 Tokens" display-tooltip-when-elided="true" name="lbl-multitoken-nft-amount" />
+                    <ui:Button text="View" display-tooltip-when-elided="true" name="btn-multitokens-nf" class="main-button-style" style="min-width: auto; padding-left: 20px; padding-right: 20px; font-size: 15px;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="align-items: center; flex-direction: row; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
+                    <ui:Label text="Wallet Events" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 15px;" />
+                    <ui:VisualElement style="flex-grow: 1; align-items: center;" />
+                    <ui:Label text="0 Tokens" display-tooltip-when-elided="true" name="lbl-wallet-event-amount" />
+                    <ui:Button text="View" display-tooltip-when-elided="true" name="btn-events" class="main-button-style" style="min-width: auto; padding-left: 20px; padding-right: 20px; font-size: 15px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="actions" style="margin-top: 10px; align-items: center;">
+                <ui:Button text="Archive Wallet" display-tooltip-when-elided="true" name="btn-archive" class="main-button-style" />
+                <ui:Button text="Transfer MATIC" display-tooltip-when-elided="true" name="btn-transfer" class="main-button-style" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

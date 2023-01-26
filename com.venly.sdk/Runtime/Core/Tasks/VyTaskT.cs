@@ -15,6 +15,10 @@ namespace VenlySDK.Core
         private VyTask<T> _baseTask;
         private TaskCompletionSource<VyTaskResult<T>> _nativeTaskCompletionSource;
 
+        public bool NotificationPending => _notificationPending;
+        private bool _notificationPending = true;
+
+
         private VyTaskNotifier()
         {
             _nativeTaskCompletionSource = new TaskCompletionSource<VyTaskResult<T>>();
@@ -53,14 +57,27 @@ namespace VenlySDK.Core
             }
         }
 
+        private bool CanNotify()
+        {
+            if (_notificationPending)
+            {
+                _notificationPending = false;
+                return true;
+            }
+
+            throw new Exception("TaskNotifier can't notify multiple times.");
+        }
+
         public void NotifySuccess(T data)
         {
-            _nativeTaskCompletionSource.SetResult(new VyTaskResult<T>(data));
+            if(CanNotify())
+                _nativeTaskCompletionSource.SetResult(new VyTaskResult<T>(data));
         }
 
         public void NotifyFail(Exception ex)
         {
-            _nativeTaskCompletionSource.SetResult(new VyTaskResult<T>(ex));
+            if (CanNotify())
+                _nativeTaskCompletionSource.SetResult(new VyTaskResult<T>(ex));
         }
 
         public void NotifyFail(string msg)
@@ -70,12 +87,14 @@ namespace VenlySDK.Core
 
         public void NotifyCancel()
         {
-            _nativeTaskCompletionSource.SetCanceled();
+            if (CanNotify())
+                _nativeTaskCompletionSource.SetCanceled();
         }
 
         public void Notify(VyTaskResult<T> result)
         {
-            _nativeTaskCompletionSource.SetResult(result);
+            if (CanNotify())
+                _nativeTaskCompletionSource.SetResult(result);
         }
     }
 
@@ -95,6 +114,7 @@ namespace VenlySDK.Core
         private Action<T> _onSuccessCallback;
         private Action<Exception> _onFailCallback;
         private Action<VyTaskResult<T>> _onCompleteCallback;
+        private Action _onCancelCallback;
         private Action _onFinallyCallback;
 
         private VyTaskAwaiter<T> _awaiter;
@@ -121,7 +141,11 @@ namespace VenlySDK.Core
                     }
                     else if (task.IsCanceled)
                     {
-                        _taskResult = null;
+                        _taskResult = new VyTaskResult<T>(new OperationCanceledException())
+                        {
+                            Cancelled = true
+                        };
+
                         _state = eVyTaskState.Cancelled;
                     }
 
@@ -216,7 +240,8 @@ namespace VenlySDK.Core
                     CallFail();
                     break;
                 case eVyTaskState.Cancelled:
-                    throw new Exception("VyTask \'{HandleCompletion}\' >> Task Canceled (todo)");
+                    CallCancel();
+                    break;
             }
 
             CallComplete();
@@ -234,6 +259,12 @@ namespace VenlySDK.Core
             if (_onFailCallback == null) return;
             _onFailCallback.Invoke(_taskResult.Exception);
             ExceptionConsumed(true);
+        }
+
+        private void CallCancel()
+        {
+            if (_onCancelCallback == null) return;
+            _onCancelCallback.Invoke();
         }
 
         private void CallComplete()
@@ -260,14 +291,18 @@ namespace VenlySDK.Core
             return t;
         }
 
-        public static VyTask<T> Failed(Exception ex)
+        public static VyTask<T> Failed(Exception ex, string identifier = "")
         {
-            return new VyTask<T>(ex);
+            var t = new VyTask<T>(ex);
+            t.SetIdentifier(identifier);
+            return t;
         }
 
-        public static VyTask<T> Failed(string msg)
+        public static VyTask<T> Failed(string msg, string identifier = "")
         {
-            return new VyTask<T>(new Exception(msg));
+            var t = new VyTask<T>(new Exception(msg));
+            t.SetIdentifier(identifier);
+            return t;
         }
 
         #endregion

@@ -39,7 +39,7 @@ public class ApiExplorer_CreateUserVC : SampleViewBase<eApiExplorerViewId>
         
     }
 
-#if !ENABLE_VENLY_DEVMODE
+#if ENABLE_VENLY_PLAYFAB
     private void onClick_CreateUser()
     {
         ViewManager.Loader.Show("Logging in...");
@@ -58,7 +58,7 @@ public class ApiExplorer_CreateUserVC : SampleViewBase<eApiExplorerViewId>
                 var createParams = new VyCreateWalletDto
                 {
                     Chain = eVyChain.Matic,
-                    Description = $"API Explorer wallet created for \'{VenlySettings.BackendProvider}\' user",
+                    Description = $"API Explorer wallet created for \'{VenlySettings.BackendProvider}\' user.\n(PlayFabId={loginResult.PlayFabId})",
                     Identifier = $"{VenlySettings.BackendProvider}-provider-wallet",
                     Pincode = _txtPincode.text,
                     WalletType = eVyWalletType.WhiteLabel

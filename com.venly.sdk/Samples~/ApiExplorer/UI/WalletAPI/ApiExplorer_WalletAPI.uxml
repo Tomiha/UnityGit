@@ -1,10 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Samples/Sample_Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
     <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
         <SampleControl_Header name="view-header" header-title="Wallet API" />
         <ui:VisualElement style="flex-grow: 1; justify-content: center; align-items: center;">
             <ui:Button text="View Wallets" display-tooltip-when-elided="true" enable-rich-text="true" name="btn-view-wallets" class="main-button-style" style="align-items: auto; justify-content: flex-start;" />
             <ui:Button text="Create Wallet" display-tooltip-when-elided="true" name="btn-create-wallet" class="main-button-style" style="align-items: auto; justify-content: flex-start;" />
+            <ui:Button text="Transfer Native Token" display-tooltip-when-elided="true" name="btn-transfer-nativetoken" tooltip="Transfer a Blockchain Native Token" class="main-button-style" style="align-items: auto; justify-content: flex-start;" />
+            <ui:Button text="Transfer MultiToken" display-tooltip-when-elided="true" name="btn-transfer-multitoken" tooltip="Transfer a ERC1155 or ERC721 Token" class="main-button-style" style="align-items: auto; justify-content: flex-start;" />
+            <ui:Button text="Transfer CryptoToken" display-tooltip-when-elided="true" name="btn-transfer-cryptotoken" tooltip="Transfer a ERC20 token" class="main-button-style" style="align-items: auto; justify-content: flex-start;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

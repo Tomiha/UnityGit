@@ -5,6 +5,8 @@ public class ApiExplorer_ViewManager : SampleViewManager<eApiExplorerViewId>
     {
         switch (viewId)
         {
+            case eApiExplorerViewId.Unknown: return "Unknown";
+            case eApiExplorerViewId.Count: return "Ignore";
             case eApiExplorerViewId.Landing_DevMode: return "Venly SDK | API Explorer";
             case eApiExplorerViewId.Landing_RuntimeMode: return "Venly SDK | API Explorer";
             case eApiExplorerViewId.Landing_Auth: return "Venly SDK | API Explorer";
@@ -14,8 +16,17 @@ public class ApiExplorer_ViewManager : SampleViewManager<eApiExplorerViewId>
             case eApiExplorerViewId.WalletApi_ViewWallets: return "View Wallets";
             case eApiExplorerViewId.WalletApi_CreateWallet: return "Create Wallet";
             case eApiExplorerViewId.WalletApi_WalletDetails: return "Wallet Details";
+            case eApiExplorerViewId.WalletApi_ViewMultiTokens: return "Multi Tokens";
+            case eApiExplorerViewId.WalletApi_ViewCryptoTokens: return "Crypto Tokens";
             case eApiExplorerViewId.Shared_MultiTokenDetails: return "Multi Token";
             case eApiExplorerViewId.Shared_CryptoTokenDetails: return "Crypto Token";
+            case eApiExplorerViewId.WalletApi_TransferNativeToken: return "Transfer Native Token";
+            case eApiExplorerViewId.WalletApi_ViewWalletEvents: return "Wallet Events";
+            case eApiExplorerViewId.WalletApi_TransferCryptoToken: return "Transfer CryptoToken";
+            case eApiExplorerViewId.WalletApi_TransferMultiToken: return "Transfer MultiToken";
+            case eApiExplorerViewId.WalletApi_TransactionDetails: return "Transaction Details";
+            case eApiExplorerViewId.Main_NftApi: return "NFT API";
+            case eApiExplorerViewId.NftApi_ViewContracts: return "View Contracts";
             default: return "Untitled";
         }
     }
@@ -36,6 +47,20 @@ public enum eApiExplorerViewId : uint
     WalletApi_WalletDetails,
     Shared_MultiTokenDetails,
     Shared_CryptoTokenDetails,
+    WalletApi_ViewMultiTokens,
+    WalletApi_ViewCryptoTokens,
+    WalletApi_ViewWalletEvents,
+    WalletApi_TransferNativeToken,
+    WalletApi_TransferCryptoToken,
+    WalletApi_TransferMultiToken,
+    WalletApi_TransactionDetails,
+
+    Main_NftApi,
+    NftApi_ViewContracts,
+    NftApi_ContractDetails,
+    NftApi_ViewTokenTypes,
+    NftApi_TokenTypeDetails,
+    NftApi_MintToken,
 
     Count
 }
@@ -43,4 +68,7 @@ public enum eApiExplorerViewId : uint
 public static class ApiExplorer_GlobalKeys
 {
     public const string DATA_AllWalletsCached = "all-wallets-cache";
+    public const string DATA_AllContractsCached = "all-contracts-cache";
+    public const string DATA_Contract = "contract";
+    public const string DATA_Wallet = "wallet";
 }

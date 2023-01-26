@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Proto.Promises;
 using VenlySDK.Core;
 using VenlySDK.Editor.Utils;
 using VenlySDK.Models;
@@ -20,7 +19,8 @@ namespace VenlySDK.Editor
             _requester = new VyEditorRequester();
             IsInitialized = true;
 
-            Promise.Config.ForegroundContext = SynchronizationContext.Current;
+            //Make sure the Task System is initialized
+            VyTaskBase.Initialize();
         }
 
         #region AUTH

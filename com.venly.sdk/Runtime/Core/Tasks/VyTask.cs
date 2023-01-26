@@ -8,7 +8,7 @@ using VenlySDK.Utils;
 
 namespace VenlySDK.Core
 {
-    #region TASK_NOTIFIER<T>
+    #region TASK_NOTIFIER
     public class VyTaskNotifier
     {
         public VyTask Task => _baseTask;
@@ -89,7 +89,7 @@ namespace VenlySDK.Core
 
     #endregion
 
-    #region TASK<T>
+    #region TASK
 
     [AsyncMethodBuilder(typeof(VyTaskAsyncMethodBuilder))]
     public class VyTask : VyTaskBase
@@ -288,14 +288,18 @@ namespace VenlySDK.Core
             return t;
         }
 
-        public static VyTask Failed(Exception ex)
+        public static VyTask Failed(Exception ex, string identifier = null)
         {
-            return new VyTask(ex);
+            var t = new VyTask(ex);
+            t.SetIdentifier(identifier);
+            return t;
         }
 
-        public static VyTask Failed(string msg)
+        public static VyTask Failed(string msg, string identifier = null)
         {
-            return new VyTask(new Exception(msg));
+            var t = new VyTask(new Exception(msg));
+            t.SetIdentifier(identifier);
+            return t;
         }
 
         #endregion
@@ -368,7 +372,7 @@ namespace VenlySDK.Core
 
     #endregion
 
-    #region TASK_AWAITER<T>
+    #region TASK_AWAITER
     public class VyTaskResultAwaiter : ICriticalNotifyCompletion
     {
         private readonly VyTask _sourceTask;
@@ -459,7 +463,7 @@ namespace VenlySDK.Core
 
     #endregion
 
-    #region TASK_ASYNC_METHOD_BUILDER<T>
+    #region TASK_ASYNC_METHOD_BUILDER
 
     public struct VyTaskAsyncMethodBuilder
     {

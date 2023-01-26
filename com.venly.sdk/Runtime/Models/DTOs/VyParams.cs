@@ -37,27 +37,27 @@ namespace VenlySDK.Models
     #region TransferRequests
 
     [Serializable]
-    public class VyExecuteTransferDto : VyExecuteBaseDto<VyTransferRequest>
+    public class VyExecuteNativeTokenTransferDto : VyExecuteBaseDto<VyTransferNativeRequest>
     {
     }
 
     [Serializable]
-    public class VyExecuteTokenTransferDto : VyExecuteBaseDto<VyTokenTransferRequest>
+    public class VyExecuteCryptoTokenTransferDto : VyExecuteBaseDto<VyTransferCryptoRequest>
     {
     }
 
     [Serializable]
-    public class VyExecuteNftTransferDto : VyExecuteBaseDto<VyNftTransferRequest>
+    public class VyExecuteMultiTokenTransferDto : VyExecuteBaseDto<VyTransferMultiRequest>
     {
     }
 
     [Serializable]
-    public class VyExecuteGasTransferDto : VyExecuteBaseDto<VyGasTransferRequest>
+    public class VyExecuteGasTransferDto : VyExecuteBaseDto<VyTransferGasRequest>
     {
     }
 
     [Serializable]
-    public class VyExecuteContractDto : VyExecuteBaseDto<VyContractExecutionRequest>
+    public class VyExecuteContractDto : VyExecuteBaseDto<VyExecuteContractRequest>
     {
     }
 
@@ -75,7 +75,7 @@ namespace VenlySDK.Models
     }
 
     [Serializable]
-    public class VyTransferRequest : VyTransferRequestBase
+    public class VyTransferNativeRequest : VyTransferRequestBase
     {
         [JsonProperty("type")] public string Type => "TRANSFER";
         [JsonProperty("data")] public string Data { get; set; }
@@ -83,33 +83,33 @@ namespace VenlySDK.Models
     }
 
     [Serializable]
-    public class VyTokenTransferRequest : VyTransferRequestBase
+    public class VyTransferCryptoRequest : VyTransferRequestBase
     {
         [JsonProperty("type")] public string Type => "TOKEN_TRANSFER";
         [JsonProperty("tokenAddress")] public string TokenAddress { get; set; }
         [JsonProperty("value")] public double Value { get; set; }
-        [JsonProperty("tokenId")] public Int64 TokenId { get; set; }
     }
 
     [Serializable]
-    public class VyNftTransferRequest : VyTransferRequestBase
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
+    public class VyTransferMultiRequest : VyTransferRequestBase
     {
         [JsonProperty("type")] public string Type => "NFT_TRANSFER";
         [JsonProperty("tokenAddress")] public string TokenAddress { get; set; }
         [JsonProperty("from")] public string FromAddress { get; set; }
-        [JsonProperty("amount")] public int Amount { get; set; }
+        [JsonProperty("amount")] public int? Amount { get; set; }
         [JsonProperty("tokenId")] public int TokenId { get; set; }
     }
 
     [Serializable]
-    public class VyGasTransferRequest : VyTransferRequestBase
+    public class VyTransferGasRequest : VyTransferRequestBase
     {
         [JsonProperty("type")] public string Type => "GAS_TRANSFER";
         [JsonProperty("value")] public double Value { get; set; }
     }
 
     [Serializable]
-    public class VyContractExecutionRequest : VyTransferRequestBase
+    public class VyExecuteContractRequest : VyTransferRequestBase
     {
         [JsonProperty("type")] public string Type => "CONTRACT_EXECUTION";
         [JsonProperty("functionName")] public string FunctionName { get; set; }
@@ -265,6 +265,22 @@ namespace VenlySDK.Models
 
         [JsonProperty("typeId")] public int TokenId { get; set; }
         [JsonProperty("destinations")] public string[] Destinations { get; set; }
+    }
+
+    [Serializable]
+    public class VyMintTokenDto
+    {
+        [JsonIgnore] public int ContractId { get; set; }
+        [JsonIgnore] public int TokenId { get; set; }
+
+        [JsonProperty("destinations")] public VyMintDestinationDto[] Destinations { get; set; }
+    }
+
+    [Serializable]
+    public class VyMintDestinationDto
+    {
+        [JsonProperty("address")] public string Address { get; set; }
+        [JsonProperty("amount")] public int Amount { get; set; }
     }
 
     [Serializable]

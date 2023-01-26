@@ -9,7 +9,7 @@ namespace VenlySDK.Models
     [Serializable]
     public class VyTokenTypeDto
     {
-        [JsonProperty("id")] public long Id { get; set; }
+        [JsonProperty("id")] public int Id { get; set; }
         [JsonProperty("name")] public string Name { get; set; }
         [JsonProperty("description")] public string Description { get; set; }
         [JsonProperty("image")] public string Image { get; set; }
@@ -85,6 +85,8 @@ namespace VenlySDK.Models
 
         public bool HasAttribute(string name)
         {
+            if (Attributes == null) return false;
+
             return Attributes.Any(att => att.Name.Equals(name));
         }
 
@@ -106,7 +108,7 @@ namespace VenlySDK.Models
     /// ERC20 Token
     /// </summary>
     [Serializable]
-    public class VyCryptoToken
+    public class VyCryptoTokenDto
     {
         [JsonProperty("tokenAddress")] public string TokenAddress { get; set; }
         [JsonProperty("rawBalance")] public string RawBalance { get; set; }
@@ -151,5 +153,13 @@ namespace VenlySDK.Models
 
         [JsonProperty("metadata")] public JObject Metadata { get; private set; } //todo: create meta class?
         [JsonProperty("mintedTokens")] public VyMintedTokenDestination[] MintedTokens { get; private set; }
+    }
+
+    public class VyMintedTokenResultDto
+    {
+        [JsonProperty("transactionHash")] public string TransactioHash { get; set; }
+        [JsonProperty("metadata")] public JObject Metadata { get; set; }
+        [JsonProperty("destinations")] public string[] Destinations { get; set; }
+        [JsonProperty("tokenIds")] public int[] TokenIds { get; set; }
     }
 }

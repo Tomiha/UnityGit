@@ -11,22 +11,15 @@ public class ApiExplorer_WalletApiVC : SampleViewBase<eApiExplorerViewId>
     {
         ShowNavigateBack = true;
 
-        BindButton("btn-view-wallets", onClick_ViewWallets);
-        BindButton("btn-create-wallet", onClick_CreateWallet);
+        BindButton_SwitchView("btn-view-wallets", eApiExplorerViewId.WalletApi_ViewWallets);
+        BindButton_SwitchView("btn-create-wallet", eApiExplorerViewId.WalletApi_CreateWallet);
+        BindButton_SwitchView("btn-transfer-nativetoken", eApiExplorerViewId.WalletApi_TransferNativeToken);
+        BindButton_SwitchView("btn-transfer-multitoken", eApiExplorerViewId.WalletApi_TransferMultiToken);
+        BindButton_SwitchView("btn-transfer-cryptotoken", eApiExplorerViewId.WalletApi_TransferCryptoToken);
     }
 
     protected override void OnDeactivate()
     {
         
-    }
-
-    private void onClick_ViewWallets()
-    {
-        ViewManager.SwitchView(eApiExplorerViewId.WalletApi_ViewWallets);
-    }
-
-    private void onClick_CreateWallet()
-    {
-        ViewManager.SwitchView(eApiExplorerViewId.WalletApi_CreateWallet);
     }
 }

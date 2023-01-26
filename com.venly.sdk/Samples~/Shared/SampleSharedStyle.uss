@@ -16,6 +16,21 @@
     border-bottom-right-radius: 22px;
     -unity-font-style: bold;
     font-size: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.main-button-style.button-select {
+    min-width: 20px;
+    font-size: 16px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
 }
 
 .list-item-style {
@@ -47,7 +62,7 @@
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
-    min-width: 100px;
+    min-width: 120px;
     -unity-font-style: bold;
 }
 
@@ -64,4 +79,31 @@
 
 .main-labelfield-container {
     flex-wrap: wrap;
+}
+
+.unity-base-field__label > mainlabelfield_label {
+}
+
+.unity-text-field__label > mainlabelfield_text {
+}
+
+.unity-base-field > mainlabelfield_base {
+}
+
+.button-select {
+    height: 30px;
+    min-width: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 16px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.main-labelfield-details {
+    margin-bottom: -7px;
 }

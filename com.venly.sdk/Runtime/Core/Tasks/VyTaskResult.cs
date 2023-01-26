@@ -12,6 +12,7 @@ namespace VenlySDK.Core
     public class VyTaskResult
     {
         [JsonProperty("success")] public bool Success { get; set; }
+        [JsonProperty("cancelled")] public bool Cancelled { get; set; }
         [JsonProperty("exception")] public Exception Exception { get; set; }
 
 #if ENABLE_VENLY_AZURE
@@ -28,6 +29,8 @@ namespace VenlySDK.Core
         {
             Success = false;
             Exception = ex;
+
+            if (ex is OperationCanceledException) Cancelled = true;
         }
     }
 

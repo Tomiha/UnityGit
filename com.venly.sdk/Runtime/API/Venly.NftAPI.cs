@@ -167,6 +167,14 @@ namespace VenlySDK
                     return Request<VyTokenTypeDto>(reqData);
                 }
 
+                public static VyTask<VyMintedTokenResultDto[]> MintToken(VyMintTokenDto reqParams)
+                {
+                    var reqData = VyRequestData
+                        .Post($"/api/minter/contracts/{reqParams.ContractId}/types/{reqParams.TokenId}/tokens", _apiEndpoint)
+                        .AddJsonContent(reqParams);
+                    return Request<VyMintedTokenResultDto[]>(reqData);
+                }
+
                 /// <summary>
                 /// Mint a Non-Fungible Token (NFT) based on a specific Token-Type (Template)
                 /// [/api/minter/contracts/:contractId/tokens/non-fungible]
@@ -232,7 +240,7 @@ namespace VenlySDK
                 /// </summary>
                 /// <param name="contractId"></param>
                 /// <returns> void promise </returns>
-                public static VyTask<VyTaskVoid> ArchiveContract(string applicationId, int contractId)
+                public static VyTask<VyTaskVoid> ArchiveContract(int contractId)
                 {
                     var reqData = VyRequestData.Delete($"/api/minter/contracts/{contractId}", _apiEndpoint);
                     return Request<VyTaskVoid>(reqData);
