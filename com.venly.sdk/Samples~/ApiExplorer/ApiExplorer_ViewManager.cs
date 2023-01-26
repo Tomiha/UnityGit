@@ -27,6 +27,10 @@ public class ApiExplorer_ViewManager : SampleViewManager<eApiExplorerViewId>
             case eApiExplorerViewId.WalletApi_TransactionDetails: return "Transaction Details";
             case eApiExplorerViewId.Main_NftApi: return "NFT API";
             case eApiExplorerViewId.NftApi_ViewContracts: return "View Contracts";
+            case eApiExplorerViewId.NftApi_ContractDetails: return "Contract Details";
+            case eApiExplorerViewId.NftApi_ViewTokenTypes: return "View Token Types";
+            case eApiExplorerViewId.NftApi_TokenTypeDetails: return "Token Type Details";
+            case eApiExplorerViewId.NftApi_MintToken: return "Mint Token";
             default: return "Untitled";
         }
     }

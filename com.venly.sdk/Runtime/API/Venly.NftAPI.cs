@@ -167,41 +167,47 @@ namespace VenlySDK
                     return Request<VyTokenTypeDto>(reqData);
                 }
 
-                public static VyTask<VyMintedTokenResultDto[]> MintToken(VyMintTokenDto reqParams)
+                /// <summary>
+                /// Mint a Token based on a specific Token-Type (template)
+                /// [api/minter/contracts/:contractId/types/:tokenTypeId/tokens
+                /// </summary>
+                /// <param name="reqParams">Required parameters for the request</param>
+                /// <returns>Information on the Minted Tokens</returns>
+                public static VyTask<VyMintedTokenInfoDto[]> MintToken(VyMintTokenDto reqParams)
                 {
                     var reqData = VyRequestData
                         .Post($"/api/minter/contracts/{reqParams.ContractId}/types/{reqParams.TokenId}/tokens", _apiEndpoint)
                         .AddJsonContent(reqParams);
-                    return Request<VyMintedTokenResultDto[]>(reqData);
+                    return Request<VyMintedTokenInfoDto[]>(reqData);
                 }
 
-                /// <summary>
-                /// Mint a Non-Fungible Token (NFT) based on a specific Token-Type (Template)
-                /// [/api/minter/contracts/:contractId/tokens/non-fungible]
-                /// </summary>
-                /// <param name="reqParams">Required parameters for the request</param>
-                /// <returns>Information on the Minted Tokens</returns>
-                public static VyTask<VyMintedTokenInfoDto> MintTokenNFT(VyMintNonFungibleTokenDto reqParams)
-                {
-                    var reqData = VyRequestData.Post($"/api/minter/contracts/{reqParams.ContractId}/tokens/non-fungible",
-                            _apiEndpoint)
-                        .AddJsonContent(reqParams);
-                    return Request<VyMintedTokenInfoDto>(reqData);
-                }
+                ///// <summary>
+                ///// Mint a Non-Fungible Token (NFT) based on a specific Token-Type (Template)
+                ///// [/api/minter/contracts/:contractId/tokens/non-fungible]
+                ///// </summary>
+                ///// <param name="reqParams">Required parameters for the request</param>
+                ///// <returns>Information on the Minted Tokens</returns>
+                //public static VyTask<VyMintedTokenInfoDto[]> MintTokenNFT(VyMintNonFungibleTokenDto reqParams)
+                //{
+                //    var reqData = VyRequestData.Post($"/api/minter/contracts/{reqParams.ContractId}/tokens/non-fungible",
+                //            _apiEndpoint)
+                //        .AddJsonContent(reqParams);
+                //    return Request<VyMintedTokenInfoDto[]>(reqData);
+                //}
 
-                /// <summary>
-                /// Mint a Fungible Token (FT) based on a specific Token-Type (Template)
-                /// [/api/minter/contracts/:contractId/tokens/fungible]
-                /// </summary>
-                /// <param name="reqParams">Required parameters for the request</param>
-                /// <returns>Information on the Minted Tokens</returns>
-                public static VyTask<VyMintedTokenInfoDto> MintTokenFT(VyMintFungibleTokenDto reqParams)
-                {
-                    var reqData = VyRequestData.Post($"/api/minter/contracts/{reqParams.ContractId}/tokens/fungible",
-                            _apiEndpoint)
-                        .AddJsonContent(reqParams);
-                    return Request<VyMintedTokenInfoDto>(reqData);
-                }
+                ///// <summary>
+                ///// Mint a Fungible Token (FT) based on a specific Token-Type (Template)
+                ///// [/api/minter/contracts/:contractId/tokens/fungible]
+                ///// </summary>
+                ///// <param name="reqParams">Required parameters for the request</param>
+                ///// <returns>Information on the Minted Tokens</returns>
+                //public static VyTask<VyMintedTokenInfoDto[]> MintTokenFT(VyMintFungibleTokenDto reqParams)
+                //{
+                //    var reqData = VyRequestData.Post($"/api/minter/contracts/{reqParams.ContractId}/tokens/fungible",
+                //            _apiEndpoint)
+                //        .AddJsonContent(reqParams);
+                //    return Request<VyMintedTokenInfoDto[]>(reqData);
+                //}
 
                 /// <summary>
                 /// Update the metadata of a Token-Type (NFT Template)
