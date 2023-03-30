@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
-using VenlySDK.Models;
+using VenlySDK.Models.Nft;
+using VenlySDK.Models.Shared;
 
 namespace VenlySDK.Data
 {
@@ -16,9 +17,9 @@ namespace VenlySDK.Data
             public string Name = "";
             public string Value = "";
 
-            public VyTokenAttribute ToModel()
+            public VyTokenAttributeDto ToModel()
             {
-                return new VyTokenAttribute()
+                return new VyTokenAttributeDto()
                 {
                     Type = Type,
                     Name = Name,
@@ -26,7 +27,7 @@ namespace VenlySDK.Data
                 };
             }
 
-            public static _TokenAttribute FromModel(VyTokenAttribute att)
+            public static _TokenAttribute FromModel(VyTokenAttributeDto att)
             {
                 return new _TokenAttribute()
                 {

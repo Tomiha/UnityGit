@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" style="flex-grow: 1; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.82);">
+        <ui:VisualElement style="align-items: center;">
+            <ui:VisualElement style="align-items: center; margin-bottom: 40px;">
+                <ui:Label display-tooltip-when-elided="true" name="lbl-info" text="This is just some information that may or may not overflow..." style="flex-grow: 1; flex-wrap: wrap; white-space: normal; padding-left: 20px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; color: rgb(16, 229, 38);" />
+            </ui:VisualElement>
+            <ui:Button text="OK" display-tooltip-when-elided="true" name="btn-ok" class="main-button-style" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

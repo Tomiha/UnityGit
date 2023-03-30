@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 
 namespace VenlySDK.Data
 {

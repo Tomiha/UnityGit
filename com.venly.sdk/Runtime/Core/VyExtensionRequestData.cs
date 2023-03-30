@@ -1,4 +1,4 @@
-﻿using VenlySDK.Models;
+﻿using VenlySDK.Models.Shared;
 
 namespace VenlySDK.Core
 {

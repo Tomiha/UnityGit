@@ -1,7 +1,8 @@
 using System;
 using UnityEngine.UIElements;
 using VenlySDK;
-using VenlySDK.Models;
+using VenlySDK.Models.Nft;
+using VenlySDK.Models.Wallet;
 
 public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
 {
@@ -176,7 +177,7 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
             TokenId = _sourceTokenType.Id,
             Destinations = new []
             {
-                new VyMintDestinationDto
+                new VyMintTokenDto.VyMintDestinationDto
                 {
                     Address = _txtTargetAddress.value,
                     Amount = int.Parse(_txtAmount.value)
@@ -189,9 +190,7 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
             .OnSuccess(mintInfo =>
             {
                 //todo show confirmation
-                //ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_hash", transferInfo.TransactionHash);
-                //ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_chain", _sourceWallet.Chain);
-                //ViewManager.SwitchView(eApiExplorerViewId.WalletApi_TransactionDetails);
+                ViewManager.Info.Show("Token successfully minted!");
             })
             .OnFail(ViewManager.HandleException)
             .Finally(ViewManager.Loader.Hide);
@@ -199,50 +198,4 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
         ViewManager.HandleException(new Exception("Minting only possible on a backend."));
 #endif
     }
-
-    //private void MintNFT()
-    //{
-    //    var reqParams = new VyMintNonFungibleTokenDto()
-    //    {
-    //        ContractId = _sourceContract.Id,
-    //        TokenId = _sourceTokenType.Id,
-    //        Amounts = new[] { int.Parse(_txtAmount.value) },
-    //        Destinations = new[] { _txtTargetAddress.value }
-    //    };
-
-    //    ViewManager.Loader.Show("Minting...");
-    //    Venly.NftAPI.Server.MintTokenNFT(reqParams)
-    //        .OnSuccess(mintInfo =>
-    //        {
-    //            //todo show confirmation
-    //            //ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_hash", transferInfo.TransactionHash);
-    //            //ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_chain", _sourceWallet.Chain);
-    //            //ViewManager.SwitchView(eApiExplorerViewId.WalletApi_TransactionDetails);
-    //        })
-    //        .OnFail(ViewManager.HandleException)
-    //        .Finally(ViewManager.Loader.Hide);
-    //}
-
-    //private void MintFT()
-    //{
-    //    var reqParams = new VyMintFungibleTokenDto()
-    //    {
-    //        ContractId = _sourceContract.Id,
-    //        TokenId = _sourceTokenType.Id,
-    //        Amounts = new []{int.Parse(_txtAmount.value)},
-    //        Destinations = new []{_txtTargetAddress.value}
-    //    };
-
-    //    ViewManager.Loader.Show("Minting...");
-    //    Venly.NftAPI.Server.MintTokenFT(reqParams)
-    //        .OnSuccess(mintInfo =>
-    //        {
-    //            //todo show confirmation
-    //            //ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_hash", transferInfo.TransactionHash);
-    //            //ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_chain", _sourceWallet.Chain);
-    //            //ViewManager.SwitchView(eApiExplorerViewId.WalletApi_TransactionDetails);
-    //        })
-    //        .OnFail(ViewManager.HandleException)
-    //        .Finally(ViewManager.Loader.Hide);
-    //}
 }

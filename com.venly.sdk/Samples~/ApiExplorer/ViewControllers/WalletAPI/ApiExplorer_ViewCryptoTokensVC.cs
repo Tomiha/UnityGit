@@ -1,6 +1,7 @@
 using VenlySDK;
 using VenlySDK.Core;
 using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 
 public class ApiExplorer_ViewCryptoTokensVC : ApiExplorer_ViewTokensBaseVC<VyCryptoTokenDto, VyControl_CryptoTokenListView
     , VyControl_CryptoTokenListItem>

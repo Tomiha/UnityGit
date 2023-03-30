@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using VenlySDK.Utils;
 
@@ -103,6 +104,7 @@ namespace VenlySDK.Core
         private Action _onSuccessCallback;
         private Action<Exception> _onFailCallback;
         private Action<VyTaskResult> _onCompleteCallback;
+        private Action _onCancelCallback;
         private Action _onFinallyCallback;
 
         private VyTaskAwaiter _awaiter;
@@ -146,14 +148,17 @@ namespace VenlySDK.Core
                 }, ForegroundScheduler)
                 .ContinueWith(task =>
                 {
+                    _onFinallyCallback?.Invoke();
+                }, ForegroundScheduler)
+                .ContinueWith(task =>
+                {
 #if VYTASK_DEBUG
                     Debug.Log($"[VYTASK_DEBUG] Task Failed (id={_nativeTask.Id} | identifier={_identifier})");
 #endif
 
                     //todo: format stacktrace output
                     VenlyLog.Exception(task.Exception);
-                }, TaskContinuationOptions.OnlyOnFaulted)
-                .ContinueWith(task => { _onFinallyCallback?.Invoke(); });
+                }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         //DIRECT Success
@@ -244,7 +249,8 @@ namespace VenlySDK.Core
                     CallFail();
                     break;
                 case eVyTaskState.Cancelled:
-                    throw new Exception("VyTask \'{HandleCompletion}\' >> Task Canceled (todo)");
+                    CallCancel();
+                    break;
             }
 
             CallComplete();
@@ -262,6 +268,12 @@ namespace VenlySDK.Core
             if (_onFailCallback == null) return;
             _onFailCallback.Invoke(_taskResult.Exception);
             ExceptionConsumed(true);
+        }
+
+        private void CallCancel()
+        {
+            if (_onCancelCallback == null) return;
+            _onCancelCallback.Invoke();
         }
 
         private void CallComplete()
@@ -330,6 +342,14 @@ namespace VenlySDK.Core
             return this;
         }
 
+        public VyTask OnCancel(Action callback)
+        {
+            _onCancelCallback = callback;
+            if(IsCancelled) CallCancel();
+
+            return this;
+        }
+
         public VyTask Finally(Action callback)
         {
             _onFinallyCallback = callback;
@@ -393,6 +413,7 @@ namespace VenlySDK.Core
             return this;
         }
 
+        [DebuggerNonUserCode]
         public bool GetResult()
         {
 #if VYTASK_DEBUG
@@ -507,12 +528,12 @@ namespace VenlySDK.Core
 
         public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : IAsyncStateMachine
         {
-            stateMachine.MoveNext();
-            //Action move = stateMachine.MoveNext;
-            //ThreadPool.QueueUserWorkItem(_ =>
-            //{
-            //    move();
-            //});
+            //stateMachine.MoveNext();
+            Action move = stateMachine.MoveNext;
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                move();
+            });
         }
 
         public void SetStateMachine(IAsyncStateMachine stateMachine)

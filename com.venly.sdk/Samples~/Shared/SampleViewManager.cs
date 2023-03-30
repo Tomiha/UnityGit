@@ -5,6 +5,7 @@ using UnityEngine;
 using VenlySDK;
 using VenlySDK.Core;
 using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 
 public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
 {
@@ -14,7 +15,8 @@ public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
     public T LandingAuth = default;
 
     public ApiExplorer_LoaderVC Loader;
-    public ApiExplorer_ExceptionVC ExceptionView;
+    public ApiExplorer_ExceptionVC Exception;
+    public ApiExplorer_InfoVC Info;
 
     private bool _firstFrame = true;
 
@@ -26,11 +28,11 @@ public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
     void Start()
     {
         if(!Venly.IsInitialized) 
-            Venly.Initialize();
+            VenlyUnity.Initialize();
 
         InitializeViews();
         Loader.Hide();
-        ExceptionView.Hide();
+        Exception.Hide();
     }
 
     void Update()
@@ -128,7 +130,7 @@ public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
 
     public void HandleException(Exception ex)
     {
-        ExceptionView.Show(ex);
+        Exception.Show(ex);
     }
 
     void InitializeViews()
@@ -148,7 +150,17 @@ public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
 
     void OnFirstFrame()
     {
-        _homeViewId = VenlySettings.BackendProvider == eVyBackendProvider.DevMode ? LandingDevMode : LandingAuth;
+        switch (VenlySettings.BackendProvider)
+        {
+            case eVyBackendProvider.DevMode:
+            case eVyBackendProvider.Custom:
+                _homeViewId = LandingDevMode;
+                break;
+            case eVyBackendProvider.PlayFab:
+                _homeViewId = LandingAuth;
+                break;
+        }
+
         SwitchView(_homeViewId);
     }
 }

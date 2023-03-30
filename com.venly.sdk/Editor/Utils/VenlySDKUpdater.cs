@@ -23,11 +23,11 @@ namespace VenlySDK.Editor.Utils
 
         private static VenlySDKUpdater _instance;
 
-        [InitializeOnLoadMethod]
-        private static void InitializeStatic()
-        {
-            Instance.HandlePostUpdate();
-        }
+        //[InitializeOnLoadMethod]
+        //private static void InitializeStatic()
+        //{
+        //    Instance.HandlePostUpdate();
+        //}
 
         ~VenlySDKUpdater()
         {

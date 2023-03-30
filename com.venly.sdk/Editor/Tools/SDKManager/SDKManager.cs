@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Build;
@@ -10,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using VenlySDK.Core;
 using VenlySDK.Editor.Utils;
-using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 using VenlySDK.Utils;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
@@ -50,7 +51,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
 
         #region MenuItem
 
-        [MenuItem("Window/Venly/SDK Manager")]
+        [MenuItem("Window/Venly/SDK Manager", priority = 1)]
         public static void ShowSdkManager()
         {
             //Make sure there is no panel open at the moment...
@@ -72,7 +73,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
         }
 
 #if VENLYSDK_DEBUG
-        [MenuItem("Window/Venly/Debug/Force Close Manager")]
+        [MenuItem("Window/Venly/Debug/Force Close Manager", priority = -1)]
         public static void ForceCloseManager()
         {
             SDKManagerView wnd = EditorWindow.GetWindow<SDKManagerView>();
@@ -102,28 +103,33 @@ namespace VenlySDK.Editor.Tools.SDKManager
         public static readonly string DefaultPublicResourceRoot = "Assets\\Resources\\";
         public static readonly string SdkPackageRoot = "Packages\\com.venly.sdk\\";
 
+#if VENLY_STAGING_REPO
+        public static readonly string URL_GitRepository = @"git+https://github.com/Tomiha/UnityGit.git?path=com.venly.sdk";
+        public static readonly string URL_GitReleases = @"https://api.github.com/repos/Tomiha/UnityGit/releases";
+#else
         public static readonly string URL_GitRepository = @"git+https://github.com/ArkaneNetwork/Unity-SDK.git?path=Packages/com.venly.sdk";
         public static readonly string URL_GitReleases = @"https://api.github.com/repos/ArkaneNetwork/Unity-SDK/releases";
-
-        //public static readonly string URL_GitRepository = @"git+https://github.com/Tomiha/UnityGit.git?path=com.venly.sdk";
-        //public static readonly string URL_GitReleases = @"https://api.github.com/repos/Tomiha/UnityGit/releases";
+#endif
 
 #endregion
 
-#region Events
+        #region Events
 
         public event Action OnSettingsLoaded;
         public event Action<bool> OnAuthenticatedChanged;
         public event Action OnInitialized;
 
-        #endregion
+#endregion
 
 #if VENLYSDK_DEBUG
-        [MenuItem("Window/Venly/Debug/Force SDK Manager Init")]
+        [MenuItem("Window/Venly/Debug/Force SDK Manager Init", priority = -1)]
 #endif
         [InitializeOnLoadMethod]
         static void InitializeStatic()
         {
+            //Load EditorSettings
+            VenlyEditorSettings.Load();
+
             //Initialize the SDK
             //******************
             SDKManager.Instance.Initialize();
@@ -277,7 +283,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
             return taskNotifier.Task;
         }
 
-        private eVyBackendProvider GetConfiguredBackend()
+        private static eVyBackendProvider GetConfiguredBackend()
         {
             var selectedBackend = eVyBackendProvider.DevMode;
 
@@ -300,31 +306,59 @@ namespace VenlySDK.Editor.Tools.SDKManager
             return selectedBackend;
         }
 
-        public void ConfigureForBackend(eVyBackendProvider backend)
+        [MenuItem("Window/Venly/Update Scripting Defines", priority = 3)]
+        public static void UpdateDefines()
         {
-            //Set Defines
-            var currBuildTarget = NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-            PlayerSettings.GetScriptingDefineSymbols(currBuildTarget, out var currentDefines);
+            var defines = GenerateDefinesForProvider(VenlySettings.BackendProvider);
+            var targetGroup = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+            var target = NamedBuildTarget.FromBuildTargetGroup(targetGroup);
 
-            //Clear Current Venly Defines
+            ApplyDefines(defines, target);
+        }
+
+        private static void ApplyDefines(List<string> defines, NamedBuildTarget target)
+        {
+            PlayerSettings.GetScriptingDefineSymbols(target, out var currentDefines);
             var definesList = currentDefines.ToList();
-            definesList.RemoveAll(define => define.Contains("_VENLY_"));
 
-            //Populate with required Defines
+            //REMOVE PREVIOUS
+            definesList.RemoveAll(d => d.Contains("VENLY_"));
+
+            //ADD NEW ONES
+            definesList.AddRange(defines);
+
+            PlayerSettings.SetScriptingDefineSymbols(target, definesList.ToArray());
+        }
+
+        private static List<string> GenerateDefinesForProvider(eVyBackendProvider backend)
+        {
+            var list =  new List<string>
+            {
+                //"VENLY_API_UNITY",
+                $"ENABLE_VENLY_{backend.GetMemberName().ToUpper()}"
+            };
+
+#if UNITY_EDITOR
             if (backend == eVyBackendProvider.DevMode)
             {
-                definesList.Add("ENABLE_VENLY_DEVMODE");
+                list.Add("ENABLE_VENLY_API_SERVER");
             }
-            else if (backend == eVyBackendProvider.PlayFab)
-            {
-                definesList.Add("ENABLE_VENLY_PLAYFAB");
-            }
-            else if (backend == eVyBackendProvider.Custom)
-            {
-                definesList.Add("ENABLE_VENLY_CUSTOM");
-            }
+#endif
 
-            PlayerSettings.SetScriptingDefineSymbols(currBuildTarget, definesList.ToArray());
+            return list;
+        }
+
+        public static void ConfigureForBackend(eVyBackendProvider backend)
+        {
+            //Generate Defines
+            var definesList = GenerateDefinesForProvider(backend);
+
+            //Apply to BuildTargets
+            ApplyDefines(definesList, NamedBuildTarget.Standalone);
+            ApplyDefines(definesList, NamedBuildTarget.WebGL);
+            ApplyDefines(definesList, NamedBuildTarget.iOS);
+            ApplyDefines(definesList, NamedBuildTarget.Android);
+            ApplyDefines(definesList, NamedBuildTarget.WindowsStoreApps);
 
             //SET BACKEND
             VenlyEditorSettings.Instance.Settings.BackendProvider = backend;

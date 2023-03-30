@@ -1,10 +1,9 @@
 using System;
 using System.Globalization;
-using JetBrains.Annotations;
-using UnityEngine;
 using UnityEngine.UIElements;
 using VenlySDK;
-using VenlySDK.Models;
+using VenlySDK.Models.Shared;
+using VenlySDK.Models.Wallet;
 
 public class ApiExplorer_TransferCryptoTokenVC : SampleViewBase<eApiExplorerViewId>
 {

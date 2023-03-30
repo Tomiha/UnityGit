@@ -1,25 +1,26 @@
 using UnityEngine.UIElements;
-using VenlySDK.Models;
+using VenlySDK.Models.Nft;
 using VenlySDK.Utils;
 
 //ITEM
 public class VyControl_ContractListItem : VyControl_ListViewItemBase<VyContractDto>
 {
-    public VyControl_ContractListItem() : base()
-    {
-        var lbl = new Label();
-        lbl.name = "lbl-contract-name";
-        Add(lbl);
-    }
+    public VyControl_ContractListItem() : base("VyControl_ContractListItem") { }
 
     public override void BindItem(VyContractDto sourceItem)
     {
-        SetLabel("lbl-contract-name", sourceItem.Name);
+        SetLabel("lbl-name", sourceItem.Name);
+        SetLabel("lbl-id", sourceItem.Id.ToString());
+        SetLabel("lbl-chain", sourceItem.Chain.GetMemberName());
+        SetLabel("lbl-symbol", sourceItem.Symbol);
     }
 
     public override void BindMockItem()
     {
-        SetLabel("lbl-contract-name", "MOCK Contract");
+        SetLabel("lbl-name", "MockContract");
+        SetLabel("lbl-id", "123");
+        SetLabel("lbl-chain", "MATIC");
+        SetLabel("lbl-symbol", "MCT");
     }
 }
 

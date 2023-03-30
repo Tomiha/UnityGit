@@ -1,5 +1,6 @@
 using UnityEngine.UIElements;
 using VenlySDK.Models;
+using VenlySDK.Models.Wallet;
 
 //ITEM
 public class VyControl_WalletEventListItem : VyControl_ListViewItemBase<VyWalletEventDto>

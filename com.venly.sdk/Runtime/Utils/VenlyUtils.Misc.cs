@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using Newtonsoft.Json.Linq;
-using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 
 namespace VenlySDK.Utils
 {
@@ -18,11 +16,22 @@ namespace VenlySDK.Utils
             {eVyApiEndpoint.Auth, @"https://login-staging.arkane.network"},
             {eVyApiEndpoint.Wallet, @"https://api-wallet-staging.venly.io"},
             {eVyApiEndpoint.Nft, @"https://api-business-staging.venly.io"},
-            {eVyApiEndpoint.Market, @"https://api-staging.venly.market"},
-            //{eVyApiEndpoint.Matic, @"https://matic-azrael-staging.venly.io"},
-            //{eVyApiEndpoint.Bsc, @"https://bsc-azrael-staging.venly.io"},
-            //{eVyApiEndpoint.Ethereum, @"https://ethereum-azrael-staging.venly.io"}
+            {eVyApiEndpoint.Market, @"https://api-staging.venly.market"}
         };
+
+        private static readonly Dictionary<eVyApiEndpoint, string> _productionEndpoints = new()
+        {
+            { eVyApiEndpoint.None, "" },
+            { eVyApiEndpoint.Auth, @"https://login.arkane.network" },
+            { eVyApiEndpoint.Wallet, @"https://api-wallet.venly.io" },
+            { eVyApiEndpoint.Nft, @"https://api-business.venly.io" },
+            { eVyApiEndpoint.Market, @"https://api.venly.market" }
+        };
+
+        public static string GetUrl(string uri, eVyApiEndpoint endpoint, VyAccessTokenDto token)
+        {
+            return $"{GetBaseUrl(endpoint, token.Environment)}{uri}";
+        }
 
         public static string GetUrl(string uri, eVyApiEndpoint endpoint, eVyEnvironment env = eVyEnvironment.staging)
         {
@@ -31,27 +40,8 @@ namespace VenlySDK.Utils
 
         public static string GetBaseUrl(eVyApiEndpoint endpoint, eVyEnvironment env = eVyEnvironment.staging)
         {
-            if (env == eVyEnvironment.staging) return _stagingEndpoints[endpoint];
-
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region Conversions
-
-        public static FormUrlEncodedContent ConvertToFormContent<T>(T obj)
-        {
-            var formData = new Dictionary<string, string>();
-
-            var jsonObj = JObject.FromObject(obj);
-            foreach (var property in jsonObj)
-            {
-                if (property.Value != null)
-                    formData.Add(property.Key, property.Value.ToString());
-            }
-
-            return new FormUrlEncodedContent(formData);
+            if (env == eVyEnvironment.production) return _productionEndpoints[endpoint];
+            return _stagingEndpoints[endpoint];
         }
 
         #endregion

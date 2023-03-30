@@ -3,7 +3,8 @@ using System.Linq;
 using UnityEngine.UIElements;
 using VenlySDK;
 using VenlySDK.Core;
-using VenlySDK.Models;
+using VenlySDK.Models.Shared;
+using VenlySDK.Models.Wallet;
 using VenlySDK.Utils;
 
 public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>

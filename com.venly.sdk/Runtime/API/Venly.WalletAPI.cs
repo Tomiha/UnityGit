@@ -1,6 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using VenlySDK.Core;
 using VenlySDK.Models;
+using VenlySDK.Models.Shared;
+using VenlySDK.Models.Wallet;
 using VenlySDK.Utils;
 
 namespace VenlySDK
@@ -249,6 +253,112 @@ namespace VenlySDK
                         .AddJsonContent(reqParams);
                     return Request<VyTransferInfoDto>(reqData);
                 }
+
+                /// <summary>
+                /// Execute a Meta MultiToken Transfer (Meta Transaction)
+                /// Allows you to select the wallet that pays for the gas fee of the transaction
+                /// </summary>
+                /// <param name="reqParams"></param>
+                /// <returns></returns>
+                public static VyTask<VyTransferInfoDto> MetaTransaction_TransferMultiToken(VyMetaTransferMultiTokenDto reqParams)
+                {
+                    var taskNotifier = VyTask<VyTransferInfoDto>.Create();
+                    //
+                    taskNotifier.Scope(async () =>
+                    {
+                        //0. Get Nonce
+                        var getNonceRequest = new VyReadContractDto()
+                        {
+                            Chain = reqParams.SourceWallet.Chain,
+                            ContractAddress = reqParams.Token.Contract.Address,
+                            FunctionName = "getNonce",
+                            WalletAddress = reqParams.SourceWallet.Address,
+                            Inputs = new VyContractInput[]
+                            {
+                                new()
+                                {
+                                    Type = "address",
+                                    Value = reqParams.SourceWallet.Address
+                                }
+                            },
+                            Outputs = new VyContractOutput[]
+                            {
+                                new() {Type = "uint256"}
+                            }
+                        };
+                        var getNonceOutput = await ReadContract(getNonceRequest).AwaitResult();
+                        var nonce = getNonceOutput[0].Value;
+
+
+                        //1. EIP712 JSON document Generation
+                        var eip712Doc = TransactionHelpers.CreateEIP721Document(reqParams, nonce, out var functionSignature);
+
+                        //2. Sign document (destination wallet)
+                       var signatureRequest = new VySignDto()
+                        {
+                            Pincode = reqParams.SourcePincode,
+                            Chain = reqParams.SourceWallet.Chain,
+                            Type = "EIP712",
+                            WalletId = reqParams.SourceWallet.Id,
+                            Data = JObject.Parse(eip712Doc)
+                        };
+
+                        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++");
+                        Console.WriteLine(eip712Doc);
+                        var signatureResult = await Sign(signatureRequest);
+                        var signature = signatureResult.Data;
+
+                        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++");
+                        Console.WriteLine(JsonConvert.SerializeObject(signature));
+
+                        //3. Execute Transaction (executor wallet, gas fee payer)
+                        var executeContractRequest = new VyExecuteContractDto()
+                        {
+                            Pincode = reqParams.ExecutorPincode,
+                            Request = new VyExecuteContractRequest()
+                            {
+                                WalletId = reqParams.ExecutorWallet.Id,
+                                Chain = reqParams.ExecutorWallet.Chain,
+                                ToAddress = reqParams.Token.Contract.Address,
+                                FunctionName = "executeMetaTransaction",
+                                Inputs = new VyContractInput[]
+                                {
+                                    new (){Type = "address", Value = reqParams.SourceWallet.Address},
+                                    new (){Type = "bytes", Value = functionSignature},
+                                    new (){Type = "bytes32", Value = signature.R},
+                                    new (){Type = "bytes32", Value = signature.S},
+                                    new (){Type = "uint8", Value = signature.V},
+                                }
+                            }
+                        };
+
+                        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++");
+                        Console.WriteLine(JsonConvert.SerializeObject(executeContractRequest));
+                        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++");
+
+                        var result = await ExecuteContract(executeContractRequest).AwaitResult();
+
+                        taskNotifier.NotifySuccess(result);
+                    });
+
+                    return taskNotifier.Task;
+                }
+                #endregion
+
+                #region Signature (Requires Pincode)
+                /// <summary>
+                /// Request a Signature
+                /// [/api/signatures]
+                /// </summary>
+                /// <param name="reqParams">(Required) parameters for the request</param>
+                /// <returns>Signature Data</returns>
+                public static VyTask<VySignatureDto> Sign(VySignDto reqParams)
+                {
+                    var reqData =
+                        VyRequestData.Post("/api/signatures", _apiEndpoint)
+                            .AddJsonContent(reqParams.ToInternalDTO());
+                    return Request<VySignatureDto>(reqData);
+                }
                 #endregion
 
                 #region SWAP
@@ -286,22 +396,6 @@ namespace VenlySDK
                 }
 
                 #endregion
-            }
-
-#if (UNITY_EDITOR || UNITY_SERVER || ENABLE_VENLY_API_SERVER) && !ENABLE_VENLY_PLAYFAB
-            public static class Server
-            {
-                /// <summary>
-                /// Create a new wallet
-                /// </summary>
-                /// <param name="reqParams">Required parameters for the request</param>
-                /// <returns>New wallet</returns>
-                public static VyTask<VyWalletDto> CreateWallet(VyCreateWalletDto reqParams)
-                {
-                    var reqData = VyRequestData.Post("/api/wallets", _apiEndpoint)
-                        .AddJsonContent(reqParams);
-                    return Request<VyWalletDto>(reqData);
-                }
 
                 /// <summary>
                 /// Execute a function on a smart contract (write) on any (supported) BlockChain
@@ -326,6 +420,23 @@ namespace VenlySDK
                     var reqData = VyRequestData.Post("/api/contracts/read", _apiEndpoint)
                         .AddJsonContent(reqParams);
                     return Request<VyTypeValuePair[]>(reqData);
+                }
+            }
+
+
+#if ((UNITY_EDITOR || UNITY_SERVER) || ENABLE_VENLY_API_SERVER) && !DISABLE_VENLY_API_SERVER
+            public static class Server
+            {
+                /// <summary>
+                /// Create a new wallet
+                /// </summary>
+                /// <param name="reqParams">Required parameters for the request</param>
+                /// <returns>New wallet</returns>
+                public static VyTask<VyWalletDto> CreateWallet(VyCreateWalletDto reqParams)
+                {
+                    var reqData = VyRequestData.Post("/api/wallets", _apiEndpoint)
+                        .AddJsonContent(reqParams);
+                    return Request<VyWalletDto>(reqData);
                 }
 
                 /// <summary>

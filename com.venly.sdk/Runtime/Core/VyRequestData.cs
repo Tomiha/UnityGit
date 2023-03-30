@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
-using VenlySDK.Models;
+using Newtonsoft.Json.Converters;
+using VenlySDK.Models.Shared;
 
 namespace VenlySDK.Core
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class VyRequestData
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum eVyRequestContentType
         {
-            None,
-            Json,
-            UrlEncoded,
-            Binary,
-            String
+            [EnumMember(Value = "NONE")] None,
+            [EnumMember(Value = "JSON")] Json,
+            [EnumMember(Value = "FORM")] UrlEncoded,
+            [EnumMember(Value = "BINARY")] Binary,
+            [EnumMember(Value = "STRING")] String
         }
 
         [JsonProperty("uri")] public string Uri { get; private set; }
@@ -31,8 +35,6 @@ namespace VenlySDK.Core
         [JsonIgnore] public bool MustSelectProperty => !string.IsNullOrEmpty(SelectPropertyName);
 
         [JsonIgnore] public bool MustProcessResponse { get; set; } = true;
-        //[JsonIgnore] public string CallingOrigin { get; set; }
-        //[JsonIgnore] public StackTrace StackTrace { get; set; }
 
         private VyRequestData() {}
 
@@ -63,27 +65,27 @@ namespace VenlySDK.Core
 
         public static VyRequestData Get(string uri, eVyApiEndpoint endpoint)
         {
-            return Create(HttpMethod.Get, uri, endpoint, Venly.CurrentEnvironement);
+            return Create(HttpMethod.Get, uri, endpoint, Venly.CurrentEnvironment);
         }
 
         public static VyRequestData Patch(string uri, eVyApiEndpoint endpoint)
         {
-            return Create(new HttpMethod("PATCH"), uri, endpoint, Venly.CurrentEnvironement);
+            return Create(new HttpMethod("PATCH"), uri, endpoint, Venly.CurrentEnvironment);
         }
 
         public static VyRequestData Post(string uri, eVyApiEndpoint endpoint)
         {
-            return Create(HttpMethod.Post, uri, endpoint, Venly.CurrentEnvironement);
+            return Create(HttpMethod.Post, uri, endpoint, Venly.CurrentEnvironment);
         }
 
         public static VyRequestData Put(string uri, eVyApiEndpoint endpoint)
         {
-            return Create(HttpMethod.Put, uri, endpoint, Venly.CurrentEnvironement);
+            return Create(HttpMethod.Put, uri, endpoint, Venly.CurrentEnvironment);
         }
 
         public static VyRequestData Delete(string uri, eVyApiEndpoint endpoint)
         {
-            return Create(HttpMethod.Delete, uri, endpoint, Venly.CurrentEnvironement);
+            return Create(HttpMethod.Delete, uri, endpoint, Venly.CurrentEnvironment);
         }
 
         #endregion
@@ -96,9 +98,6 @@ namespace VenlySDK.Core
             ContentType = eVyRequestContentType.Binary;
             ContentStr = Encoding.UTF8.GetString(content);
             return this;
-
-            //Content = new ByteArrayContent(content);
-            //return this;
         }
 
         public VyRequestData AddJsonContent<T>(T content)
@@ -106,9 +105,6 @@ namespace VenlySDK.Core
             ContentType = eVyRequestContentType.Json;
             ContentStr = JsonConvert.SerializeObject(content);
             return this;
-
-            //Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
-            //return this;
         }
 
         public VyRequestData AddFormContent<T>(T content)
@@ -116,25 +112,6 @@ namespace VenlySDK.Core
             ContentType = eVyRequestContentType.UrlEncoded;
             ContentStr = JsonConvert.SerializeObject(content);
             return this;
-
-
-            //if (content is Dictionary<string, string> contentDictionary)
-            //{
-            //    Content = new FormUrlEncodedContent(contentDictionary);
-            //}
-            //else
-            //{
-            //    var data = new Dictionary<string, string>();
-            //    foreach (var property in JObject.FromObject(content))
-            //    {
-            //        if (property.Value != null)
-            //            data.Add(property.Key, property.Value.ToString());
-            //    }
-
-            //    Content = new FormUrlEncodedContent(data);
-            //}
-
-            //return this;
         }
 
         public T GetJsonContent<T>()

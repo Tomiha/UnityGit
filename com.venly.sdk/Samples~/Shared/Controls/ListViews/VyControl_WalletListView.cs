@@ -1,5 +1,6 @@
 using UnityEngine.UIElements;
 using VenlySDK.Models;
+using VenlySDK.Models.Wallet;
 using VenlySDK.Utils;
 
 //ITEM
@@ -9,16 +10,19 @@ public class VyControl_WalletListItem : VyControl_ListViewItemBase<VyWalletDto>
 
     public override void BindItem(VyWalletDto sourceItem)
     {
-        SetLabel("lbl-wallet-chain", sourceItem.Chain.GetMemberName());
-        SetLabel("lbl-wallet-id", sourceItem.Id);
-        SetLabel("lbl-wallet-address", sourceItem.Address);
+        SetLabel("lbl-chain", sourceItem.Chain.GetMemberName());
+        SetLabel("lbl-id", sourceItem.Id);
+        SetLabel("lbl-address", sourceItem.Address);
+        SetLabel("lbl-description", sourceItem.Description);
+        ToggleElement("lbl-archived", sourceItem.Archived);
     }
 
     public override void BindMockItem()
     {
-        SetLabel("lbl-wallet-chain", "MATIC");
-        SetLabel("lbl-wallet-id", "152eb3ac-999b-4eb7-b564-de0ae1faa60d");
-        SetLabel("lbl-wallet-address", "0x76d8a24d0Df9C2a0c0F9b831B0534b3b5811ac4b");
+        SetLabel("lbl-chain", "MATIC");
+        SetLabel("lbl-id", "152eb3ac-999b-4eb7-b564-de0ae1faa60d");
+        SetLabel("lbl-address", "0x76d8a24d0Df9C2a0c0F9b831B0534b3b5811ac4b");
+        SetLabel("lbl-description", "lorem ipsum doloret...");
     }
 }
 

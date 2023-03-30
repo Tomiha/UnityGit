@@ -9,13 +9,18 @@ namespace VenlySDK.Core
         internal static VyTaskVoid Empty = new VyTaskVoid();
     }
 
+    public struct VyUnit
+    {
+        internal static VyUnit Default = new VyUnit();
+    }
+
     public class VyTaskResult
     {
         [JsonProperty("success")] public bool Success { get; set; }
         [JsonProperty("cancelled")] public bool Cancelled { get; set; }
         [JsonProperty("exception")] public Exception Exception { get; set; }
 
-#if ENABLE_VENLY_AZURE
+#if ENABLE_VENLY_API_SERVER
         [JsonIgnore] public HttpStatusCode? StatusCode;
 #endif
 

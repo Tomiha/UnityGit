@@ -10,6 +10,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 using VenlySDK.Utils;
 
 namespace VenlySDK.Editor.Utils

@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using VenlySDK.Data;
 using VenlySDK.Models;
+using VenlySDK.Models.Nft;
 
 namespace VenlySDK.Editor
 {

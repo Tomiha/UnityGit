@@ -333,6 +333,14 @@ namespace VenlySDK.Core
             return this;
         }
 
+        public VyTask<T> OnCancel(Action callback)
+        {
+            _onCancelCallback = callback;
+            if(IsCancelled) CallCancel();
+
+            return this;
+        }
+
         public VyTask<T> Finally(Action callback)
         {
             _onFinallyCallback = callback;
@@ -383,6 +391,7 @@ namespace VenlySDK.Core
             return this;
         }
 
+        [DebuggerNonUserCode]
         public T GetResult()
         {
             if (_sourceTask.TaskResult.Success) 
@@ -433,6 +442,7 @@ namespace VenlySDK.Core
             return _sourceTask.TaskResult;
         }
 
+        [DebuggerNonUserCode]
         internal void SignalComplete()
         {
             _continuation?.Invoke();

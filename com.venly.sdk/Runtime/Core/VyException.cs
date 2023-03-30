@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
-using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 
 namespace VenlySDK.Core
 {
@@ -22,10 +22,10 @@ namespace VenlySDK.Core
 
         public static void RaiseUnhandled(VyException unhandledException)
         {
-#if ENABLE_VENLY_AZURE
-            throw unhandledException;
-#else
+#if UNITY_2017_1_OR_NEWER
             UnityEngine.Debug.LogException(new Exception("[Venly Unhandled Exception]", unhandledException));
+#else
+            throw unhandledException;
 #endif
         }
 
@@ -54,7 +54,7 @@ namespace VenlySDK.Core
                 $"[HTTP Response] Code {msg.StatusCode} : {msg.ReasonPhrase}\nNo Request Details available.");
         }
 
-        public static VyException ApiResponseError(VyResponseDto apiResponse, HttpStatusCode statusCode,
+        public static VyException ApiResponseError(VyApiResponseDto apiResponse, HttpStatusCode statusCode,
             VyRequestData requestData)
         {
             var sb = new StringBuilder();

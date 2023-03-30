@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 using VenlySDK.Utils;
 
 public class VenlySettings

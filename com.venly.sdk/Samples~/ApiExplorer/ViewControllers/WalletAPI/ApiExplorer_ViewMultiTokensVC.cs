@@ -1,6 +1,6 @@
 using VenlySDK;
 using VenlySDK.Core;
-using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 
 public class ApiExplorer_ViewMultiTokensVC : ApiExplorer_ViewTokensBaseVC<VyMultiTokenDto, VyControl_MultiTokenListView, VyControl_MultiTokenListItem>
 {

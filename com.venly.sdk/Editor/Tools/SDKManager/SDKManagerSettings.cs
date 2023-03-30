@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VenlySDK.Editor.Utils;
 using VenlySDK.Models;
+using VenlySDK.Models.Shared;
 
 namespace VenlySDK.Editor.Tools.SDKManager
 {
@@ -128,7 +129,7 @@ namespace VenlySDK.Editor.Tools.SDKManager
 
         private void onApplySettings_Clicked()
         {
-            SDKManager.Instance.ConfigureForBackend(SdkManagerData.SelectedBackend);
+            SDKManager.ConfigureForBackend(SdkManagerData.SelectedBackend);
             ValidateApplyVisibility();
         }
         #endregion

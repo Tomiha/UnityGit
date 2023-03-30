@@ -23,14 +23,28 @@ public abstract class VyControl_ListViewItemBase<T> : VisualElement
     public abstract void BindItem(T sourceItem);
     public abstract void BindMockItem();
 
+    protected void ToggleElement(string elementName, bool visible)
+    {
+        this.Q<VisualElement>(elementName).ToggleDisplay(visible);
+    }
+
     protected void SetLabel(string elementName, string txt)
     {
-        this.Q<Label>(elementName).text = txt;
+        SetLabelText(elementName, txt);
     }
 
     protected void SetLabel(string elementName, bool state)
     {
-        this.Q<Label>(elementName).text = state?"YES":"NO";
+        SetLabelText(elementName, state ? "YES" : "NO");
+    }
+
+    private void SetLabelText(string elementname, string txt)
+    {
+        var el = this.Q<VisualElement>(elementname);
+        if (el == null) throw new ArgumentException($"element \'{elementname}\' not found");
+
+        if (el is Label lbl) lbl.text = txt;
+        else if (el is LabelField lblfield) lblfield.UpdateText(txt);
     }
 }
 

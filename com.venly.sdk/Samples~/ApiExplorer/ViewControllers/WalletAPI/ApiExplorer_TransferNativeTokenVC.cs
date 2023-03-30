@@ -1,12 +1,9 @@
 using System;
 using System.Globalization;
-using System.Linq;
-using UnityEngine;
 using UnityEngine.UIElements;
 using VenlySDK;
-using VenlySDK.Models;
-using VenlySDK.Utils;
-using Toggle = UnityEngine.UIElements.Toggle;
+using VenlySDK.Models.Shared;
+using VenlySDK.Models.Wallet;
 
 public class ApiExplorer_TransferNativeTokenVC : SampleViewBase<eApiExplorerViewId>
 {

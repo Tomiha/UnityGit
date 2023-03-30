@@ -5,6 +5,8 @@ using UnityEngine.UIElements;
 using VenlySDK;
 using VenlySDK.Core;
 using VenlySDK.Models;
+using VenlySDK.Models.Shared;
+using VenlySDK.Models.Wallet;
 using Toggle = UnityEngine.UIElements.Toggle;
 
 public class ApiExplorer_CreateWalletVC : SampleViewBase<eApiExplorerViewId>
@@ -45,7 +47,7 @@ public class ApiExplorer_CreateWalletVC : SampleViewBase<eApiExplorerViewId>
 
     private void OnClick_Create()
     {
-#if ENABLE_VENLY_DEVMODE
+#if ENABLE_VENLY_API_SERVER
         var selectedChain = Enum.Parse<eVyChain>(_selectorChains.value);
 
         VyCreateWalletDto createParams = new VyCreateWalletDto

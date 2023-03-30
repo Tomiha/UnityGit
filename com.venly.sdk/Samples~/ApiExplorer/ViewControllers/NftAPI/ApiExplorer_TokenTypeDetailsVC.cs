@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VenlySDK;
 using VenlySDK.Models;
+using VenlySDK.Models.Nft;
 using VenlySDK.Utils;
 
 public class ApiExplorer_TokenTypeDetailsVC : SampleViewBase<eApiExplorerViewId>
