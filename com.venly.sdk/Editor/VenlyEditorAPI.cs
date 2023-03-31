@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Packages.com.venly.sdk.Editor;
 using VenlySDK.Core;
 using VenlySDK.Editor.Utils;
 using VenlySDK.Models.Nft;
@@ -232,9 +233,9 @@ namespace VenlySDK.Editor
         #region Request Helpers
         private static Exception VerifyRequest()
         {
-            if (!VenlyEditorSettings.Instance.SettingsLoaded)
+            if (!VyEditorData.IsLoaded)
             {
-                VenlySettings.Load(); //Force Settings Load
+                VyEditorData.Reload();
                 VenlyDebugEd.LogDebug("[VenlyEditorAPI] VenlySettings Force Loading", 1);
             }
 

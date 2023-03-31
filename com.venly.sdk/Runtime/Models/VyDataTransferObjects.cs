@@ -23,11 +23,11 @@ namespace VenlySDK.Models
         public static string CreateFunctionSignature_safeTransferFrom(string fromAddress, string toAddress, string tokenId, int amount = 1)
         {
             return "0xf242432a" +
-                   $"{fromAddress.Replace("0x","").PadLeft(64, '0')}" +
+                   $"{fromAddress.Replace("0x", "").PadLeft(64, '0')}" +
                    $"{toAddress.Replace("0x", "").PadLeft(64, '0')}" +
                    $"{HexPad(tokenId)}" +
                    $"{HexPad(amount)}" +
-                   $"{"".PadLeft(64,'0')}";
+                   "00000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000";
         }
 
         private static string HexPad(string input, int padLength = 64)

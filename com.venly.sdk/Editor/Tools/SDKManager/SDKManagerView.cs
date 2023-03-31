@@ -1,3 +1,4 @@
+using Packages.com.venly.sdk.Editor;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -20,9 +21,9 @@ public class SDKManagerView : EditorWindow
 
     public void CreateGUI()
     {
-        if (SDKManager.Instance.SettingsLoaded)
+        if (VyEditorData.IsLoaded)
         {
-            rootVisualElement.Bind(VenlyEditorSettings.Instance.SerializedSettings);
+            rootVisualElement.Bind(VyEditorData.SerializedRuntimeSettings);
         }
 
         //Root Tree
@@ -40,7 +41,7 @@ public class SDKManagerView : EditorWindow
         rootVisualElement.Q<Button>("btn-details").clickable.clicked += ShowDetails;
         rootVisualElement.Q<Button>("btn-settings").clickable.clicked += ShowSettings;
 
-        SDKManager.Instance.OnSettingsLoaded += RefreshView;
+        VyEditorData.OnLoaded += RefreshView;
         SDKManager.Instance.OnInitialized += RefreshView;
         SDKManager.Instance.OnAuthenticatedChanged += (_)=>
         {
@@ -87,10 +88,10 @@ public class SDKManagerView : EditorWindow
 
     private void BindData()
     {
-        if (SDKManager.Instance.SettingsLoaded)
+        if (VyEditorData.IsLoaded)
         {
-            rootVisualElement.Bind(VenlyEditorSettings.Instance.SerializedSettings);
-            _panelSettings.Bind(VenlyEditorSettings.Instance.SerializedSettings);
+            rootVisualElement.Bind(VyEditorData.SerializedRuntimeSettings);
+            _panelSettings.Bind(VyEditorData.SerializedRuntimeSettings);
         }
     }
 

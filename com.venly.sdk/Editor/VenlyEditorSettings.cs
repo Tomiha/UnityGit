@@ -13,20 +13,19 @@ namespace VenlySDK.Editor
     internal class VenlyEditorSettings
     {
         private static VenlyEditorSettings _instance;
-        public static VenlyEditorSettings Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    VenlyDebugEd.LogDebug("VenlyEditorSettings Singleton Creation");
-                    _instance = new VenlyEditorSettings();
-                    //_instance.Initialize();
-                }
+        //public static VenlyEditorSettings Instance
+        //{
+        //    get
+        //    {
+        //        if (_instance == null)
+        //        {
+        //            VenlyDebugEd.LogDebug("VenlyEditorSettings Singleton Creation");
+        //            _instance = new VenlyEditorSettings();
+        //        }
 
-                return _instance;
-            }
-        }
+        //        return _instance;
+        //    }
+        //}
 
         public bool IsInitialized { get; private set; }
         public bool SettingsLoaded { get; private set; }
@@ -40,157 +39,162 @@ namespace VenlySDK.Editor
 
         private bool _initInProgress = false;
 
-        private void Initialize()
-        {
-            if (IsInitialized) return;
-            //if (_initInProgress) return;
+        //private void Initialize()
+        //{
+        //    if (IsInitialized) return;
+        //    //if (_initInProgress) return;
 
-            _initInProgress = true;
+        //    _initInProgress = true;
 
-            LoadSettings();
-            IsInitialized = true;
-            _initInProgress = false;
-        }
+        //    LoadSettings();
+        //    IsInitialized = true;
+        //    _initInProgress = false;
+        //}
 
-        //Can be called to make sure the Settings are properly loaded
-        internal static void Load()
-        {
-            if (_instance == null)
-            {
-                _instance = new VenlyEditorSettings();
-                _instance.Initialize();
-            }
+        //private void VerifyData()
+        //{
 
-            if (!_instance.SettingsLoaded)
-            {
-                _instance.LoadSettings();
-            }
-        }
+        //}
 
-        internal void LoadSettings()
-        {
-            VenlyDebugEd.LogDebug("VenlyEditorSettings LoadSettings Called");
+        ////Can be called to make sure the Settings are properly loaded
+        //internal static void Load()
+        //{
+        //    if (_instance == null)
+        //    {
+        //        _instance = new VenlyEditorSettings();
+        //        _instance.Initialize();
+        //    }
 
-            //EDITOR SETTINGS
-            //===============
+        //    if (!_instance.SettingsLoaded)
+        //    {
+        //        _instance.LoadSettings();
+        //    }
+        //}
 
-            //Load EditorSettings
-            _editorDataSO = Resources.LoadAll<VenlyEditorDataSO>("").FirstOrDefault();
-            if (_editorDataSO == null) //First Creation
-            {
-                _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>("VenlyEditorData",SDKManager.DefaultPublicResourceRoot);
-            }
+        //internal void LoadSettings()
+        //{
+        //    VenlyDebugEd.LogDebug("VenlyEditorSettings LoadSettings Called");
 
-            //VenlyEditorUtils.RestoreBackup(_editorDataSO);
-            _editorDataSO.hideFlags = HideFlags.NotEditable;
+        //    //EDITOR SETTINGS
+        //    //===============
 
-            //Update EditorSettings
-            //SDKManager.Instance.UpdateEditorSettings();
+        //    //Load EditorSettings
+        //    _editorDataSO = Resources.LoadAll<VenlyEditorDataSO>("").FirstOrDefault();
+        //    if (_editorDataSO == null) //First Creation
+        //    {
+        //        _editorDataSO = RetrieveOrCreateResource<VenlyEditorDataSO>("VenlyEditorData",SDKManager.DefaultPublicResourceRoot);
+        //    }
 
-            //Save Changes
-            EditorUtility.SetDirty(_editorDataSO);
-            AssetDatabase.SaveAssetIfDirty(_editorDataSO);
+        //    //VenlyEditorUtils.RestoreBackup(_editorDataSO);
+        //    _editorDataSO.hideFlags = HideFlags.NotEditable;
 
-            //VENLY SETTINGS
-            //==============
+        //    //Update EditorSettings
+        //    //SDKManager.Instance.UpdateEditorSettings();
 
-            //Load VenlySettings
-            _settingsSO = Resources.LoadAll<VenlySettingsSO>("").FirstOrDefault();
-            if (_settingsSO == null) //First Creation
-            {
-                _settingsSO = RetrieveOrCreateResource<VenlySettingsSO>("VenlySettings", SDKManager.DefaultPublicResourceRoot);
-                _settingsSO.PublicResourceRoot = SDKManager.DefaultPublicResourceRoot;
-            }
+        //    //Save Changes
+        //    EditorUtility.SetDirty(_editorDataSO);
+        //    AssetDatabase.SaveAssetIfDirty(_editorDataSO);
 
-            //VenlyEditorUtils.RestoreBackup(_settingsSO);
-            //_settingsSO.hideFlags = HideFlags.HideInInspector;
-            _settingsSO.hideFlags = HideFlags.None;
+        //    //VENLY SETTINGS
+        //    //==============
 
-            //Update VenlySettings
-            SDKManager.Instance.UpdateVenlySettings(_settingsSO);
+        //    //Load VenlySettings
+        //    _settingsSO = Resources.LoadAll<VenlySettingsSO>("").FirstOrDefault();
+        //    if (_settingsSO == null) //First Creation
+        //    {
+        //        _settingsSO = RetrieveOrCreateResource<VenlySettingsSO>("VenlySettings", SDKManager.DefaultPublicResourceRoot);
+        //        _settingsSO.PublicResourceRoot = SDKManager.DefaultPublicResourceRoot;
+        //    }
 
-            //Save Changes
-            EditorUtility.SetDirty(_settingsSO);
-            AssetDatabase.SaveAssetIfDirty(_settingsSO);
+        //    //VenlyEditorUtils.RestoreBackup(_settingsSO);
+        //    //_settingsSO.hideFlags = HideFlags.HideInInspector;
+        //    _settingsSO.hideFlags = HideFlags.None;
 
-            //Small reassurance
-            VenlySettings.Load(_settingsSO);
+        //    //Update VenlySettings
+        //    SDKManager.Instance.UpdateVenlySettings(_settingsSO);
 
-            //Serialized Objects
-            SerializedSettings = new SerializedObject(_settingsSO);
+        //    //Save Changes
+        //    EditorUtility.SetDirty(_settingsSO);
+        //    AssetDatabase.SaveAssetIfDirty(_settingsSO);
 
-            //Load Venly Settings (Static)
-            VenlySettings.Load();
+        //    //Small reassurance
+        //    VenlySettings.Load(_settingsSO);
 
-            SettingsLoaded = true;
-        }
+        //    //Serialized Objects
+        //    SerializedSettings = new SerializedObject(_settingsSO);
 
-        public static void VerifyFolder(string path)
-        {
-            if (AssetDatabase.IsValidFolder(path)) return;
+        //    //Load Venly Settings (Static)
+        //    VenlySettings.Load();
 
-            var splitFolders = path.Split('\\', StringSplitOptions.RemoveEmptyEntries);
-            var parentFolder = splitFolders[0];
-            for (var i = 1; i < splitFolders.Length; i++)
-            {
-                var childFolder = splitFolders[i];
-                if (!AssetDatabase.IsValidFolder($"{parentFolder}\\{childFolder}"))
-                    AssetDatabase.CreateFolder(parentFolder, childFolder);
+        //    SettingsLoaded = true;
+        //}
 
-                parentFolder += $"\\{childFolder}";
-            }
-        }
+        //public static void VerifyFolder(string path)
+        //{
+        //    if (AssetDatabase.IsValidFolder(path)) return;
 
-        public static T LoadSettingsFile<T>(string assetPath) where T : ScriptableObject
-        {
-            var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
-            if (asset == null)
-            {
-                VenlyDebugEd.LogDebug("New VenlyEditorData asset created!");
-                asset = ScriptableObject.CreateInstance<T>();
-                AssetDatabase.CreateAsset(asset, assetPath);
-            }
-            else
-            {
-                VenlyDebugEd.LogDebug("Existing VenlyEditorData found!");
-            }
+        //    var splitFolders = path.Split('\\', StringSplitOptions.RemoveEmptyEntries);
+        //    var parentFolder = splitFolders[0];
+        //    for (var i = 1; i < splitFolders.Length; i++)
+        //    {
+        //        var childFolder = splitFolders[i];
+        //        if (!AssetDatabase.IsValidFolder($"{parentFolder}\\{childFolder}"))
+        //            AssetDatabase.CreateFolder(parentFolder, childFolder);
 
-            return asset;
-        }
+        //        parentFolder += $"\\{childFolder}";
+        //    }
+        //}
+
+        //public static T LoadSettingsFile<T>(string assetPath) where T : ScriptableObject
+        //{
+        //    var asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+        //    if (asset == null)
+        //    {
+        //        VenlyDebugEd.LogDebug("New VenlyEditorData asset created!");
+        //        asset = ScriptableObject.CreateInstance<T>();
+        //        AssetDatabase.CreateAsset(asset, assetPath);
+        //    }
+        //    else
+        //    {
+        //        VenlyDebugEd.LogDebug("Existing VenlyEditorData found!");
+        //    }
+
+        //    return asset;
+        //}
         
-        public static T RetrieveOrCreateResource<T>(string soName, string path = null) where T : ScriptableObject
-        {
-            var allResources = Resources.LoadAll<T>("");
-            if (allResources.Any()) //Settings Found
-            {
-                var resource = allResources[0];
-                var p = AssetDatabase.GetAssetPath(resource);
-                if (allResources.Length > 1) //Multiple Settings files
-                {
-                    Debug.LogWarning($"[Venly SDK] Multiple \'{typeof(T)}\' resources found. (removing all but one)");
-                    foreach (var loadedSettings in allResources)
-                    {
-                        if (resource != loadedSettings)
-                        {
-                            AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(loadedSettings));
-                        }
-                    }
-                }
+        //public static T RetrieveOrCreateResource<T>(string soName, string path = null) where T : ScriptableObject
+        //{
+        //    var allResources = Resources.LoadAll<T>("");
+        //    if (allResources.Any()) //Settings Found
+        //    {
+        //        var resource = allResources[0];
+        //        var p = AssetDatabase.GetAssetPath(resource);
+        //        if (allResources.Length > 1) //Multiple Settings files
+        //        {
+        //            Debug.LogWarning($"[Venly SDK] Multiple \'{typeof(T)}\' resources found. (removing all but one)");
+        //            foreach (var loadedSettings in allResources)
+        //            {
+        //                if (resource != loadedSettings)
+        //                {
+        //                    AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(loadedSettings));
+        //                }
+        //            }
+        //        }
 
-                return resource;
-            }
+        //        return resource;
+        //    }
 
-            if(path != null)
-            {
-                VerifyFolder(path);
-                var resource = ScriptableObject.CreateInstance<T>();
-                //resource.hideFlags = HideFlags.NotEditable;
-                AssetDatabase.CreateAsset(resource, $"{path}{soName}.asset");
-                return resource;
-            }
+        //    if(path != null)
+        //    {
+        //        VerifyFolder(path);
+        //        var resource = ScriptableObject.CreateInstance<T>();
+        //        //resource.hideFlags = HideFlags.NotEditable;
+        //        AssetDatabase.CreateAsset(resource, $"{path}{soName}.asset");
+        //        return resource;
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         public VyTask SignInEditor(string clientId, string clientSecret)
         {

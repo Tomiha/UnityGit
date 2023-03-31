@@ -286,6 +286,10 @@ namespace VenlySDK
                                 new() {Type = "uint256"}
                             }
                         };
+
+                        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++");
+                        Console.WriteLine(JsonConvert.SerializeObject(getNonceRequest));
+
                         var getNonceOutput = await ReadContract(getNonceRequest).AwaitResult();
                         var nonce = getNonceOutput[0].Value;
 
