@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Build;
@@ -99,6 +98,7 @@ namespace Packages.com.venly.sdk.Editor
 
             //1. Load All Settings
             LoadSettings();
+            VerifyVersion(); //Double Check version (can be different if just update and settings were still in project from previous version)
 
             //2. Initialize SDK Manager
             SDKManager.Instance.Initialize();
@@ -214,6 +214,19 @@ namespace Packages.com.venly.sdk.Editor
             //Set Loaded Flag
             IsLoaded = _runtimeSettingsSO != null && _editorSettingsSO != null;
             if (IsLoaded && isDirty) OnLoaded?.Invoke();
+        }
+
+        private static void VerifyVersion()
+        {
+            _packageInfo = PackageInfo.FindForAssembly(Assembly.GetExecutingAssembly());
+            var currVersion = $"v{_packageInfo.version}";
+
+            if (currVersion != _editorSettingsSO.Version)
+            {
+                _editorSettingsSO.Version = currVersion;
+                EditorUtility.SetDirty(_editorSettingsSO);
+                AssetDatabase.SaveAssetIfDirty(_editorSettingsSO);
+            }
         }
 
         #region Scripting Defines Helpers
