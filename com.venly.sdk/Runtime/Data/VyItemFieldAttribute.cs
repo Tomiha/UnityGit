@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VenlySDK.Data
+namespace Venly.Data
 {
     [Flags]
     public enum eVyItemTrait

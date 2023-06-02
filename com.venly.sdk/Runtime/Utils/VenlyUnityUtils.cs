@@ -1,7 +1,7 @@
 #if !ENABLE_VENLY_AZURE
 using UnityEngine;
 using UnityEngine.Networking;
-using VenlySDK.Core;
+using Venly.Core;
 
 public static class VenlyUnityUtils
 {

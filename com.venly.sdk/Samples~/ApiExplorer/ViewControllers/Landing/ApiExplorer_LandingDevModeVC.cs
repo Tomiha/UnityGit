@@ -10,7 +10,7 @@ public class ApiExplorer_LandingDevModeVC : SampleViewBase<eApiExplorerViewId>
 
         ShowNavigateBack = false;
 
-#if ENABLE_VENLY_DEVMODE
+#if ENABLE_VENLY_DEV_MODE
         SetLabel("lbl-client-id", VenlySettings.ClientId);
         SetLabel("lbl-backend-provider", VenlySettings.BackendProvider.ToString());
 #endif

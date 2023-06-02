@@ -1,6 +1,6 @@
-using VenlySDK;
-using VenlySDK.Core;
-using VenlySDK.Models.Shared;
+using Venly;
+using Venly.Core;
+using Venly.Models.Shared;
 
 public class ApiExplorer_ViewMultiTokensVC : ApiExplorer_ViewTokensBaseVC<VyMultiTokenDto, VyControl_MultiTokenListView, VyControl_MultiTokenListItem>
 {
@@ -10,6 +10,6 @@ public class ApiExplorer_ViewMultiTokensVC : ApiExplorer_ViewTokensBaseVC<VyMult
 
     protected override VyTask<VyMultiTokenDto[]> GetTokenBalances(string walletId)
     {
-        return Venly.WalletAPI.Client.GetMultiTokenBalances(walletId);
+        return VenlyAPI.Wallet.GetMultiTokenBalances(walletId);
     }
 }

@@ -3,11 +3,11 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using VenlySDK.Data;
-using VenlySDK.Editor.Tools.Controls;
-using VenlySDK.Editor.Utils;
+using Venly.Data;
+using Venly.Editor.Tools.Controls;
+using Venly.Editor.Utils;
 
-namespace VenlySDK.Editor.Tools.ContractManager
+namespace Venly.Editor.Tools.ContractManager
 {
     public abstract class ItemViewBase : VisualElement
     {

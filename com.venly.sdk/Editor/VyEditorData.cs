@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEngine;
-using VenlySDK.Editor.Tools.SDKManager;
-using VenlySDK.Editor.Utils;
-using VenlySDK.Models.Shared;
-using VenlySDK.Utils;
+using Venly.Core;
+using Venly.Editor.Tools.SDKManager;
+using Venly.Editor.Utils;
+using Venly.Models.Shared;
+using Venly.Utils;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace Packages.com.venly.sdk.Editor
@@ -32,7 +35,7 @@ namespace Packages.com.venly.sdk.Editor
         {
             get
             {
-                if(_editorSettingsSO == null)
+                if (_editorSettingsSO == null)
                     LoadSettings();
 
                 if (_editorSettingsSO == null)
@@ -46,7 +49,7 @@ namespace Packages.com.venly.sdk.Editor
         {
             get
             {
-                if(_runtimeSettingsSO == null)
+                if (_runtimeSettingsSO == null)
                     LoadSettings();
 
                 if (_runtimeSettingsSO == null)
@@ -60,7 +63,7 @@ namespace Packages.com.venly.sdk.Editor
         {
             get
             {
-                if(_serializedRuntimeSettings == null)
+                if (_serializedRuntimeSettings == null)
                     LoadSettings();
 
                 if (_serializedRuntimeSettings == null)
@@ -82,6 +85,18 @@ namespace Packages.com.venly.sdk.Editor
         [InitializeOnLoadMethod]
         private static void OnLoad()
         {
+#if VENLYSDK_DEBUG
+            VenlyLog.ToggleLogLevel(VenlyLog.eVyLogLevel.Debug, true);
+            VenlyLog.OnLog += (logData) =>
+            {
+                if (logData.level == VenlyLog.eVyLogLevel.Exception) Debug.LogException(logData.exception);
+                else Debug.Log(logData.message);
+            };
+#endif
+
+            //0. Set Foreground TaskScheduler
+            VyTaskBase.Initialize(TaskScheduler.FromCurrentSynchronizationContext());
+
             //1. Load All Settings
             LoadSettings();
 
@@ -121,6 +136,19 @@ namespace Packages.com.venly.sdk.Editor
             AssetDatabase.SaveAssetIfDirty(_runtimeSettingsSO);
         }
 
+        public static bool VerifyIsLoaded()
+        {
+            if (IsLoaded)
+            {
+                if (_runtimeSettingsSO == null || _editorSettingsSO == null)
+                {
+                    LoadSettings();
+                }
+            }
+
+            return IsLoaded;
+        }
+
         private static void LoadSettings(bool force = false)
         {
             IsLoaded = false;
@@ -138,6 +166,7 @@ namespace Packages.com.venly.sdk.Editor
                 //Package Version
                 _packageInfo = PackageInfo.FindForAssembly(Assembly.GetExecutingAssembly());
                 _editorSettingsSO.Version = $"v{_packageInfo.version}";
+                _editorSettingsSO.PublicResourceRoot = DefaultResourcePath;
 
                 //SDK Manager (set to current state)
                 _editorSettingsSO.SDKManager.SelectedBackend = GetActiveProviderType();
@@ -163,6 +192,7 @@ namespace Packages.com.venly.sdk.Editor
 
                 //Update Settings
                 _runtimeSettingsSO.BackendProvider = GetActiveProviderType();
+                _runtimeSettingsSO.PublicResourceRoot = DefaultResourcePath;
 
                 //Check if Provider is NONE, force to DevMode in that case
                 if (_runtimeSettingsSO.BackendProvider == eVyBackendProvider.None)
@@ -183,7 +213,7 @@ namespace Packages.com.venly.sdk.Editor
 
             //Set Loaded Flag
             IsLoaded = _runtimeSettingsSO != null && _editorSettingsSO != null;
-            if(IsLoaded && isDirty) OnLoaded?.Invoke();
+            if (IsLoaded && isDirty) OnLoaded?.Invoke();
         }
 
         #region Scripting Defines Helpers
@@ -241,13 +271,6 @@ namespace Packages.com.venly.sdk.Editor
                 //"VENLY_API_UNITY",
                 $"ENABLE_VENLY_{backend.GetMemberName().ToUpper()}"
             };
-
-#if UNITY_EDITOR
-            if (backend == eVyBackendProvider.DevMode)
-            {
-                list.Add("ENABLE_VENLY_API_SERVER");
-            }
-#endif
 
             return list;
         }

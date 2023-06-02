@@ -1,8 +1,8 @@
 using UnityEditor;
 using UnityEngine.UIElements;
-using VenlySDK.Editor.Utils;
+using Venly.Editor.Utils;
 
-namespace VenlySDK.Editor.Tools.Controls
+namespace Venly.Editor.Tools.Controls
 {
     public class TypeValueItem : ControlBaseRW
     {

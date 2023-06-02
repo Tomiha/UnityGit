@@ -2,12 +2,12 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using VenlySDK.Backends;
-using VenlySDK.Core;
-using VenlySDK.Models.Shared;
-using VenlySDK.Utils;
+using Venly.Backends;
+using Venly.Core;
+using Venly.Models.Shared;
+using Venly.Utils;
 
-namespace VenlySDK.Editor
+namespace Venly.Editor
 {
     internal class VyProvider_Editor : VyProviderBase
     {

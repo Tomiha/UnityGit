@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VenlySDK.Core;
+using Venly.Core;
 
 [RequireComponent(typeof(UIDocument))]
 public abstract class SampleViewBase<T> : MonoBehaviour where T : Enum

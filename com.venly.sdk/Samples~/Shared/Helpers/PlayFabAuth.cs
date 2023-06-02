@@ -3,9 +3,10 @@
 //https://github.com/PlayFab/PlayFab-Samples/blob/master/Samples/Unity/PlayFabSignIn/Assets/Scripts/PlayFab/PlayFabAuthService.cs
 
 #if ENABLE_VENLY_PLAYFAB
-using VenlySDK.Core;
+using Venly.Core;
 using PlayFab;
 using PlayFab.ClientModels;
+using Venly.Backends.PlayFab;
 
 public static class PlayFabAuth
 {

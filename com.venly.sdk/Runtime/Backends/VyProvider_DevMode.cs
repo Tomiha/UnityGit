@@ -4,11 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using VenlySDK.Core;
-using VenlySDK.Models.Shared;
-using VenlySDK.Utils;
+using Venly;
+using Venly.Backends;
+using Venly.Core;
+using Venly.Models.Shared;
+using Venly.Utils;
 
-namespace VenlySDK.Backends
+namespace Venly.Backends
 {
     public class VyProvider_DevMode : VyProviderBase
     {
@@ -30,7 +32,7 @@ namespace VenlySDK.Backends
         [InitializeOnLoadMethod]
         private static void RegisterProvider()
         {
-            Venly.RegisterProvider(new VyProvider_DevMode());
+            VenlyAPI.RegisterProvider(new VyProvider_DevMode());
         }
 #endif
 
@@ -40,7 +42,7 @@ namespace VenlySDK.Backends
             var taskNotifier = VyTask.Create("Authenticate");
             //var deferred = VyDeferredTask<bool>.Create();
 
-            Venly.AuthAPI.GetAccessToken(_clientId, _clientSecret)
+            VenlyAPI.Auth.GetAccessToken(_clientId, _clientSecret)
                 .OnSuccess(token =>
                 {
                     _accessToken = token;
@@ -52,7 +54,7 @@ namespace VenlySDK.Backends
 
             return taskNotifier.Task;
 #else
-            return  VyTask.Failed(new Exception("[Venly SDK] DevMode Requester can only be used inside the Unity Editor."), "Authenticate Forbidden");
+            return VyTask.Failed(new Exception("[Venly SDK] DevMode Requester can only be used inside the Unity Editor."), "Authenticate Forbidden");
 #endif
         }
 

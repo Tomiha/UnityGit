@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using VenlySDK.Core;
+using Venly.Core;
 
-namespace VenlySDK
+namespace Venly
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class VyExtensionRouteAttribute : Attribute

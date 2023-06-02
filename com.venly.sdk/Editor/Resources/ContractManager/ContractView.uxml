@@ -18,18 +18,18 @@
     </ui:VisualElement>
     <ui:ScrollView>
         <ui:VisualElement name="item-data" style="flex-grow: 1; margin-left: 10px; margin-top: 10px; margin-right: 10px;">
-            <VenlySDK.Editor.Tools.Controls.LabelFieldRW text="Confirmed" name="confirmed" editmode="Read" binding-path="Confirmed" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.LabelFieldRW text="ID" name="id" editmode="Read" binding-path="Id" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.LabelFieldRW text="Address" name="address" editmode="Read" binding-path="Address" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.LabelFieldRW text="Transaction Hash" name="transaction-hash" editmode="Read" type="TransactionHash" binding-path="TransactionHash" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Name" binding-path="Name" name="name" multiline="false" class="data-row" style="margin-top: 10px;" />
-            <VenlySDK.Editor.Tools.Controls.EnumFieldRW name="chain" text="Chain" binding-path="Chain" type="Venly.Models.eVySecretType,VenlySDK" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Description" name="description" multiline="true" binding-path="Description" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Owner" name="owner" binding-path="Owner" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Symbol" name="symbol" binding-path="Symbol" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.TextFieldRW editmode="Write" text="External URL" name="external-url" binding-path="ExternalUrl" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Image URL" name="image-url" binding-path="ImageUrl" class="data-row" />
-            <VenlySDK.Editor.Tools.Controls.TypeValueList name="media-list" list-name="Media" binding-path="Media" class="data-row" />
+            <Venly.Editor.Tools.Controls.LabelFieldRW text="Confirmed" name="confirmed" editmode="Read" binding-path="Confirmed" class="data-row" />
+            <Venly.Editor.Tools.Controls.LabelFieldRW text="ID" name="id" editmode="Read" binding-path="Id" class="data-row" />
+            <Venly.Editor.Tools.Controls.LabelFieldRW text="Address" name="address" editmode="Read" binding-path="Address" class="data-row" />
+            <Venly.Editor.Tools.Controls.LabelFieldRW text="Transaction Hash" name="transaction-hash" editmode="Read" type="TransactionHash" binding-path="TransactionHash" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Name" binding-path="Name" name="name" multiline="false" class="data-row" style="margin-top: 10px;" />
+            <Venly.Editor.Tools.Controls.EnumFieldRW name="chain" text="Chain" binding-path="Chain" type="Venly.Models.eVySecretType,VenlySDK" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Description" name="description" multiline="true" binding-path="Description" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Owner" name="owner" binding-path="Owner" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Symbol" name="symbol" binding-path="Symbol" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="External URL" name="external-url" binding-path="ExternalUrl" class="data-row" />
+            <Venly.Editor.Tools.Controls.TextFieldRW editmode="Write" text="Image URL" name="image-url" binding-path="ImageUrl" class="data-row" />
+            <Venly.Editor.Tools.Controls.TypeValueList name="media-list" list-name="Media" binding-path="Media" class="data-row" />
         </ui:VisualElement>
     </ui:ScrollView>
 </ui:UXML>

@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
-using VenlySDK.Models.Nft;
-using VenlySDK.Utils;
+using Venly.Models.Shared;
+using Venly.Utils;
 
 //ITEM
 public class VyControl_ContractListItem : VyControl_ListViewItemBase<VyContractDto>

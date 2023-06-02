@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Models;
-using VenlySDK.Models.Wallet;
+using Venly;
+using Venly.Models;
+using Venly.Models.Wallet;
 
 public class ApiExplorer_ViewWalletsVC : SampleViewBase<eApiExplorerViewId>
 {
@@ -50,7 +50,8 @@ public class ApiExplorer_ViewWalletsVC : SampleViewBase<eApiExplorerViewId>
         if (forceFreshLoad || _walletList == null)
         {
             ViewManager.Loader.Show("Retrieving Wallets...");
-            Venly.WalletAPI.Client.GetWallets()
+            var query = VyQuery_GetWallets.Create().IncludeBalance(false);
+            VenlyAPI.Wallet.GetWallets(query)
                 .OnSuccess(wallets =>
                 {
                     ViewManager.Loader.SetLoaderText("Populating List...");

@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using VenlySDK.Utils;
+using Venly.Utils;
 
-namespace VenlySDK.Editor.Tools.Controls
+namespace Venly.Editor.Tools.Controls
 {
     public class EnumFieldRW : ControlBaseRW<EnumField>
     {

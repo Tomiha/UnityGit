@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Models.Nft;
-using VenlySDK.Models.Shared;
-using VenlySDK.Utils;
+using Venly;
+using Venly.Models.Nft;
+using Venly.Models.Shared;
+using Venly.Utils;
 
 public class ApiExplorer_ContractDetailsVC : SampleViewBase<eApiExplorerViewId>
 {
@@ -53,15 +53,15 @@ public class ApiExplorer_ContractDetailsVC : SampleViewBase<eApiExplorerViewId>
 
 
     private
-#if ENABLE_VENLY_DEVMODE
+#if ENABLE_VENLY_DEV_MODE
     async
 #endif
     void onClick_Archive()
     {
 #region DevMode Only (SERVER)
-#if ENABLE_VENLY_DEVMODE
+#if ENABLE_VENLY_DEV_MODE
         ViewManager.Loader.Show("Archiving Contract...");
-        var result = await Venly.NftAPI.Server.ArchiveContract(_contract.Id);
+        var result = await VenlyAPI.Nft.ArchiveContract(_contract.Id);
         ViewManager.Loader.Hide();
 
         if (result.Success)
@@ -89,7 +89,7 @@ public class ApiExplorer_ContractDetailsVC : SampleViewBase<eApiExplorerViewId>
             //Retrieve Wallet Data
             //--------------------
             ViewManager.Loader.Show("Retrieving Wallet Info...");
-            var result = await Venly.NftAPI.Client.GetContract(_contract.Id);
+            var result = await VenlyAPI.Nft.GetContract(_contract.Id);
             ViewManager.Loader.Hide();
 
             if (!result.Success)
@@ -103,7 +103,7 @@ public class ApiExplorer_ContractDetailsVC : SampleViewBase<eApiExplorerViewId>
             //Retrieve Token Types
             //----------------------------
             ViewManager.Loader.Show("Retrieving Token Types...");
-            var tokenTypesResult = await Venly.NftAPI.Client.GetTokenTypes(_contract.Id);
+            var tokenTypesResult = await VenlyAPI.Nft.GetTokenTypes(_contract.Id);
             ViewManager.Loader.Hide();
 
             if (!tokenTypesResult.Success)
@@ -116,7 +116,7 @@ public class ApiExplorer_ContractDetailsVC : SampleViewBase<eApiExplorerViewId>
             //Retrieve Image
             //--------------
             ViewManager.Loader.Show("Retrieving Contract Image...");
-            var imageResult = await VenlyUnityUtils.DownloadImage(_contract.Image);
+            var imageResult = await VenlyUnityUtils.DownloadImage(_contract.ImageUrl);
             ViewManager.Loader.Hide();
 
             _contractImage = imageResult.Success ? imageResult.Data : null;

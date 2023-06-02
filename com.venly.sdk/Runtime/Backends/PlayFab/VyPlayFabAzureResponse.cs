@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Net;
 using Newtonsoft.Json;
-using VenlySDK.Core;
 
 #if ENABLE_VENLY_AZURE
 using Microsoft.AspNetCore.Mvc;
 #endif
 
-namespace VenlySDK.Backends.PlayFab
+namespace Venly.Backends.PlayFab
 {
     public class VyPlayFabAzureResponse
     {

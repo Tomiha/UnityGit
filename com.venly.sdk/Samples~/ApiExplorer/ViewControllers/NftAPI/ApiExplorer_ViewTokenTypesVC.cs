@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Models.Nft;
+using Venly;
+using Venly.Models.Nft;
+using Venly.Models.Shared;
 
 public class ApiExplorer_ViewTokenTypesVC : SampleViewBase<eApiExplorerViewId>
 {
@@ -57,7 +58,7 @@ public class ApiExplorer_ViewTokenTypesVC : SampleViewBase<eApiExplorerViewId>
             if (force || _sourceContract.Id != _lastContractId)
             {
                 ViewManager.Loader.Show("Refreshing TokenTypes...");
-                Venly.NftAPI.Client.GetTokenTypes(_sourceContract.Id)
+                VenlyAPI.Nft.GetTokenTypes(_sourceContract.Id)
                     .OnSuccess(tokens =>
                     {
                         _lastContractId = _sourceContract.Id;

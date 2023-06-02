@@ -1,9 +1,9 @@
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Core;
+using Venly;
+using Venly.Core;
 
 #if ENABLE_VENLY_PLAYFAB
-using VenlySDK.Backends.PlayFab;
+using Venly.Backends.PlayFab;
 #endif
 
 public class ApiExplorer_LoginUserVC : SampleViewBase<eApiExplorerViewId>
@@ -50,10 +50,10 @@ public class ApiExplorer_LoginUserVC : SampleViewBase<eApiExplorerViewId>
             .OnSuccess(loginResult =>
             {
                 //Set Authentication Context for this User
-                Venly.SetProviderData(VyProvider_PlayFab.AuthContextDataKey, loginResult.AuthenticationContext);
+                VenlyAPI.SetProviderData(VyProvider_PlayFab.AuthContextDataKey, loginResult.AuthenticationContext);
 
                 //Retrieve User Wallet
-                Venly.ProviderExtensions.GetWalletForUser()
+                VenlyAPI.ProviderExtensions.GetWalletForUser()
                     .OnSuccess(wallet =>
                     {
                         //Set Wallet Data

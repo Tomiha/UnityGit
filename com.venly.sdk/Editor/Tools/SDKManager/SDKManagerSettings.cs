@@ -6,11 +6,10 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VenlySDK.Editor.Utils;
-using VenlySDK.Models;
-using VenlySDK.Models.Shared;
+using Venly.Editor.Utils;
+using Venly.Models.Shared;
 
-namespace VenlySDK.Editor.Tools.SDKManager
+namespace Venly.Editor.Tools.SDKManager
 {
     public class SDKManagerSettings : VisualElement
     {

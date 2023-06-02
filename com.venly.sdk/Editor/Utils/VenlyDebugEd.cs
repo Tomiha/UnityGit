@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace VenlySDK.Editor.Utils
+namespace Venly.Editor.Utils
 {
     internal static class VenlyDebugEd
     {

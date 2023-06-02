@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Models.Nft;
+using Venly;
+using Venly.Models.Shared;
 
 public class ApiExplorer_ViewContractsVC : SampleViewBase<eApiExplorerViewId>
 {
@@ -49,7 +49,7 @@ public class ApiExplorer_ViewContractsVC : SampleViewBase<eApiExplorerViewId>
         if (forceFreshLoad || _contractList == null)
         {
             ViewManager.Loader.Show("Retrieving Contracts...");
-            Venly.NftAPI.Client.GetContracts()
+            VenlyAPI.Nft.GetContracts()
                 .OnSuccess(contracts =>
                 {
                     ViewManager.Loader.SetLoaderText("Populating List...");

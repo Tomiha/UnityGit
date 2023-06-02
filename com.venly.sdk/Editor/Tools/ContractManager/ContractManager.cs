@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using VenlySDK.Core;
-using VenlySDK.Data;
-using VenlySDK.Models;
-using VenlySDK.Models.Nft;
+using Venly.Core;
+using Venly.Data;
+using Venly.Models.Nft;
+using Venly.Models.Shared;
 
-namespace VenlySDK.Editor.Tools.ContractManager
+namespace Venly.Editor.Tools.ContractManager
 {
     internal class ContractManager
     {
@@ -247,20 +247,18 @@ namespace VenlySDK.Editor.Tools.ContractManager
         private void UpdateTokenType(VyTokenTypeSO tokenType)
         {
             var model = tokenType.ToModel();
-            VyUpdateTokenTypeMetadataDto data = new()
+            VyUpdateTokenTypeMetadataRequest data = new()
             {
-                ContractId = tokenType.Contract.Id,
                 Name = model.Name,
                 AnimationUrls = model.AnimationUrls,
-                Atrributes = model.Attributes,
+                Attributes = model.Attributes,
                 BackgroundColor = model.BackgroundColor,
                 Description = model.Description,
                 ExternalUrl = model.ExternalUrl,
-                ImageUrl = model.Image,
-                TokenTypeId = (int)model.Id //todo fix type
+                ImageUrl = model.ImageUrl,
             };
 
-            VenlyEditorAPI.UpdateTokenTypeMetadata(data)
+            VenlyEditorAPI.UpdateTokenTypeMetadata(tokenType.Contract.Id, tokenType.Id, data)
                 .OnSuccess(tokenTypeMetadata =>
                 {
                     tokenType.ChangeItemState(eVyItemState.Live);
@@ -273,18 +271,17 @@ namespace VenlySDK.Editor.Tools.ContractManager
         private void UpdateContract(VyContractSO contract)
         {
             var model = contract.ToModel();
-            VyUpdateContractMetadataDto data = new()
+            VyUpdateContractMetadataRequest data = new()
             {
-                ContractId = (int)model.Id, //todo fix type
                 Name = model.Name,
                 Description = model.Description,
                 ExternalUrl = model.ExternalUrl,
-                ImageUrl = model.Image,
+                ImageUrl = model.ImageUrl,
                 Media = model.Media,
                 Symbol = model.Symbol
             };
 
-            VenlyEditorAPI.UpdateContractMetadata(data)
+            VenlyEditorAPI.UpdateContractMetadata(contract.Id, data)
                 .OnSuccess(contractMetadata =>
                 {
                     contract.ChangeItemState(eVyItemState.Live);
@@ -319,7 +316,7 @@ namespace VenlySDK.Editor.Tools.ContractManager
         private void PushContract(VyContractSO contract)
         {
             var model = contract.ToModel();
-            var data = new VyCreateContractDto
+            var data = new VyCreateContractRequest
             {
                 Name = model.Name,
                 Chain = model.Chain,
@@ -328,7 +325,7 @@ namespace VenlySDK.Editor.Tools.ContractManager
                 Media = model.Media,
                 Owner = model.Owner,
                 Symbol = model.Symbol,
-                ImageUrl = model.Image //todo: fix image vs imageUrl
+                ImageUrl = model.ImageUrl
             };
 
             VenlyEditorAPI.CreateContract(data)
@@ -343,23 +340,22 @@ namespace VenlySDK.Editor.Tools.ContractManager
         private void PushTokenType(VyTokenTypeSO tokenType)
         {
             var model = tokenType.ToModel();
-            var data = new VyCreateTokenTypeDto
+            var data = new VyCreateTokenTypeRequest
             {
                 Name = model.Name,
                 AnimationUrls = model.AnimationUrls,
                 Attributes = model.Attributes,
                 BackgroundColor = model.BackgroundColor,
                 Burnable = model.Burnable,
-                ContractId = tokenType.Contract.Id,
                 Description = model.Description,
                 ExternalUrl = model.ExternalUrl,
                 Destinations = null,
                 Fungible = model.Fungible,
-                ImageUrl = model.Image,
-                MaxSupply = (int)model.MaxSupply //todo fix types
+                ImageUrl = model.ImageUrl,
+                MaxSupply = model.MaxSupply //todo fix types
             };
 
-            VenlyEditorAPI.CreateTokenType(data)
+            VenlyEditorAPI.CreateTokenType(tokenType.Contract.Id, data)
                 .OnSuccess(newTokenType =>
                 {
                     tokenType.ChangeItemState(eVyItemState.Live);

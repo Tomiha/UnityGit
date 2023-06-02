@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
-using VenlySDK.Models;
-using VenlySDK.Models.Nft;
+using Venly.Models;
+using Venly.Models.Nft;
 
 //ITEM
 public class VyControl_TokenTypeListItem : VyControl_ListViewItemBase<VyTokenTypeDto>

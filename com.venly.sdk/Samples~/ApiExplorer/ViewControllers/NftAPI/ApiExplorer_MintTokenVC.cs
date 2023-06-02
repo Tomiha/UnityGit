@@ -1,8 +1,9 @@
 using System;
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Models.Nft;
-using VenlySDK.Models.Wallet;
+using Venly;
+using Venly.Models.Nft;
+using Venly.Models.Shared;
+using Venly.Models.Wallet;
 
 public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
 {
@@ -168,16 +169,14 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
 
     private void onCick_Mint()
     {
-#if ENABLE_VENLY_DEVMODE
+#if ENABLE_VENLY_DEV_MODE
         if (!Validate()) return;
 
-        var reqParams = new VyMintTokenDto()
+        var reqParams = new VyMintTokensRequest()
         {
-            ContractId = _sourceContract.Id,
-            TokenId = _sourceTokenType.Id,
             Destinations = new []
             {
-                new VyMintTokenDto.VyMintDestinationDto
+                new VyTokenDestinationDto()
                 {
                     Address = _txtTargetAddress.value,
                     Amount = int.Parse(_txtAmount.value)
@@ -186,7 +185,7 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
         };
 
         ViewManager.Loader.Show("Minting...");
-        Venly.NftAPI.Server.MintToken(reqParams)
+        VenlyAPI.Nft.MintTokens(_sourceContract.Id, _sourceTokenType.Id, reqParams)
             .OnSuccess(mintInfo =>
             {
                 //todo show confirmation

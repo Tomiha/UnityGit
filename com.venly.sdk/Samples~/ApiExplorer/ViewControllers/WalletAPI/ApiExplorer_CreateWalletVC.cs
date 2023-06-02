@@ -2,11 +2,11 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Core;
-using VenlySDK.Models;
-using VenlySDK.Models.Shared;
-using VenlySDK.Models.Wallet;
+using Venly;
+using Venly.Core;
+using Venly.Models;
+using Venly.Models.Shared;
+using Venly.Models.Wallet;
 using Toggle = UnityEngine.UIElements.Toggle;
 
 public class ApiExplorer_CreateWalletVC : SampleViewBase<eApiExplorerViewId>
@@ -47,20 +47,20 @@ public class ApiExplorer_CreateWalletVC : SampleViewBase<eApiExplorerViewId>
 
     private void OnClick_Create()
     {
-#if ENABLE_VENLY_API_SERVER
+#if ENABLE_VENLY_DEV_MODE
         var selectedChain = Enum.Parse<eVyChain>(_selectorChains.value);
 
-        VyCreateWalletDto createParams = new VyCreateWalletDto
+        var createParams = new VyCreateWalletRequest()
         {
             Chain = selectedChain,
             Description = _txtDescription.value,
             Identifier = _txtIdentifier.value,
             Pincode = _txtPincode.value,
-            WalletType = _toggleRecoverable.value ? eVyWalletType.WhiteLabel : eVyWalletType.WhiteLabelUnrecoverable
+            WalletType = _toggleRecoverable.value ? eVyWalletType.WhiteLabel : eVyWalletType.UnrecoverableWhiteLabel
         };
 
-        ViewManager.Loader.Show("Creating Wallet...");
-        Venly.WalletAPI.Server.CreateWallet(createParams)
+        ViewManager.Loader.Show("Creating Wallet..");
+        VenlyAPI.Wallet.CreateWallet(createParams)
             .OnSuccess(wallet =>
             {
                 ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_WalletDetails, ApiExplorer_WalletDetailsVC.DATAKEY_WALLET, wallet);

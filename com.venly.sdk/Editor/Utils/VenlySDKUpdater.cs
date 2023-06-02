@@ -5,7 +5,7 @@ using UnityEditor.Compilation;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-namespace VenlySDK.Editor.Utils
+namespace Venly.Editor.Utils
 {
     //internal class VenlySDKUpdater
     //{

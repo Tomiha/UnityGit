@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Models.Shared;
+using Venly;
+using Venly.Models.Shared;
 
 public class ApiExplorer_TransactionDetailsVC : SampleViewBase<eApiExplorerViewId>
 {
@@ -33,11 +33,11 @@ public class ApiExplorer_TransactionDetailsVC : SampleViewBase<eApiExplorerViewI
     private void Refresh()
     {
         ViewManager.Loader.Show("Retrieving Transaction Info...");
-        Venly.WalletAPI.Client.GetTransactionInfo(_transactionChain, _transactionHash)
+        VenlyAPI.Wallet.GetTransactionInfo(_transactionChain, _transactionHash)
             .OnSuccess(info =>
             {
                 SetLabel("lbl-hash", info.Hash);
-                SetLabel("lbl-status", Enum.GetName(typeof(eVyTransactionStatus),info.Status));
+                SetLabel("lbl-status", Enum.GetName(typeof(eVyTransactionState),info.Status));
                 SetLabel("lbl-confirmations", info.Confirmations.ToString());
                 SetLabel("lbl-blockHash", info.BlockHash);
                 SetLabel("lbl-blockNumber", info.BlockNumber.ToString());

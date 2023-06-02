@@ -1,9 +1,8 @@
 ﻿using System;
 using UnityEngine;
-using VenlySDK.Models;
-using VenlySDK.Models.Shared;
+using Venly.Models.Shared;
 
-namespace VenlySDK.Data
+namespace Venly.Data
 {
     public enum eVyItemState
     {
@@ -27,16 +26,16 @@ namespace VenlySDK.Data
             public string Type = "";
             public string Value = "";
 
-            public VyTypeValuePair ToModel()
+            public VyTypeValueDto ToModel()
             {
-                return new VyTypeValuePair()
+                return new VyTypeValueDto()
                 {
                     Type = Type,
                     Value = Value
                 };
             }
 
-            public static _ItemTypeValue FromModel(VyTypeValuePair pair)
+            public static _ItemTypeValue FromModel(VyTypeValueDto pair)
             {
                 return new _ItemTypeValue()
                 {

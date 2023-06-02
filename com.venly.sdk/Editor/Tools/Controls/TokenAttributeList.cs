@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
-using VenlySDK.Data;
-using VenlySDK.Editor.Utils;
+using Venly.Data;
+using Venly.Editor.Utils;
 
-namespace VenlySDK.Editor.Tools.Controls
+namespace Venly.Editor.Tools.Controls
 {
     public class TokenAttributeList : ControlBaseRW
     {

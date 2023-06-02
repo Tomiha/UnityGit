@@ -1,6 +1,7 @@
 using UnityEngine.UIElements;
-using VenlySDK.Models;
-using VenlySDK.Models.Wallet;
+using Venly.Models;
+using Venly.Models.Wallet;
+using Venly.Utils;
 
 //ITEM
 public class VyControl_WalletEventListItem : VyControl_ListViewItemBase<VyWalletEventDto>
@@ -15,7 +16,7 @@ public class VyControl_WalletEventListItem : VyControl_ListViewItemBase<VyWallet
 
     public override void BindItem(VyWalletEventDto sourceItem)
     {
-        SetLabel("lbl-event-type", sourceItem.EventType);
+        SetLabel("lbl-event-type", sourceItem.EventType.GetMemberName());
     }
 
     public override void BindMockItem()

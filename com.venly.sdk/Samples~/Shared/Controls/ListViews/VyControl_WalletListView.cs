@@ -1,7 +1,7 @@
 using UnityEngine.UIElements;
-using VenlySDK.Models;
-using VenlySDK.Models.Wallet;
-using VenlySDK.Utils;
+using Venly.Models;
+using Venly.Models.Wallet;
+using Venly.Utils;
 
 //ITEM
 public class VyControl_WalletListItem : VyControl_ListViewItemBase<VyWalletDto>

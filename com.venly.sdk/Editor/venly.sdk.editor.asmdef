@@ -1,5 +1,5 @@
 {
-    "name": "VenlySDK.Editor",
+    "name": "Venly.Editor",
     "rootNamespace": "",
     "references": [
         "GUID:9bef95363ff31824ebcd4545aa4923ea"

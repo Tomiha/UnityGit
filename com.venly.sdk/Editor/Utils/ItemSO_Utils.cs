@@ -3,11 +3,11 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
-using VenlySDK.Data;
-using VenlySDK.Models;
-using VenlySDK.Models.Nft;
+using Venly.Data;
+using Venly.Models.Nft;
+using Venly.Models.Shared;
 
-namespace VenlySDK.Editor
+namespace Venly.Editor
 {
     public static class ItemSO_Utils
     {
@@ -34,11 +34,18 @@ namespace VenlySDK.Editor
             newContract.name = contractName;
             newContract.ChangeItemState(eVyItemState.Local);
 
-            //todo: move to editor assembly part
-            AssetDatabase.CreateAsset(newContract, $"{VenlySettings.PublicResourceRoot}/{contractName}.asset");
+            try
+            {
+                //todo: move to editor assembly part
+                AssetDatabase.CreateAsset(newContract, $"{VenlySettings.PublicResourceRoot}/{contractName}.asset");
 
-            EditorUtility.SetDirty(newContract);
-            AssetDatabase.SaveAssetIfDirty(newContract);
+                EditorUtility.SetDirty(newContract);
+                AssetDatabase.SaveAssetIfDirty(newContract);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
 
             return newContract;
         }
@@ -77,7 +84,7 @@ namespace VenlySDK.Editor
             contract.Description = model.Description;
             contract.ExternalUrl = model.ExternalUrl;
             contract.Id = (int)model.Id; //todo fix types
-            contract.ImageUrl = model.Image;
+            contract.ImageUrl = model.ImageUrl;
             contract.Name = model.Name;
             contract.Owner = model.Owner;
             contract.Chain = model.Chain;
@@ -125,10 +132,17 @@ namespace VenlySDK.Editor
 
             parent.TokenTypes.Add(newTokenType);
 
-            AssetDatabase.AddObjectToAsset(newTokenType, parent);
+            try
+            {
+                AssetDatabase.AddObjectToAsset(newTokenType, parent);
 
-            EditorUtility.SetDirty(parent);
-            AssetDatabase.SaveAssetIfDirty(parent);
+                EditorUtility.SetDirty(parent);
+                AssetDatabase.SaveAssetIfDirty(parent);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
 
             return newTokenType;
         }
@@ -220,9 +234,9 @@ namespace VenlySDK.Editor
             tokenType.BackgroundColor = model.BackgroundColor;
             tokenType.Description = model.Description;
             tokenType.ExternalUrl = model.ExternalUrl;
-            tokenType.ImageUrl = model.Image;
-            tokenType.ImagePreview = model.ImagePreview;
-            tokenType.ImageThumbnail = model.ImageThumbnail;
+            tokenType.ImageUrl = model.ImageUrl;
+            tokenType.ImagePreview = model.ImagePreviewUrl;
+            tokenType.ImageThumbnail = model.ImageThumbnailUrl;
             
             //Attributes
             tokenType.Attributes.Clear();
@@ -253,9 +267,9 @@ namespace VenlySDK.Editor
             tokenType.ExternalUrl = model.ExternalUrl;
             tokenType.Fungible = model.Fungible;
             tokenType.Id = (int)model.Id; //todo fix types
-            tokenType.ImageUrl = model.Image;
-            tokenType.ImagePreview = model.ImagePreview;
-            tokenType.ImageThumbnail = model.ImageThumbnail;
+            tokenType.ImageUrl = model.ImageUrl;
+            tokenType.ImagePreview = model.ImagePreviewUrl;
+            tokenType.ImageThumbnail = model.ImageThumbnailUrl;
             tokenType.TransactionHash = model.TransactionHash;
 
             //Attributes

@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using VenlySDK.Editor.Utils;
+using Venly.Editor.Utils;
 
-namespace VenlySDK.Editor.Tools.Controls
+namespace Venly.Editor.Tools.Controls
 {
     public abstract class ControlBaseRW : VisualElement
     {

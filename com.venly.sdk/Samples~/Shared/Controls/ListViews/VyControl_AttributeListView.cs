@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
-using VenlySDK.Models.Shared;
-using VenlySDK.Utils;
+using Venly.Models.Shared;
+using Venly.Utils;
 
 //ITEM
 public class VyControl_AttributeListItem : VyControl_ListViewItemBase<VyTokenAttributeDto>

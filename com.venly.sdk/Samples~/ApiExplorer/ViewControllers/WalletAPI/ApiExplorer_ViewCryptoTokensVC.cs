@@ -1,7 +1,7 @@
-using VenlySDK;
-using VenlySDK.Core;
-using VenlySDK.Models;
-using VenlySDK.Models.Shared;
+using Venly;
+using Venly.Core;
+using Venly.Models;
+using Venly.Models.Shared;
 
 public class ApiExplorer_ViewCryptoTokensVC : ApiExplorer_ViewTokensBaseVC<VyCryptoTokenDto, VyControl_CryptoTokenListView
     , VyControl_CryptoTokenListItem>
@@ -12,6 +12,6 @@ public class ApiExplorer_ViewCryptoTokensVC : ApiExplorer_ViewTokensBaseVC<VyCry
 
     protected override VyTask<VyCryptoTokenDto[]> GetTokenBalances(string walletId)
     {
-        return Venly.WalletAPI.Client.GetCryptoTokenBalances(walletId);
+        return VenlyAPI.Wallet.GetCryptoTokenBalances(walletId);
     }
 }

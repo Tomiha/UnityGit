@@ -16,12 +16,12 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="mainContent" style="flex-grow: 1; height: 100%; flex-direction: row; width: auto; align-items: stretch; flex-shrink: 1; min-height: auto; min-width: auto;">
-            <VenlySDK.Editor.Tools.Controls.SplitView orientation="Horizontal" fixed-pane-initial-dimension="230" style="flex-direction: row; min-width: auto; min-height: auto;">
+            <Venly.Editor.Tools.Controls.SplitView orientation="Horizontal" fixed-pane-initial-dimension="230" style="flex-direction: row; min-width: auto; min-height: auto;">
                 <ui:VisualElement name="contentTreePane" style="flex-grow: 1; flex-direction: row; width: 399px; min-width: 150px;">
-                    <VenlySDK.Editor.Tools.ContractManager.ContractListView name="contract-list-view" style="flex-grow: 1; width: 100%; border-left-color: rgb(187, 187, 187); border-right-color: rgb(187, 187, 187); border-top-color: rgb(187, 187, 187); border-bottom-color: rgb(187, 187, 187); border-left-width: 0; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px;" />
+                    <Venly.Editor.Tools.ContractManager.ContractListView name="contract-list-view" style="flex-grow: 1; width: 100%; border-left-color: rgb(187, 187, 187); border-right-color: rgb(187, 187, 187); border-top-color: rgb(187, 187, 187); border-bottom-color: rgb(187, 187, 187); border-left-width: 0; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px;" />
                 </ui:VisualElement>
                 <ui:VisualElement name="item-details-panel" style="flex-grow: 1; width: auto; flex-direction: row; min-width: 200px; border-left-width: 0; border-right-width: 0; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(186, 186, 186); border-right-color: rgb(186, 186, 186); border-top-color: rgb(186, 186, 186); border-bottom-color: rgb(186, 186, 186);" />
-            </VenlySDK.Editor.Tools.Controls.SplitView>
+            </Venly.Editor.Tools.Controls.SplitView>
             <ui:VisualElement name="overlay-block" style="position: absolute; flex-grow: 1; width: 100%; height: 100%; background-color: rgba(137, 137, 137, 0.6); display: none; visibility: visible; overflow: visible;" />
         </ui:VisualElement>
         <ui:VisualElement name="mainFooter" style="flex-shrink: 0; height: 30px; flex-direction: row; width: auto; min-height: 30px; align-items: stretch; justify-content: center;" />

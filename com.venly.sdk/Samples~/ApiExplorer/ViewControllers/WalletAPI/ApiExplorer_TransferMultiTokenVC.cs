@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Models;
-using VenlySDK.Models.Shared;
-using VenlySDK.Models.Wallet;
+using Venly;
+using Venly.Models;
+using Venly.Models.Shared;
+using Venly.Models.Wallet;
 
 public class ApiExplorer_TransferMultiTokenVC : SampleViewBase<eApiExplorerViewId>
 {
@@ -177,22 +177,18 @@ public class ApiExplorer_TransferMultiTokenVC : SampleViewBase<eApiExplorerViewI
     {
         if (!Validate()) return;
 
-        var reqParams = new VyExecuteMultiTokenTransferDto()
+        var reqParams = new VyTransactionMultiTokenTransferRequest()
         {
-            Pincode = _txtPincode.text,
-            Request = new VyTransferMultiTokenRequest()
-            {
-                Chain = _sourceWallet?.Chain ?? eVyChain.NotSupported,
-                WalletId = _sourceWallet?.Id,
-                TokenAddress = _sourceToken.Contract.Address,
-                TokenId = int.Parse(_sourceToken.Id),
-                ToAddress = _txtTargetAddress.value,
-                Amount = _sourceToken.Fungible?int.Parse(_txtAmount.value):null
-            }
+            Chain = _sourceWallet?.Chain ?? eVyChain.NotSupported,
+            WalletId = _sourceWallet?.Id,
+            TokenAddress = _sourceToken.Contract.Address,
+            TokenId = int.Parse(_sourceToken.Id),
+            ToAddress = _txtTargetAddress.value,
+            Amount = _sourceToken.Fungible?int.Parse(_txtAmount.value):null
         };
 
         ViewManager.Loader.Show("Transferring...");
-        Venly.WalletAPI.Client.ExecuteMultiTokenTransfer(reqParams)
+        VenlyAPI.Wallet.ExecuteMultiTokenTransfer(_txtPincode.text, reqParams)
             .OnSuccess(transferInfo =>
             {
                 ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_hash", transferInfo.TransactionHash);

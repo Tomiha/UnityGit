@@ -5,7 +5,7 @@
 //using VenlySDK.Models.Shared;
 //using VenlySDK.Models.Wallet;
 
-//namespace VenlySDK.GameObjects
+//namespace Venly.GameObjects
 //{
 //    class VenlyWallet : MonoBehaviour
 //    {
@@ -69,16 +69,16 @@
 //                try
 //                {
 //                    //Retrieve Wallet Data
-//                    WalletDto = await Venly.WalletAPI.Client.GetWallet(walletId).AwaitResult();
+//                    WalletDto = await Venly.Wallet..Client.GetWallet(walletId).AwaitResult();
 
 //                    //Retrieve CryptoTokens
-//                    FungibleTokensDto = await Venly.WalletAPI.Client.GetCryptoTokenBalances(walletId).AwaitResult();
+//                    FungibleTokensDto = await Venly.Wallet..Client.GetCryptoTokenBalances(walletId).AwaitResult();
 
 //                    //Retrieve MultiTokens
-//                    NonFungibleTokensDto = await Venly.WalletAPI.Client.GetMultiTokenBalances(walletId).AwaitResult();
+//                    NonFungibleTokensDto = await Venly.Wallet..Client.GetMultiTokenBalances(walletId).AwaitResult();
 
 //                    //Retrieve WalletEvents
-//                    WalletEventsDto = await Venly.WalletAPI.Client.GetWalletEvents(walletId).AwaitResult();
+//                    WalletEventsDto = await Venly.Wallet..Client.GetWalletEvents(walletId).AwaitResult();
 
 //                    //Initialize Wallet
 //                    Initialize();

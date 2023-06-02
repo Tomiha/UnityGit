@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace VenlySDK.Editor.Tools.Controls
+namespace Venly.Editor.Tools.Controls
 {
     //[MovedFrom(true, "")]
     public class SplitView : TwoPaneSplitView

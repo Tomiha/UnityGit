@@ -4,11 +4,11 @@ using Newtonsoft.Json;
 using PlayFab;
 using PlayFab.CloudScriptModels;
 using UnityEngine;
-using VenlySDK.Core;
-using VenlySDK.Models.Shared;
-using VenlySDK.Utils;
+using Venly.Core;
+using Venly.Models.Shared;
+using Venly.Utils;
 
-namespace VenlySDK.Backends.PlayFab
+namespace Venly.Backends.PlayFab
 {
     public class VyProvider_PlayFab : VyProviderBase
     {
@@ -25,7 +25,7 @@ namespace VenlySDK.Backends.PlayFab
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void RegisterProvider()
         {
-            Venly.RegisterProvider(new VyProvider_PlayFab());
+            VenlyAPI.RegisterProvider(new VyProvider_PlayFab());
         }
 
         protected override void OnSetData(string key, object data)

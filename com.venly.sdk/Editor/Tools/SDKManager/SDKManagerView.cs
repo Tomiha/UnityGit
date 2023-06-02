@@ -2,122 +2,127 @@ using Packages.com.venly.sdk.Editor;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using VenlySDK.Editor.Utils;
+using Venly.Editor.Utils;
 
-namespace VenlySDK.Editor.Tools.SDKManager
+namespace Venly.Editor.Tools.SDKManager
 {
-public class SDKManagerView : EditorWindow
-{
-    private VisualElement _containerContent;
-
-    private SDKManagerDetails _panelDetails;
-    private SDKManagerSettings _panelSettings;
-
-    private Label _lblHeader;
-    private VisualElement _panelHeader;
-    private VisualElement _panelMenu;
-
-    private bool _detailsActive = true;
-
-    public void CreateGUI()
+    public class SDKManagerView : EditorWindow
     {
-        if (VyEditorData.IsLoaded)
+        private VisualElement _containerContent;
+
+        private SDKManagerDetails _panelDetails;
+        private SDKManagerSettings _panelSettings;
+
+        private Label _lblHeader;
+        private VisualElement _panelHeader;
+        private VisualElement _panelMenu;
+
+        private bool _detailsActive = true;
+
+        public void CreateGUI()
         {
-            rootVisualElement.Bind(VyEditorData.SerializedRuntimeSettings);
-        }
+            if (VyEditorData.VerifyIsLoaded())
+            {
+                rootVisualElement.Bind(VyEditorData.SerializedRuntimeSettings);
+            }
 
-        //Root Tree
-        var rootTree = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerView");
-        rootTree.CloneTree(rootVisualElement);
+            //Root Tree
+            var rootTree = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerView");
+            rootTree.CloneTree(rootVisualElement);
 
-        _containerContent = rootVisualElement.Q<VisualElement>("container-content");
+            _containerContent = rootVisualElement.Q<VisualElement>("container-content");
 
-        _panelMenu = rootVisualElement.Q<VisualElement>("panel-menu");
+            _panelMenu = rootVisualElement.Q<VisualElement>("panel-menu");
 
-        _panelHeader = rootVisualElement.Q<VisualElement>("panel-header");
-        _lblHeader = _panelHeader.Q<Label>("lbl-header");
-        _lblHeader.text = "SDK Not Yet Initialized...";
+            _panelHeader = rootVisualElement.Q<VisualElement>("panel-header");
+            _lblHeader = _panelHeader.Q<Label>("lbl-header");
+            _lblHeader.text = "SDK Not Yet Initialized...";
 
-        rootVisualElement.Q<Button>("btn-details").clickable.clicked += ShowDetails;
-        rootVisualElement.Q<Button>("btn-settings").clickable.clicked += ShowSettings;
+            rootVisualElement.Q<Button>("btn-details").clickable.clicked += ShowDetails;
+            rootVisualElement.Q<Button>("btn-settings").clickable.clicked += ShowSettings;
 
-        VyEditorData.OnLoaded += RefreshView;
-        SDKManager.Instance.OnInitialized += RefreshView;
-        SDKManager.Instance.OnAuthenticatedChanged += (_)=>
-        {
+            VyEditorData.OnLoaded += RefreshView;
+            SDKManager.Instance.OnInitialized += RefreshView;
+            SDKManager.Instance.OnAuthenticatedChanged += (_) =>
+            {
+                RefreshView();
+            };
+
             RefreshView();
-        };
-
-        RefreshView();
-    }
-
-    public void RefreshView()
-    {
-        HideHeader();
-        _containerContent.Clear();
-
-        if (!SDKManager.Instance.IsInitialized)
-        {
-            ShowHeader("SDK Manager not yet initialized...");
-            _panelMenu.HideElement();
-            return;
         }
 
-        if (!SDKManager.Instance.IsInitialized)
+        public void RefreshView()
         {
-            ShowHeader("Settings not loaded...");
-            _panelMenu.HideElement();
-            return;
+            HideHeader();
+            _containerContent.Clear();
+
+            //if (!SDKManager.Instance.IsInitialized)
+            //{
+            //    SDKManager.Instance.Initialize();
+            //}
+
+            if (!SDKManager.Instance.IsInitialized)
+            {
+                ShowHeader("SDK Manager not initialized...");
+                _panelMenu.HideElement();
+                return;
+            }
+
+            if (!VyEditorData.IsLoaded)
+            {
+                ShowHeader("Settings not loaded...");
+                _panelMenu.HideElement();
+                return;
+            }
+
+            //SDK manager initialized =>
+            if (!SDKManager.Instance.VerifyAuthentication())
+            {
+                ShowHeader("Not Authenticated...");
+            }
+
+            _panelMenu.ShowElement();
+
+            _panelSettings = new SDKManagerSettings();
+            _panelDetails = new SDKManagerDetails();
+            BindData();
+
+            if (_detailsActive) ShowDetails();
+            else ShowSettings();
         }
 
-        //SDK manager initialized =>
-        if (!SDKManager.Instance.IsAuthenticated)
+        private void BindData()
         {
-            ShowHeader("Not Authenticated...");
+            if (VyEditorData.IsLoaded)
+            {
+                rootVisualElement.Bind(VyEditorData.SerializedRuntimeSettings);
+                _panelSettings.Bind(VyEditorData.SerializedRuntimeSettings);
+            }
         }
-
-        _panelMenu.ShowElement();
-
-        _panelSettings = new SDKManagerSettings();
-        _panelDetails = new SDKManagerDetails();
-        BindData();
-
-        if(_detailsActive)ShowDetails();
-        else ShowSettings();
-    }
-
-    private void BindData()
-    {
-        if (VyEditorData.IsLoaded)
-        {
-            rootVisualElement.Bind(VyEditorData.SerializedRuntimeSettings);
-            _panelSettings.Bind(VyEditorData.SerializedRuntimeSettings);
-        }
-    }
 
         public void ShowHeader(string text)
-    {
-        _lblHeader.text = text;
-        _panelHeader.ShowElement();
-    }
+        {
+            _lblHeader.text = text;
+            _panelHeader.ShowElement();
+        }
 
-    public void HideHeader()
-    {
-        _panelHeader.HideElement();
-    }
+        public void HideHeader()
+        {
+            _panelHeader.HideElement();
+        }
 
-    private void ShowDetails()
-    {
-        _detailsActive = true;
-        _containerContent.Clear();
-        _containerContent.Add(_panelDetails);
-    }
+        private void ShowDetails()
+        {
+            _detailsActive = true;
+            _containerContent.Clear();
+            _containerContent.Add(_panelDetails);
+        }
 
-    private void ShowSettings()
-    {
-        _detailsActive = false;
-        _containerContent.Clear();
-        _containerContent.Add(_panelSettings);
+        private void ShowSettings()
+        {
+            _detailsActive = false;
+            _containerContent.Clear();
+            _containerContent.Add(_panelSettings);
+        }
     }
-}
 }

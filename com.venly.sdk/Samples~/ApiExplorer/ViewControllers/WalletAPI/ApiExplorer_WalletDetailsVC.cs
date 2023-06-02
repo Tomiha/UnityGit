@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
 using UnityEngine.UIElements;
-using VenlySDK;
-using VenlySDK.Core;
-using VenlySDK.Models.Shared;
-using VenlySDK.Models.Wallet;
-using VenlySDK.Utils;
+using Venly;
+using Venly.Core;
+using Venly.Models.Shared;
+using Venly.Models.Wallet;
+using Venly.Utils;
 
 public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>
 {
@@ -51,7 +51,6 @@ public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>
         }
 
         _walletData = GetBlackBoardData<VyWalletDto>(DATAKEY_WALLET);
-        SetLabel("btn-transfer", $"Transfer {_walletData.Balance.Symbol}");
 
         RefreshWallet();
     }
@@ -75,29 +74,29 @@ public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>
 
 
     private
-#if ENABLE_VENLY_DEVMODE
+#if ENABLE_VENLY_DEV_MODE
     async
 #endif
     void onClick_Archive()
     {
         #region DevMode Only (SERVER)
-#if ENABLE_VENLY_DEVMODE
-        VyTaskResult<VyWalletMetadataResponseDto> result = null;
+#if ENABLE_VENLY_DEV_MODE
+        VyTaskResult<VyWalletDto> result = null;
         if (!_walletData.Archived)
         {
-            ViewManager.Loader.Show("Archiving Wallet...");
-            result = await Venly.WalletAPI.Server.ArchiveWallet(_walletData.Id);
+            ViewManager.Loader.Show("Archiving Wallet..");
+            result = await VenlyAPI.Wallet.ArchiveWallet(_walletData.Id);
         }
         else
         {
-            ViewManager.Loader.Show("Unarchiving Wallet...");
-            result = await Venly.WalletAPI.Server.UnarchiveWallet(_walletData.Id);
+            ViewManager.Loader.Show("Unarchiving Wallet..");
+            result = await VenlyAPI.Wallet.UnarchiveWallet(_walletData.Id);
         }
         ViewManager.Loader.Hide();
 
         if (result.Success)
         {
-            _walletData.UpdateFromMetadataResponse(result.Data);
+            _walletData.CopyMetadataFrom(result.Data);
             RefreshWallet();
 
             //Also update cached wallet
@@ -109,7 +108,7 @@ public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>
 
                 if (targetWallet != null)
                 {
-                    targetWallet.UpdateFromMetadataResponse(result.Data);
+                    targetWallet.CopyMetadataFrom(result.Data);
                     ViewManager.SetGlobalBlackboardData(ApiExplorer_GlobalKeys.DATA_AllWalletsCached, cachedWallets);
                 }
             }
@@ -154,12 +153,12 @@ public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>
 
     private async void RefreshWallet(bool forceFreshLoad = false)
     {
-        if (forceFreshLoad || _walletData.Id != _lastLoadedWalletId)
+        if (forceFreshLoad || _walletData.Id != _lastLoadedWalletId || _walletData.Balance == null)
         {
             //Retrieve Wallet Data
             //--------------------
             ViewManager.Loader.Show("Retrieving Wallet Info...");
-            var result = await Venly.WalletAPI.Client.GetWallet(_walletData.Id);
+            var result = await VenlyAPI.Wallet.GetWallet(_walletData.Id);
             ViewManager.Loader.Hide();
 
             if (!result.Success)
@@ -173,7 +172,7 @@ public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>
             //Retrieve MultiToken Balances
             //----------------------------
             ViewManager.Loader.Show("Retrieving ERC1155/721 Tokens...");
-            var nftResult = await Venly.WalletAPI.Client.GetMultiTokenBalances(_walletData.Id);
+            var nftResult = await VenlyAPI.Wallet.GetMultiTokenBalances(_walletData.Id);
             ViewManager.Loader.Hide();
 
             if (!nftResult.Success)
@@ -188,7 +187,7 @@ public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>
             //Retrieve CryptoToken Balances
             //-----------------------------
             ViewManager.Loader.Show("Retrieving ERC20 Tokens...");
-            var ftResult = await Venly.WalletAPI.Client.GetCryptoTokenBalances(_walletData.Id);
+            var ftResult = await VenlyAPI.Wallet.GetCryptoTokenBalances(_walletData.Id);
             ViewManager.Loader.Hide();
 
             if (!ftResult.Success)
@@ -201,7 +200,7 @@ public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>
             //Retrieve Events
             //---------------
             ViewManager.Loader.Show("Retrieving Wallet Events...");
-            var eventsResult = await Venly.WalletAPI.Client.GetWalletEvents(_walletData.Id);
+            var eventsResult = await VenlyAPI.Wallet.GetWalletEvents(_walletData.Id);
             ViewManager.Loader.Hide();
 
             if (!eventsResult.Success)
@@ -215,6 +214,7 @@ public class ApiExplorer_WalletDetailsVC : SampleViewBase<eApiExplorerViewId>
         _lastLoadedWalletId = _walletData.Id;
 
         //Refresh UI Elements
+        SetLabel("btn-transfer", $"Transfer {_walletData.Balance.Symbol}");
         SetLabel("lbl-wallet-address", _walletData.Address);
         SetLabel("lbl-wallet-id", _walletData.Id);
         SetLabel("lbl-wallet-chain", _walletData.Chain.GetMemberName());
