@@ -1,19 +1,20 @@
 using System;
-using Beamable;
 using System.Threading.Tasks;
-using Beamable.Player;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Venly;
-using Venly.Backends.Beamable;
+
 using Venly.Core;
 using Venly.Models.Shared;
 using Venly.Models.Wallet;
 
 #if ENABLE_VENLY_PLAYFAB
-using UnityEngine;
 using Venly.Backends.PlayFab;
+#elif ENABLE_VENLY_BEAMABLE
+using Beamable;
+using Beamable.Player;
+using Venly.Backends.Beamable;
 #endif
 
 public class ApiExplorer_CreateUserVC : SampleViewBase<eApiExplorerViewId>

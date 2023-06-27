@@ -1,5 +1,4 @@
 using System;
-using Beamable.Player;
 using UnityEngine.UIElements;
 using Venly;
 using Venly.Core;
@@ -8,6 +7,7 @@ using Venly.Core;
 using Venly.Backends.PlayFab;
 #elif ENABLE_VENLY_BEAMABLE
 using Beamable;
+using Beamable.Player;
 using Venly.Backends.Beamable;
 #endif
 

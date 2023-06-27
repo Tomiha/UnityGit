@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Venly;
-using Venly.Backends.Beamable;
 using Venly.Core;
-using Venly.Models;
 using Venly.Models.Shared;
 
 public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
