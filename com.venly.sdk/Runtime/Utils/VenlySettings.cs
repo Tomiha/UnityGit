@@ -65,6 +65,7 @@ public class VenlySettings
 
     public static VenlySettingsSO.BackendSettings_PlayFab PlayFabBackendSettings => Settings.PlayFabBackendSettings;
     public static VenlySettingsSO.BackendSettings_Custom CustomBackendSettings => Settings.CustomBackendSettings;
+    public static VenlySettingsSO.BackendSettings_Beamable BeamableBackendSettings => Settings.BeamableBackendSettings;
 
     private static void RetrieveSettings()
     {

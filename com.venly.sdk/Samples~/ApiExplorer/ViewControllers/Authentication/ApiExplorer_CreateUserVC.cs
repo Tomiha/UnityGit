@@ -1,7 +1,12 @@
+using System;
+using Beamable;
 using System.Threading.Tasks;
+using Beamable.Player;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 using Venly;
+using Venly.Backends.Beamable;
 using Venly.Core;
 using Venly.Models.Shared;
 using Venly.Models.Wallet;
@@ -84,6 +89,84 @@ public class ApiExplorer_CreateUserVC : SampleViewBase<eApiExplorerViewId>
                     .OnFail(taskNotifier.NotifyFail);
             })
             .OnFail(taskNotifier.NotifyFail);
+
+        //Task that triggers when all related sub-tasks are finished (fail or success)
+        combinedTask
+            .OnSuccess(() =>
+            {
+                ViewManager.SwitchView(eApiExplorerViewId.WalletApi_WalletDetails);
+            })
+            .OnFail(ViewManager.HandleException)
+            .Finally(ViewManager.Loader.Hide);
+    }
+#elif ENABLE_VENLY_BEAMABLE
+    private void onClick_CreateUser()
+    {
+        ViewManager.Loader.Show("Logging in...");
+
+        //Helper Task
+        var taskNotifier = VyTask.Create();
+        var combinedTask = taskNotifier.Task;
+
+        var ctx = BeamContext.Default;
+
+        taskNotifier.Scope(async () =>
+            {
+                await ctx.OnReady;
+
+                //Provide BeamContext to Beamable Provider
+                VenlyAPI.SetProviderData(VyProvider_Beamable.BeamContextDataKey, ctx);
+
+                //Check if email is available
+                var isAvailable = await ctx.Accounts.IsEmailAvailable(_txtEmail.text);
+                if (!isAvailable) throw new Exception("Email is already used.");
+
+                //Login with Credentials
+                //await ctx.Accounts.OnReady;
+                var newAccount = await ctx.Accounts.CreateNewAccount();
+
+                var operation = await newAccount.AddEmail(_txtEmail.text, _txtPassword.text);
+                if (!operation.isSuccess)
+                {
+                    switch (operation.error)
+                    {
+                        case PlayerRegistrationError.ALREADY_HAS_CREDENTIAL:
+                            throw new Exception("Account already registered");
+                        case PlayerRegistrationError.CREDENTIAL_IS_ALREADY_TAKEN:
+                            throw new Exception("Credentials already used");
+                        default:
+                            throw operation.innerException;
+                    }
+                }
+
+                await newAccount.SwitchToAccount();
+
+                //Wallet Creation Params
+                var createParams = new VyCreateWalletRequest()
+                {
+                    Chain = eVyChain.Matic,
+                    Description = $"API Explorer wallet created for \'{VenlySettings.BackendProvider}\' user.\n(BeamableId={ctx.AuthorizedUser.Value.id})",
+                    Identifier = $"{VenlySettings.BackendProvider}-provider-wallet",
+                    Pincode = _txtPincode.text,
+                    WalletType = eVyWalletType.WhiteLabel
+                };
+
+                //Create Wallet for User
+                var createResult = await VenlyAPI.ProviderExtensions.CreateWalletForUser(createParams);
+                if (createResult.Success)
+                {
+                    //Set Wallet Data
+                    ViewManager.SetViewBlackboardData(
+                        eApiExplorerViewId.WalletApi_WalletDetails,
+                        ApiExplorer_WalletDetailsVC.DATAKEY_WALLET,
+                        createResult.Data);
+                }
+                else
+                {
+                    throw createResult.Exception;
+                }
+            });
+
 
         //Task that triggers when all related sub-tasks are finished (fail or success)
         combinedTask

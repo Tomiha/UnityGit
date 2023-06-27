@@ -1,0 +1,18 @@
+{
+    "name": "venly.gamesparks",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9bef95363ff31824ebcd4545aa4923ea"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "ENABLE_VENLY_GAMESPARKS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

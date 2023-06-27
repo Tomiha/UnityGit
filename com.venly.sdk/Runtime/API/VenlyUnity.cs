@@ -22,6 +22,7 @@ namespace Venly
             {
                 case eVyBackendProvider.DevMode:
                 case eVyBackendProvider.PlayFab:
+                case eVyBackendProvider.Beamable:
                     providerType = VenlySettings.BackendProvider.GetMemberName();
                     break;
 

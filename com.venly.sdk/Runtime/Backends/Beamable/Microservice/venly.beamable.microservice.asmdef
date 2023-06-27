@@ -1,0 +1,26 @@
+{
+    "name": "Venly.Beamable.Microservice",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3140025892ece41f1bca5bdb43c5b512",
+        "GUID:8096aa2f7644d40f08b1fed854463288",
+        "GUID:bec9e071b8bd74037abed99b77129431",
+        "GUID:e17286d323c5f4117923b68624a6c13c",
+        "GUID:3875eb1b681d45e9a92a3633454fd4ca",
+        "GUID:ec8759ed81aca4752b7e9ded6e302fd7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "VenlyAPI.Core.dll",
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "ENABLE_VENLY_BEAMABLE"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

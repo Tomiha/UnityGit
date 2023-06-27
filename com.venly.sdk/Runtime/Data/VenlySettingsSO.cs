@@ -14,6 +14,13 @@ public class VenlySettingsSO : ScriptableObject
     }
 
     [Serializable]
+    public class BackendSettings_Beamable
+    {
+        public string MicroserviceName;
+        public string EntryFunctionName;
+    }
+
+    [Serializable]
     public class BackendSettings_Custom
     {
         public string CustomType;
@@ -39,4 +46,5 @@ public class VenlySettingsSO : ScriptableObject
     //Backend Settings
     public BackendSettings_PlayFab PlayFabBackendSettings = new();
     public BackendSettings_Custom CustomBackendSettings = new();
+    public BackendSettings_Beamable BeamableBackendSettings = new();
 }
