@@ -10,7 +10,7 @@ Button {
     padding-top: 15px;
     padding-bottom: 10px;
     flex-grow: 1;
-    -unity-font-definition: none;
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
     -unity-font: resource('Fonts/TTCommons-Regular');
     align-items: center;
     justify-content: center;
@@ -30,12 +30,12 @@ Button:hover {
 }
 
 Label {
-    -unity-font-definition: none;
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+    -unity-font: resource('Fonts/TTCommons-Regular');
     font-size: 17px;
     padding-top: 0;
     -unity-font-style: bold;
     color: rgb(253, 253, 253);
-    -unity-font: resource('Fonts/TTCommons-Regular');
 }
 
 Toggle .unity-toggle__checkmark {
@@ -56,7 +56,7 @@ EnumField {
 
 EnumField .unity-enum-field__input {
     color: rgb(6, 6, 71);
-    -unity-font-definition: none;
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
     -unity-font: resource('Fonts/TTCommons-Regular');
     font-size: 17px;
     border-top-left-radius: 4px;
@@ -81,7 +81,7 @@ EnumField .unity-enum-field__input {
 
 EnumField .unity-enum-field__text {
     color: rgb(6, 6, 71);
-    -unity-font-definition: none;
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
     -unity-font: resource('Fonts/TTCommons-Regular');
     font-size: 17px;
 }
@@ -93,7 +93,7 @@ TextField {
 
 TextField .unity-base-text-field__input {
     color: rgb(6, 6, 71);
-    -unity-font-definition: none;
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
     -unity-font: resource('Fonts/TTCommons-Regular');
     font-size: 17px;
     border-top-left-radius: 4px;

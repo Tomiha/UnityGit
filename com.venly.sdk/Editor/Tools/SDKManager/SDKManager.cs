@@ -53,22 +53,30 @@ namespace Venly.Editor.Tools.SDKManager
         [MenuItem("Window/Venly/SDK Manager", priority = 1)]
         public static void ShowSdkManager()
         {
-            //Make sure there is no panel open at the moment...
-            SDKManagerView wnd = EditorWindow.GetWindow<SDKManagerView>();
-            if (wnd != null)
+            try
             {
-                wnd.Close();
+                //Make sure there is no panel open at the moment...
+                SDKManagerView wnd = EditorWindow.GetWindow<SDKManagerView>();
+                if (wnd != null)
+                {
+                    wnd.Close();
+                }
+
+                var types = new List<Type>()
+                {
+                    // first add your preferences
+                    typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.SceneHierarchyWindow"),
+                    typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow")
+                };
+
+                wnd = EditorWindow.GetWindow<SDKManagerView>(types.ToArray());
+                wnd.titleContent = new GUIContent("Venly SDK Manager");
             }
-
-            var types = new List<Type>()
+            catch (Exception ex)
             {
-                // first add your preferences
-                typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.SceneHierarchyWindow"),
-                typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.InspectorWindow")
-            };
-
-            wnd = EditorWindow.GetWindow<SDKManagerView>(types.ToArray());
-            wnd.titleContent = new GUIContent("Venly SDK Manager");
+                Debug.LogWarning("Failed to open SDK Manager... (please retry)");
+                Debug.LogError(ex);
+            }
         }
 
 #if VENLYSDK_DEBUG
