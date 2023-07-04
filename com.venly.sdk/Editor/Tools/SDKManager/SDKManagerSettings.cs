@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Packages.com.venly.sdk.Editor;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Venly.Core;
 using Venly.Editor.Utils;
 using Venly.Models.Shared;
+using Venly.Utils;
 
 namespace Venly.Editor.Tools.SDKManager
 {
@@ -19,10 +22,12 @@ namespace Venly.Editor.Tools.SDKManager
         //Main Settings Elements
         private EnumField _selectorBackendProvider;
         private Button _btnApplySettings;
-        private Label _lblRealmAccess;
+        private TextField _lblRealmAccess;
+        private Toggle _toggleLogApiInfo;
 
         private VisualElement _groupBackendSettings;
         private SerializedProperty _backendSettings = null;
+        private Button _btnTestConnection;
 
         private VenlyEditorDataSO.SDKManagerData SdkManagerData => VyEditorData.EditorSettings.SDKManager;
 
@@ -35,17 +40,19 @@ namespace Venly.Editor.Tools.SDKManager
         {
             this.style.flexGrow = new StyleFloat(1);
 
-            _panelSettingsAuth = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerSettings_Auth").CloneTree().Children().First();
+            _panelSettingsAuth = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerContent_auth").CloneTree().Children().First();
             _panelSettingsAuth.Bind(VyEditorData.SerializedRuntimeSettings); //hm
 
             _panelSettingsAuth.Q<Button>("btn-save-auth").clickable.clicked += onSaveAuth_Clicked;
 
             //Main Settings Elements
-            _panelSettingsMain = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerSettings_Main").CloneTree().Children().First();
+            _panelSettingsMain = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerContent_settings").CloneTree().Children().First();
             _panelSettingsMain.Bind(VyEditorData.SerializedRuntimeSettings);
 
             _selectorBackendProvider = _panelSettingsMain.Q<EnumField>("selector-backendprovider");
             _selectorBackendProvider.RegisterValueChangedCallback(onBackendProvider_Changed);
+
+            _toggleLogApiInfo = _panelSettingsMain.Q<Toggle>("toggle-log-api-info");
 
             _panelSettingsMain.Q<Button>("btn-set-id").clickable.clicked += onSetId_Clicked;
 
@@ -55,7 +62,7 @@ namespace Venly.Editor.Tools.SDKManager
 
             _groupBackendSettings = _panelSettingsMain.Q<VisualElement>("group-backend-settings");
 
-            _lblRealmAccess = _panelSettingsMain.Q<Label>("lbl-realm-access");
+            _lblRealmAccess = _panelSettingsMain.Q<TextField>("txt-realm-access");
 
             SDKManager.Instance.OnAuthenticatedChanged += (_) => { RefreshView(); };
             RefreshView();
@@ -75,7 +82,7 @@ namespace Venly.Editor.Tools.SDKManager
                 if(VenlySettings.HasWalletApiAccess)realms.Add("WALLET");
                 if(VenlySettings.HasNftApiAccess)realms.Add("NFT");
                 if(VenlySettings.HasMarketApiAccess)realms.Add("MARKET");
-                _lblRealmAccess.text = string.Join(" | ", realms);
+                _lblRealmAccess.value = string.Join(" | ", realms);
 
                 ValidateApplyVisibility();
                 PopulateBackendSettings();
@@ -108,9 +115,11 @@ namespace Venly.Editor.Tools.SDKManager
         //AUTH EVENTS
         private async void onSaveAuth_Clicked()
         {
+            SDKManager.Instance.ShowLoader("Verifying Credentials...");
             var result = await SDKManager.Instance.Authenticate();
             if(!result.Success)
                 Debug.LogException(result.Exception);
+            SDKManager.Instance.HideLoader();
         }
 
         //MAIN SETTINGS EVENTS
@@ -136,6 +145,10 @@ namespace Venly.Editor.Tools.SDKManager
 
         private void PopulateBackendSettings()
         {
+            //Toggle Log API Info
+            _toggleLogApiInfo.ToggleElement(SdkManagerData.SelectedBackend != eVyBackendProvider.DevMode 
+                                            && SdkManagerData.SelectedBackend != eVyBackendProvider.None);
+
             //Find BackendSettings
             var settingsName = $"{SdkManagerData.SelectedBackend}BackendSettings";
             var serializedSettings = VyEditorData.SerializedRuntimeSettings;
@@ -171,12 +184,41 @@ namespace Venly.Editor.Tools.SDKManager
             var propertyContainer = _groupBackendSettings.Q<VisualElement>("container-backend-settings");
             propertyContainer.Clear();
 
+            //_btnTestConnection = _groupBackendSettings.Q<Button>("btn-test-connection");
+            //_btnTestConnection.clickable.clicked += TestConnection;
+
             do
             {
                 if (SerializedProperty.EqualContents(iterProperty, nextElement)) break;
 
                 AddBackendSettingsItem(propertyContainer, iterProperty);
             } while (iterProperty.NextVisible(false));
+        }
+
+        private void TestConnection()
+        {
+            SDKManager.Instance.ShowLoader("Testing Connection...");
+
+            var taskNotifier = VyTask<VyApiInfo>.Create();
+
+            taskNotifier.Scope(async () =>
+            {
+                await VenlyUnity.Initialize();
+                var info = await VenlyAPI.ProviderExtensions.GetServerInfo().AwaitResult();
+
+                taskNotifier.NotifySuccess(info);
+            });
+
+            taskNotifier.Task
+                .OnSuccess(info =>
+                {
+                    Debug.Log(JsonConvert.SerializeObject(info));
+                })
+                .OnFail(Debug.LogException)
+                .Finally(() =>
+                {
+                    SDKManager.Instance.HideLoader();
+                });
         }
 
         private void AddBackendSettingsItem(VisualElement root, SerializedProperty property)

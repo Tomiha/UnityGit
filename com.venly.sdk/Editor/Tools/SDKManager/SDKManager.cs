@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Packages.com.venly.sdk.Editor;
 using UnityEditor;
 using UnityEditor.PackageManager;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Networking;
 using Venly.Core;
@@ -89,9 +93,8 @@ namespace Venly.Editor.Tools.SDKManager
 
         public static readonly string URL_GitHubIssues = @"https://github.com/ArkaneNetwork/Unity-SDK/issues";
         public static readonly string URL_ChangeLog = @"https://github.com/ArkaneNetwork/Unity-SDK/releases";
-        public static readonly string URL_Discord = @"https://discord.gg/rKUFbUWMaw";
+        public static readonly string URL_Discord = @"https://venly.io/discord";
         public static readonly string URL_Guide = @"https://docs.venly.io/venly-gaming-toolkit/";
-
         #endregion
 
         #region Events
@@ -101,6 +104,8 @@ namespace Venly.Editor.Tools.SDKManager
         public event Action OnInitialized;
 
         #endregion
+
+        private AddAndRemoveRequest _addRemoveRequest = null;
 
 
         //Initialization of SDK (including Settings)
@@ -122,6 +127,18 @@ namespace Venly.Editor.Tools.SDKManager
                 IsInitialized = true;
                 OnInitialized?.Invoke();
             }
+        }
+
+        internal void ShowLoader(string msg = null)
+        {
+            SDKManagerView wnd = EditorWindow.GetWindow<SDKManagerView>();
+            wnd?.ShowLoader(msg);
+        }
+
+        internal void HideLoader()
+        {
+            SDKManagerView wnd = EditorWindow.GetWindow<SDKManagerView>();
+            wnd?.HideLoader();
         }
 
         internal bool VerifyAuthentication()
@@ -230,7 +247,7 @@ namespace Venly.Editor.Tools.SDKManager
             return taskNotifier.Task;
         }
 
-        public VyTask<string> GetLatestVersion()
+        private VyTask<string> GetLatestVersion_GithubRelease()
         {
             var taskNotifier = VyTask<string>.Create();
 
@@ -262,6 +279,66 @@ namespace Venly.Editor.Tools.SDKManager
             return taskNotifier.Task;
         }
 
+        private VyTask<string> GetLatestVersion_Package()
+        {
+            var taskNotifier = VyTask<string>.Create();
+
+            UnityWebRequest request = UnityWebRequest.Get(VyEditorData.URL_PackageJson);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SendWebRequest().completed += (op) =>
+            {
+                if (request.isDone && request.result == UnityWebRequest.Result.Success)
+                {
+                    try
+                    {
+                        var packageInfo = JObject.Parse(request.downloadHandler.text);
+                        packageInfo.TryGetValue("version", out var latestVersionToken);
+                        
+                        if(latestVersionToken == null) taskNotifier.NotifyFail("Failed to retrieve latest SDK version");
+                        else taskNotifier.NotifySuccess($"v{latestVersionToken.Value<string>()}");
+                    }
+                    catch (Exception ex)
+                    {
+                        taskNotifier.NotifyFail(ex);
+                    }
+                }
+                else
+                {
+                    taskNotifier.NotifyFail("Failed to retrieve SDK release list");
+                }
+            };
+
+            return taskNotifier.Task;
+        }
+
+        public VyTask<string> GetLatestVersion()
+        {
+            var taskNotifier = VyTask<string>.Create();
+
+            taskNotifier.Scope(async () =>
+            {
+                //Via GitHub Release
+                var versionResult = await GetLatestVersion_GithubRelease();
+                if (versionResult.Success)
+                {
+                    taskNotifier.NotifySuccess(versionResult.Data);
+                    return;
+                }
+
+                //Via Package
+                versionResult = await GetLatestVersion_Package();
+                if (versionResult.Success)
+                {
+                    taskNotifier.NotifySuccess(versionResult.Data);
+                    return;
+                }
+
+                taskNotifier.NotifyFail(versionResult.Exception);
+            });
+
+            return taskNotifier.Task;
+        }
+
         public void UpdateSDK(string targetVersion)
         {
             //Legacy...
@@ -277,7 +354,24 @@ namespace Venly.Editor.Tools.SDKManager
             //Venly SDK
             packages.Add($"{VyEditorData.URL_GitRepository}#{targetVersion}");
 
-            Client.AddAndRemove(packages.ToArray(), null);
+            _addRemoveRequest = Client.AddAndRemove(packages.ToArray(), null);
+            EditorApplication.update += MonitorUpdateProcess;
+            ShowLoader("Updating SDK...");
+        }
+
+        private void MonitorUpdateProcess()
+        {
+            if (_addRemoveRequest?.Status == StatusCode.Failure)
+            {
+                Debug.LogWarning(_addRemoveRequest?.Error.message);
+                _addRemoveRequest = null;
+            }
+
+            if (_addRemoveRequest == null)
+            {
+                EditorApplication.update -= MonitorUpdateProcess;
+                HideLoader();
+            }
         }
         #endregion
     }

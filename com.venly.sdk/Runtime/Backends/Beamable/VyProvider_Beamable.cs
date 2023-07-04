@@ -11,6 +11,10 @@ using Venly.Core;
 using Venly.Models.Shared;
 using Venly.Utils;
 
+//#if UNITY_EDITOR
+//    using UnityEditor;
+//#endif
+
 namespace Venly.Backends.Beamable
 {
     public class VyProvider_Beamable : VyProviderBase
@@ -28,6 +32,9 @@ namespace Venly.Backends.Beamable
             ExtensionsSupported = true;
         }
 
+//#if UNITY_EDITOR
+//        [InitializeOnLoadMethod]
+//#endif
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void RegisterProvider()
         {

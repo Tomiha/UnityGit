@@ -1,6 +1,7 @@
 using Packages.com.venly.sdk.Editor;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 using Venly.Editor.Utils;
 
@@ -13,9 +14,17 @@ namespace Venly.Editor.Tools.SDKManager
         private SDKManagerDetails _panelDetails;
         private SDKManagerSettings _panelSettings;
 
-        private Label _lblHeader;
-        private VisualElement _panelHeader;
-        private VisualElement _panelMenu;
+        private Label _lblNotification;
+        private VisualElement _containerNotification;
+        private VisualElement _containerMenu;
+        private VisualElement _containerLoader;
+        private VisualElement _loaderImage;
+        private Label _loaderMsg;
+        private bool _loaderActive;
+        private float _loaderAngle;
+        private float _loaderNextUpdate = 0.0f;
+        private double _lastEditorTime = 0.0f;
+        private readonly float _loaderUpdateThreshold = 0.1f;
 
         private bool _detailsActive = true;
 
@@ -26,21 +35,30 @@ namespace Venly.Editor.Tools.SDKManager
                 rootVisualElement.Bind(VyEditorData.SerializedRuntimeSettings);
             }
 
-            //Root Tree
-            var rootTree = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerView");
+            //Root Tree (SDKManagerRoot)
+            var rootTree = VenlyEditorUtils.GetUXML_SDKManager("SDKManagerRoot");
             rootTree.CloneTree(rootVisualElement);
 
+            //Content Container (Details/Auth/Settings)
             _containerContent = rootVisualElement.Q<VisualElement>("container-content");
 
-            _panelMenu = rootVisualElement.Q<VisualElement>("panel-menu");
+            //Menu Container
+            _containerMenu = rootVisualElement.Q<VisualElement>("container-menu");
+            _containerMenu.Q<Button>("btnMenu_SDK").clickable.clicked += ShowDetails;
+            _containerMenu.Q<Button>("btnMenu_Settings").clickable.clicked += ShowSettings;
 
-            _panelHeader = rootVisualElement.Q<VisualElement>("panel-header");
-            _lblHeader = _panelHeader.Q<Label>("lbl-header");
-            _lblHeader.text = "SDK Not Yet Initialized...";
+            //Notification Container
+            _containerNotification = rootVisualElement.Q<VisualElement>("container-notification");
+            _lblNotification = _containerNotification.Q<Label>("lbl-notification");
+            _lblNotification.text = "SDK Not Yet Initialized...";
 
-            rootVisualElement.Q<Button>("btn-details").clickable.clicked += ShowDetails;
-            rootVisualElement.Q<Button>("btn-settings").clickable.clicked += ShowSettings;
+            //Loader Container
+            _containerLoader = rootVisualElement.Q<VisualElement>("overlay-loader");
+            _loaderImage = _containerLoader.Q<VisualElement>("loader");
+            _loaderMsg = _containerLoader.Q<Label>("lbl-loader-msg");
+            HideLoader(true);
 
+            //Refresh
             VyEditorData.OnLoaded += RefreshView;
             SDKManager.Instance.OnInitialized += RefreshView;
             SDKManager.Instance.OnAuthenticatedChanged += (_) =>
@@ -49,6 +67,53 @@ namespace Venly.Editor.Tools.SDKManager
             };
 
             RefreshView();
+        }
+
+        public void ShowLoader(string msg = null)
+        {
+            //set message
+            _loaderMsg.ToggleElement(msg != null);
+            _loaderMsg.text = msg;
+
+            if (_loaderActive)
+                return;
+
+            _loaderActive = true;
+            _loaderAngle = 0.0f;
+            _lastEditorTime = EditorApplication.timeSinceStartup;
+
+            _containerLoader.ShowElement();
+            EditorApplication.update += updateLoader;
+
+            //_containerLoader.MarkDirtyRepaint();
+        }
+
+        private void updateLoader()
+        {
+            float deltaTime = (float)(EditorApplication.timeSinceStartup - _lastEditorTime);
+            _lastEditorTime = EditorApplication.timeSinceStartup;
+            _loaderNextUpdate -= deltaTime;
+
+            if (_loaderNextUpdate <= 0.0f)
+            {
+                _loaderAngle += 360.0f / 8.0f;
+                if(_loaderAngle >= 360.0f) _loaderAngle = 0;
+                _loaderImage.transform.rotation = Quaternion.AngleAxis(_loaderAngle, Vector3.back);
+                _loaderImage.MarkDirtyRepaint();
+
+                _loaderNextUpdate = _loaderUpdateThreshold;
+            }
+        }
+
+        public void HideLoader(bool force = false)
+        {
+            if (!_loaderActive && !force)
+                return;
+
+            EditorApplication.update -= updateLoader;
+
+            _containerLoader.HideElement();
+            _loaderActive = false;
         }
 
         public void RefreshView()
@@ -64,14 +129,14 @@ namespace Venly.Editor.Tools.SDKManager
             if (!SDKManager.Instance.IsInitialized)
             {
                 ShowHeader("SDK Manager not initialized...");
-                _panelMenu.HideElement();
+                _containerMenu.HideElement();
                 return;
             }
 
             if (!VyEditorData.IsLoaded)
             {
                 ShowHeader("Settings not loaded...");
-                _panelMenu.HideElement();
+                _containerMenu.HideElement();
                 return;
             }
 
@@ -81,7 +146,7 @@ namespace Venly.Editor.Tools.SDKManager
                 ShowHeader("Not Authenticated...");
             }
 
-            _panelMenu.ShowElement();
+            _containerMenu.ShowElement();
 
             _panelSettings = new SDKManagerSettings();
             _panelDetails = new SDKManagerDetails();
@@ -102,13 +167,13 @@ namespace Venly.Editor.Tools.SDKManager
 
         public void ShowHeader(string text)
         {
-            _lblHeader.text = text;
-            _panelHeader.ShowElement();
+            _lblNotification.text = text;
+            _containerNotification.ShowElement();
         }
 
         public void HideHeader()
         {
-            _panelHeader.HideElement();
+            _containerNotification.HideElement();
         }
 
         private void ShowDetails()

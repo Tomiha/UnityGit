@@ -1,0 +1,33 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.venly.sdk/Editor/Resources/Styles/styleSDKManagerRoot.uss?fileID=7433441132597879392&amp;guid=0baa5dc99d503834a935051af3494939&amp;type=3#styleSDKManagerRoot" />
+    <ui:VisualElement name="main">
+        <ui:VisualElement name="container-update" style="padding-top: 0; border-bottom-width: 1px; border-left-color: rgb(253, 253, 253); border-right-color: rgb(253, 253, 253); border-top-color: rgb(253, 253, 253); border-bottom-color: rgb(253, 253, 253); padding-bottom: 15px;">
+            <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: center;">
+                <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: flex-end;">
+                    <ui:VisualElement style="width: 30px; height: 23px; background-image: resource(&apos;Assets/sdkmanager_versionIcon&apos;);" />
+                </ui:VisualElement>
+                <ui:VisualElement style="justify-content: center; align-items: center;">
+                    <ui:Label text="SDK v1.0.6" display-tooltip-when-elided="true" name="lbl-current-version" style="font-size: 20px; -unity-font-definition: none; padding-right: 15px; padding-left: 10px; -unity-font-style: bold; -unity-text-align: middle-left; border-top-width: 3px; flex-grow: 1; width: 150px;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1; align-items: flex-start; justify-content: center;">
+                    <ui:Button text="Check for update" display-tooltip-when-elided="true" name="btn-check-update" style="flex-grow: 0; padding-left: 10px; padding-right: 10px; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; font-size: 13px; padding-top: 10px; padding-bottom: 7px; -unity-font-style: normal;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement style="align-items: center; padding-top: 15px;">
+                <ui:VisualElement style="width: 250px; height: auto; align-items: center; justify-content: center; background-image: resource(&apos;Assets/sdkmanager_gradient&apos;); border-top-left-radius: 4px; border-bottom-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; padding-top: 15px; padding-bottom: 15px;">
+                    <ui:Label text="New Version Available" display-tooltip-when-elided="true" name="lbl-update-notification" style="-unity-font-definition: none; font-size: 15px; -unity-font-style: bold; -unity-font: resource(&apos;Fonts/TTCommons-Medium&apos;);" />
+                    <ui:Label text="(v1.0.7)" display-tooltip-when-elided="true" name="lbl-new-version" style="-unity-font-definition: none; -unity-font: resource(&apos;Fonts/TTCommons-Medium&apos;); -unity-font-style: normal; font-size: 15px; display: flex;" />
+                    <ui:Button text="Install Update" display-tooltip-when-elided="true" name="btn-update" style="flex-grow: 0; font-size: 13px; padding-left: 20px; padding-right: 20px; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; padding-top: 10px; padding-bottom: 7px; margin-top: 10px; display: flex; -unity-font-style: normal;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="container-misc" style="flex-grow: 1;">
+            <ui:VisualElement style="flex-grow: 1; padding-top: 30px; padding-left: 50px; padding-right: 50px; justify-content: flex-start; align-items: stretch;">
+                <ui:Button text="SDK Guide" display-tooltip-when-elided="true" name="btn-link-guide" class="misc-button" style="align-items: stretch; height: 40px; flex-grow: 0; border-top-left-radius: 18px; border-bottom-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px;" />
+                <ui:Button text="Bugs &amp; Features" display-tooltip-when-elided="true" name="btn-link-bug-feature" class="misc-button" style="align-items: stretch; height: 40px; flex-grow: 0; border-top-left-radius: 18px; border-bottom-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px;" />
+                <ui:Button text="View Changelog" display-tooltip-when-elided="true" name="btn-link-changelog" class="misc-button" style="align-items: stretch; height: 40px; flex-grow: 0; border-top-left-radius: 18px; border-bottom-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px;" />
+                <ui:Button text="Join our Discord!" display-tooltip-when-elided="true" name="btn-link-discord" class="misc-button" style="align-items: stretch; height: 40px; flex-grow: 0; border-top-left-radius: 18px; border-bottom-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

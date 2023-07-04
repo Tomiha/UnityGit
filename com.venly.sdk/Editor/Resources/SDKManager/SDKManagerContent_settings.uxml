@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.venly.sdk/Editor/Resources/Styles/styleSDKManagerRoot.uss?fileID=7433441132597879392&amp;guid=0baa5dc99d503834a935051af3494939&amp;type=3#styleSDKManagerRoot" />
+    <ui:VisualElement name="settings" style="display: flex;">
+        <ui:VisualElement style="flex-direction: row;">
+            <ui:TextField picking-mode="Ignore" label="Client ID" text="ThomasGoussaert-capsule" readonly="true" multiline="true" binding-path="ClientId" class="texfield-readonly" style="flex-shrink: 1; flex-grow: 1;" />
+            <ui:Button text="SET" display-tooltip-when-elided="true" name="btn-set-id" style="font-size: 10px; border-top-left-radius: 11px; border-bottom-left-radius: 11px; border-top-right-radius: 11px; border-bottom-right-radius: 11px; padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 0; margin-top: 2px; margin-bottom: 4px; width: 50px; max-width: 50px;" />
+        </ui:VisualElement>
+        <ui:TextField picking-mode="Ignore" label="Environment" text="Staging" readonly="true" multiline="true" binding-path="Environment" class="texfield-readonly" />
+        <ui:TextField picking-mode="Ignore" label="Realm Access" text="WALLET | NFT | MARKET" readonly="true" multiline="true" name="txt-realm-access" class="texfield-readonly" />
+        <ui:VisualElement style="flex-direction: row; padding-bottom: 3px;">
+            <uie:EnumField label="Backend" type="Venly.Models.Shared.eVyBackendProvider,VenlyAPI.Core.Unity" name="selector-backendprovider" style="flex-shrink: 1;" />
+            <ui:Button text="APPLY" display-tooltip-when-elided="true" name="btn-apply" style="font-size: 10px; border-top-left-radius: 11px; border-bottom-left-radius: 11px; border-top-right-radius: 11px; border-bottom-right-radius: 11px; padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 0; margin-top: 2px; margin-bottom: 4px; width: 50px; max-width: 50px;" />
+        </ui:VisualElement>
+        <ui:Toggle label="Log Backend API" binding-path="PrintRemoteApiInfo" name="toggle-log-api-info" />
+        <ui:VisualElement name="group-backend-settings" style="margin-left: 3px; margin-top: 10px; border-top-width: 1px; border-left-color: rgb(253, 253, 253); border-right-color: rgb(253, 253, 253); border-top-color: rgb(253, 253, 253); border-bottom-color: rgb(253, 253, 253); padding-top: 10px;">
+            <ui:Label text="Backend Settings" display-tooltip-when-elided="true" style="margin-bottom: 5px;" />
+            <ui:VisualElement name="container-backend-settings" />
+            <ui:VisualElement style="align-items: center; margin-top: 15px; margin-right: 0; display: none;">
+                <ui:Button text="Test Connection" display-tooltip-when-elided="true" name="btn-test-connection" label="Log API Info" style="font-size: 15px; width: 150px; padding-top: 7px; padding-bottom: 5px; border-top-left-radius: 11px; border-bottom-left-radius: 11px; border-top-right-radius: 11px; border-bottom-right-radius: 11px; padding-left: 5px; padding-right: 5px; -unity-font-style: normal;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

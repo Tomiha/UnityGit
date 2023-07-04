@@ -26,9 +26,12 @@ namespace Packages.com.venly.sdk.Editor
 #else
         public const string URL_GitRepository = @"git+https://github.com/ArkaneNetwork/Unity-SDK.git?path=Packages/com.venly.sdk";
         public const string URL_GitReleases = @"https://api.github.com/repos/ArkaneNetwork/Unity-SDK/releases";
+        public const string URL_PackageJson = @"https://raw.githubusercontent.com/ArkaneNetwork/Unity-SDK/main/Packages/com.venly.sdk/package.json"
 #endif
-        #endregion
 
+            #endregion
+
+            ;
         #region PUBLICS
         public static VenlyEditorDataSO EditorSettings
         {

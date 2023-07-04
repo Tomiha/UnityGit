@@ -10,12 +10,12 @@ namespace Venly
 {
     public static class VenlyUnity
     {
-        public static void Initialize(eVyBackendProvider backendProviderType, eVyEnvironment env)
+        public static VyTask Initialize(eVyBackendProvider backendProviderType, eVyEnvironment env)
         {
-            Initialize(backendProviderType.GetMemberName(), env);
+            return Initialize(backendProviderType.GetMemberName(), env);
         }
 
-        public static void Initialize(IVyBackendExtension extensionsOverride = null)
+        public static VyTask Initialize(IVyBackendExtension extensionsOverride = null)
         {
             var providerType = "";
             switch (VenlySettings.BackendProvider)
@@ -31,13 +31,13 @@ namespace Venly
                     break;
 
                 default:
-                    throw new NotImplementedException($"Unknown BackendProvider \'{VenlySettings.BackendProvider}\'");
+                    return VyTask.Failed(new NotImplementedException($"Unknown BackendProvider \'{VenlySettings.BackendProvider}\'"));
             }
 
-            Initialize(providerType, VenlySettings.Environment);
+            return Initialize(providerType, VenlySettings.Environment);
         }
 
-        private static void Initialize(string providerType, eVyEnvironment env)
+        private static VyTask Initialize(string providerType, eVyEnvironment env)
         {
             //Setup Logger
             VenlyLog.OnLog += (logData) =>
@@ -57,8 +57,56 @@ namespace Venly
                 }
             };
 
+#if UNITY_EDITOR
+            if (VenlySettings.PrintRemoteApiInfo)
+            {
+                if (providerType != eVyBackendProvider.DevMode.GetMemberName() &&
+                    providerType != eVyBackendProvider.None.GetMemberName())
+                {
+                    VenlyAPI.OnRemoteApiInfo += (info, err) =>
+                    {
+                        if (string.IsNullOrEmpty(err))
+                        {
+                            VenlyLog.Info(
+                                $"[Venly - Remote API Version] Version={info.CoreVersion} | Environment={info.ActiveEnvironment}");
+                        }
+                        else VenlyLog.Warning($"[Venly - Remote API Version] {err}");
+                    };
+                }
+            }
+#endif
+
+#if UNITY_EDITOR
+            //var taskNotifier = VyTask.Create();
+
+            //taskNotifier.Scope(async () =>
+            //{
+            //    //Initialize API
+            //    await VenlyAPI.Initialize(providerType, env, TaskScheduler.FromCurrentSynchronizationContext()).AwaitResult();
+
+            //    //Check Backend Version
+            //    if (providerType != eVyBackendProvider.DevMode.GetMemberName())
+            //    {
+            //        var infoResult = await VenlyAPI.ProviderExtensions.GetServerInfo();
+            //        if (infoResult.Success)
+            //        {
+            //            //Verify
+            //        }
+            //        else
+            //        {
+            //            VenlyLog.Warning("Failed to verify remote API version. (Make sure you are using the correct \'Venly Core API\' version for your backend implementation)");
+            //        }
+            //    }
+            //});
+
+            //return taskNotifier.Task;
+
             //Initialize API
-            VenlyAPI.Initialize(providerType, env, TaskScheduler.FromCurrentSynchronizationContext());
+            return VenlyAPI.Initialize(providerType, env, TaskScheduler.FromCurrentSynchronizationContext());
+#else
+            //Initialize API
+            return VenlyAPI.Initialize(providerType, env, TaskScheduler.FromCurrentSynchronizationContext());
+#endif
         }
     }
 }

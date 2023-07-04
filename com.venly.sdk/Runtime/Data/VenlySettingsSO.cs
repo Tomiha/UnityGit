@@ -36,6 +36,8 @@ public class VenlySettingsSO : ScriptableObject
     public bool HasWalletApiAccess;
     public bool HasMarketApiAccess;
 
+    public bool PrintRemoteApiInfo;
+
     [HideInInspector] public string SdkPackageRoot;
     [HideInInspector] public string PublicResourceRoot;
 #endif

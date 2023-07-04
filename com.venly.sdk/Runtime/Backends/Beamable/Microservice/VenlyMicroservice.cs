@@ -15,8 +15,8 @@ namespace Venly.Backends.Beamable
 
         protected async Task<string> HandleRequest(string req)
         {
-            //try
-            //{
+            try
+            {
                 //Initialize
                 var initResult = await VenlyBeamable.Initialize(Services.RealmConfig, HandleExtension);
                 if (!initResult.Success)
@@ -28,11 +28,11 @@ namespace Venly.Backends.Beamable
                 var reqData = JsonConvert.DeserializeObject<VyRequestData>(req);
                 var response = await VenlyAPI.Backend.HandleRequest(reqData).AwaitResult();
                 return response.Serialize();
-            //}
-            //catch (Exception ex)
-            //{
-            //    return VyServerResponseDto.FromException(ex).Serialize();
-            //}
+            }
+            catch (Exception ex)
+            {
+                return VyServerResponseDto.FromException(ex).Serialize();
+            }
         }
 
         #region EXTENSIONS

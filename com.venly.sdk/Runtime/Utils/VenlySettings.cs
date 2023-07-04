@@ -22,6 +22,7 @@ public class VenlySettings
     public static bool HasCredentials => !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(ClientSecret);
     public static string ClientId => Settings.ClientId;
     public static string ClientSecret => Settings.ClientSecret;
+    public static bool PrintRemoteApiInfo => Settings.PrintRemoteApiInfo;
     public static string PublicResourceRoot => Settings.PublicResourceRoot;
 
     public static bool HasNftApiAccess => Settings.HasNftApiAccess;
