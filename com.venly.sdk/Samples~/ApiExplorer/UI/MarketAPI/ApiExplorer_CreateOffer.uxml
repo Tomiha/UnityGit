@@ -1,0 +1,40 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header />
+        <ui:ScrollView style="margin-top: 10px; margin-bottom: 10px;">
+            <ui:VisualElement style="margin-left: 10px; margin-right: 10px;">
+                <ui:VisualElement name="details">
+                    <ui:VisualElement style="flex-direction: row; justify-content: flex-start;">
+                        <ui:TextField picking-mode="Ignore" label="Seller" value="select seller" text="select seller" readonly="true" name="lbl-seller" multiline="true" class="texfield-readonly" style="flex-grow: 1; flex-shrink: 1;" />
+                        <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-seller" class="main-button-style button-select" />
+                    </ui:VisualElement>
+                    <ui:VisualElement style="flex-direction: row; justify-content: flex-start;">
+                        <ui:TextField picking-mode="Ignore" label="Source Wallet" value="select wallet" text="select wallet" readonly="true" name="lbl-source-wallet" multiline="true" class="texfield-readonly" style="flex-grow: 1; justify-content: flex-start; flex-shrink: 1;" />
+                        <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-source-wallet" class="main-button-style button-select" />
+                    </ui:VisualElement>
+                    <ui:VisualElement style="margin-left: 15px;">
+                        <ui:TextField picking-mode="Ignore" label="Pincode" name="txt-pincode" password="true" />
+                        <ui:VisualElement style="flex-direction: row; justify-content: flex-start;">
+                            <ui:TextField picking-mode="Ignore" label="Token" value="select wallet" text="select wallet" readonly="true" name="lbl-token" multiline="true" class="texfield-readonly" style="flex-grow: 1; flex-shrink: 1;" />
+                            <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-token" class="main-button-style button-select" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:DropdownField label="Visibility" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="selector-visibility" />
+                    <ui:DropdownField label="Currency" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="selector-currency" />
+                    <ui:DropdownField label="Type" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="selector-type" />
+                    <ui:VisualElement name="details-sale">
+                        <ui:TextField picking-mode="Ignore" label="Price" multiline="false" name="txt-price" style="flex-shrink: 1;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="details-auction">
+                        <ui:TextField picking-mode="Ignore" label="Minimum Bid" multiline="false" name="txt-minimum-bid" style="flex-shrink: 1;" />
+                    </ui:VisualElement>
+                    <ui:TextField picking-mode="Ignore" label="Closing Date" multiline="false" name="txt-closing-date" style="flex-shrink: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="actions" style="align-items: center; margin-top: 30px;">
+                    <ui:Button text="Create" display-tooltip-when-elided="true" name="btn-create" class="main-button-style" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

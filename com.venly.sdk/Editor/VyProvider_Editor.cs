@@ -17,55 +17,33 @@ namespace Venly.Editor
         {
         }
 
-        private VyTask<bool> Authenticate()
+        private VyTask Authenticate()
         {
 
-            var taskNotifier = VyTask<bool>.Create("Authenticate");
+            var taskNotifier = VyTask.Create("Authenticate");
   
             VenlyEditorAPI.GetAccessToken(VenlySettings.ClientId, VenlySettings.ClientSecret)
                 .OnSuccess(token =>
                 {
                     _accessToken = token;
-                    taskNotifier.NotifySuccess(true);
+                    taskNotifier.NotifySuccess();
                 })
                 .OnFail(ex => taskNotifier.NotifyFail(ex));
 
             return taskNotifier.Task;
         }
 
-        private VyTask<bool> ValidateAccessToken(bool skip = false)
+        private VyTask ValidateAccessToken(bool skip = false)
         {
-            if (skip || _accessToken is { IsValid: true }) return VyTask<bool>.Succeeded(true, "ValidateAccessToken");
+            if (skip || _accessToken is { IsValid: true }) return VyTask.Succeeded("ValidateAccessToken");
 
             return Authenticate();
         }
-        
+
         public override VyTask<T> MakeRequest<T>(VyRequestData requestData)
         {
             //Create Task
             var taskNotifier = VyTask<T>.Create("MakeRequest_Editor");
-
-            //taskNotifier.Scope(async () =>
-            //{
-            //    //Check if Authorization is required  
-            //    bool requiresAuthorization = requestData.Endpoint != eVyApiEndpoint.Auth;
-
-            //    //Validate Token
-            //    //--------------
-            //    await ValidateAccessToken(!requiresAuthorization);
-
-            //    //Execute Request
-            //    //-------------
-            //    var requestMessage = requestData.ToRequestMessage(requiresAuthorization ? _accessToken : null);
-
-            //    using HttpClient client = new();
-            //    var response = await client.SendAsync(requestMessage);
-            //    var result = VenlyUtils.ProcessHttpResponse<T>(response, requestData);
-
-            //    //Little Hack
-            //    //var resultJson = JsonConvert.SerializeObject(result);
-            //    taskNotifier.Notify(result);
-            //});
 
             //Check if we need to start another Thread
             if (Thread.CurrentThread.IsBackground) HttpRequestAction();

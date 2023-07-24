@@ -47,6 +47,7 @@ Toggle .unity-toggle__checkmark {
     border-right-width: 1px;
     border-top-width: 1px;
     border-bottom-width: 1px;
+    margin-left: 4px;
 }
 
 EnumField {

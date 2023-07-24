@@ -3,7 +3,7 @@
     <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
         <SampleControl_Header />
         <ui:VisualElement name="content" style="flex-grow: 1;">
-            <VyControl_WalletListView generate-mock-items="true" mock-item-count="5" />
+            <VyControl_WalletListView generate-mock-items="true" mock-item-count="5" name="lst-wallets" style="margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

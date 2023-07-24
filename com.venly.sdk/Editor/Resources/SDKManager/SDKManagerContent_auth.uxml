@@ -1,8 +1,9 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Packages/com.venly.sdk/Editor/Resources/Styles/styleSDKManagerRoot.uss?fileID=7433441132597879392&amp;guid=0baa5dc99d503834a935051af3494939&amp;type=3#styleSDKManagerRoot" />
     <ui:VisualElement name="auth" style="margin-top: 10px; align-items: stretch; margin-left: 10px; margin-right: 10px;">
         <ui:TextField picking-mode="Ignore" label="Client ID" binding-path="ClientId" multiline="true" style="align-items: center;" />
         <ui:TextField picking-mode="Ignore" label="Client SECRET" multiline="true" binding-path="ClientSecret" style="flex-wrap: nowrap; align-items: center; margin-top: 5px;" />
+        <uie:EnumField label="Environment" value="staging" type="Venly.Models.Shared.eVyEnvironment,VenlyAPI.Core.Unity" binding-path="Environment" />
         <ui:VisualElement style="align-items: center;">
             <ui:Button text="Save" display-tooltip-when-elided="true" name="btn-save-auth" style="margin-top: 30px; width: 120px; padding-top: 10px; border-top-left-radius: 15px; border-bottom-left-radius: 15px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; padding-left: 10px; padding-right: 10px; padding-bottom: 7px; font-size: 18px; -unity-font-style: normal;" />
         </ui:VisualElement>

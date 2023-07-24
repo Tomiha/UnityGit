@@ -6,6 +6,57 @@ using Venly;
 using Venly.Core;
 using Venly.Models.Shared;
 
+public class BackTargetArgs<T> where T : Enum
+{
+    //public BackTargetArgs(){}
+    public BackTargetArgs(SampleViewBase<T> target)
+    {
+        Target = target;
+    }
+
+    public SampleViewBase<T> Target { get; set; }
+    public Dictionary<string, object> Blackboard { get; private set; }
+    public bool RequiresRefresh { get; set; } = true;
+    public bool HasBlackboard => Blackboard != null;
+
+    public void SetValue(string key, object value)
+    {
+        Blackboard ??= new Dictionary<string, object>();
+        Blackboard[key] = value;
+    }
+
+    public TVal GetValue<TVal>(string key) where TVal : class
+    {
+        if (HasValue(key))
+        {
+            return (TVal) Blackboard[key];
+        }
+
+        return null;
+    }
+
+    public bool HasValue(string key)
+    {
+        return Blackboard?.ContainsKey(key) ?? false;
+    }
+}
+
+public class SwitchArgs<T> where T : Enum
+{
+    public static SwitchArgs<T> Default = new ();
+
+    public SwitchArgs(){}
+
+    public SwitchArgs(SampleViewBase<T> backTarget, bool requiresRefresh = true)
+    {
+        BackTargetArgs = new BackTargetArgs<T>(backTarget) {RequiresRefresh = requiresRefresh};
+    }
+
+    public bool SetBackTarget { get; set; } = true;
+    public BackTargetArgs<T> BackTargetArgs { get; set; }
+    public bool SkipRefreshData { get; set; } = false;
+}
+
 public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
 {
     public List<SampleViewBase<T>> Views = new ();
@@ -23,9 +74,13 @@ public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
     private T _homeViewId;
     private Dictionary<string, object> _globalBlackboard = new();
 
+    public static SampleViewManager<T> Instance { get; private set; }
+
     // Start is called before the first frame update
     void Start()
     {
+        Instance = this;
+
         if(!VenlyAPI.IsInitialized) 
             VenlyUnity.Initialize();
 
@@ -56,25 +111,50 @@ public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
         return SelectionMode(targetView, viewTitle);
     }
 
-    public void SwitchView(SampleViewBase<T> targetView, bool setBackNavigation = true)
+    public void SwitchView(SampleViewBase<T> targetView, bool setBackTarget = true, bool forceRefresh = false)
+    {
+        SwitchView(targetView, new SwitchArgs<T>
+        {
+            SetBackTarget = setBackTarget,
+            //SkipRefreshData = !forceRefresh
+        });
+    }
+
+    public void SwitchView(SampleViewBase<T> targetView, SwitchArgs<T> args)
     {
         if (targetView == null)
         {
             throw new Exception("SwitchView Failed, TargetView is null.");
         }
 
-        if (setBackNavigation)
-            targetView.PreviousView = _currView;
+        if (args.SetBackTarget)
+        {
+            targetView.BackTargetArgs = args.BackTargetArgs ?? new BackTargetArgs<T>(_currView);
+        }
 
         _currView?.Deactivate();
-
         _currView = targetView;
-        _currView?.Activate();
+        _currView?.Activate(args);
     }
 
-    public void SwitchView(T targetViewId, bool setBackNavigation = true)
+    public void SwitchView(T targetViewId, SwitchArgs<T> args)
     {
-        SwitchView(GetView(targetViewId), setBackNavigation);
+        SwitchView(GetView(targetViewId), args);
+    }
+
+    public void SwitchView(T targetViewId, T backTargetId, bool backTargetRefresh = true)
+    {
+        SwitchView(GetView(targetViewId), new SwitchArgs<T>(GetView(backTargetId), backTargetRefresh));
+    }
+
+    public void SwitchView(T targetViewId, SampleViewBase<T> backTarget, bool backTargetRefresh = true)
+    {
+        SwitchView(GetView(targetViewId), new SwitchArgs<T>(backTarget, backTargetRefresh));
+    }
+
+    public void SwitchView(T targetViewId, bool setBackTarget = true, bool forceRefresh = false)
+    {
+        SwitchView(GetView(targetViewId), setBackTarget, forceRefresh);
     }
 
     public void NavigateHome()
@@ -84,9 +164,20 @@ public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
 
     public void NavigateBack()
     {
-        if (_currView?.PreviousView != null)
+        if (_currView?.BackTargetArgs != null)
         {
-            SwitchView(_currView.PreviousView.ViewId, false);
+            //Override Blackboard if required
+            if (_currView.BackTargetArgs.HasBlackboard)
+            {
+                _currView.BackTargetArgs.Target.OverrideBlackboard(_currView.BackTargetArgs.Blackboard);
+            }
+
+            //Switch to Back Target
+            SwitchView(_currView.BackTargetArgs.Target, new SwitchArgs<T>
+            {
+                SetBackTarget = false,
+                SkipRefreshData = !_currView.BackTargetArgs.RequiresRefresh
+            });
         }
     }
 
@@ -114,6 +205,18 @@ public abstract class SampleViewManager<T> : MonoBehaviour where T : Enum
     public bool HasGlobalBlackboardData(string key)
     {
         return _globalBlackboard.ContainsKey(key);
+    }
+
+    public void ClearViewBlackboardData(T viewId, string key)
+    {
+        var view = GetView(viewId);
+        view.ClearBlackboardData(key);
+    }
+
+    public void ClearViewBlackboardData(T viewId)
+    {
+        var view = GetView(viewId);
+        view.ClearBlackboardData();
     }
 
     public void SetViewBlackboardData(T viewId, string key, object data)

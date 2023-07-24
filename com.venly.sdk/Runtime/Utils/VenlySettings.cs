@@ -41,7 +41,7 @@ public class VenlySettings
     {
         Settings.HasWalletApiAccess = jwtInfo.HasWalletAccess;
         Settings.HasNftApiAccess = jwtInfo.HasNftAccess;
-        Settings.HasMarketApiAccess = jwtInfo.HasWalletAccess;
+        Settings.HasMarketApiAccess = jwtInfo.HasMarketAccess;
         Settings.Environment = jwtInfo.Environment;
     }
 

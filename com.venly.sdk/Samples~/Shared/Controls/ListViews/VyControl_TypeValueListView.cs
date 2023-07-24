@@ -4,7 +4,14 @@ using Venly.Models.Shared;
 //ITEM
 public class VyControl_TypeValueListItem : VyControl_ListViewItemBase<VyTypeValueDto>
 {
-    public VyControl_TypeValueListItem() : base("VyControl_TypeValueListItem") { }
+    //public VyControl_TypeValueListItem() : base("VyControl_TypeValueListItem") { }
+    public VyControl_TypeValueListItem() : base() { }
+
+    public override void GenerateTree(VisualElement root)
+    {
+        AddLabel(root, "lbl-type", "Type");
+        AddLabel(root, "lbl-value", "Value");
+    }
 
     public override void BindItem(VyTypeValueDto sourceItem)
     {

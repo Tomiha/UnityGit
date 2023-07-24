@@ -3,7 +3,7 @@
     <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
         <SampleControl_Header />
         <ui:VisualElement name="content" style="flex-grow: 1;">
-            <VyControl_TokenTypeListView focusable="true" />
+            <VyControl_TokenTypeListView focusable="true" name="lst-tokentypes" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -3,26 +3,28 @@
     <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
         <SampleControl_Header />
         <ui:VisualElement style="margin-left: 10px; margin-right: 10px; margin-bottom: 10px;">
-            <ui:VisualElement name="img-container" style="margin-top: 10px; margin-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
+            <ui:VisualElement name="img-container" style="margin-top: 10px; margin-bottom: 10px; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(119, 53, 231); border-right-color: rgb(119, 53, 231); border-top-color: rgb(119, 53, 231); border-bottom-color: rgb(119, 53, 231); border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
                 <ui:VisualElement name="img-contract" style="height: 150px; background-image: url(&apos;project://database/Packages/com.unity.collab-proxy/Editor/PlasticSCM/Assets/Images/buttonssosigninunity.png?fileID=2800000&amp;guid=f9161c6c9e06dc445ada3ee16d991f90&amp;type=3#buttonssosigninunity&apos;); -unity-background-scale-mode: scale-to-fit;" />
             </ui:VisualElement>
-            <ui:VisualElement style="margin-left: 0; margin-right: 0; margin-top: 10px; margin-bottom: 20px; border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; flex-shrink: 0;">
-                <LabelField label="Name" name="lbl-contract-name" bold-label="true" />
-                <LabelField label="Id" name="lbl-contract-id" bold-label="true" />
-                <LabelField label="Address" name="lbl-contract-address" bold-label="true" />
-                <LabelField label="Chain" name="lbl-contract-chain" bold-label="true" />
-                <LabelField label="Symbol" name="lbl-contract-symbol" bold-label="true" />
-                <LabelField label="Description" name="lbl-contract-description" bold-label="true" />
-                <LabelField label="External Url" name="lbl-contract-externalUrl" bold-label="true" />
-                <LabelField label="Owner" name="lbl-contract-owner" bold-label="true" />
-            </ui:VisualElement>
-            <ui:VisualElement style="align-items: center; flex-direction: row; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
+            <ui:ScrollView style="margin-bottom: 10px;">
+                <ui:VisualElement style="border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); flex-shrink: 0; padding-right: 10px;">
+                    <ui:TextField picking-mode="Ignore" label="Name" readonly="true" name="lbl-contract-name" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="Id" readonly="true" name="lbl-contract-id" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="Address" readonly="true" name="lbl-contract-address" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="Chain" readonly="true" name="lbl-contract-chain" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="Symbol" readonly="true" name="lbl-contract-symbol" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="Description" readonly="true" name="lbl-contract-description" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="Url" readonly="true" name="lbl-contract-externalUrl" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="Owner" readonly="true" name="lbl-contract-owner" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                </ui:VisualElement>
+            </ui:ScrollView>
+            <ui:VisualElement style="align-items: center; flex-direction: row; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; flex-shrink: 0;">
                 <ui:Label text="TokenTypes" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 15px;" />
                 <ui:VisualElement style="flex-grow: 1; align-items: center;" />
                 <ui:Label text="0 Tokens" display-tooltip-when-elided="true" name="lbl-tokentype-amount" />
                 <ui:Button text="View" display-tooltip-when-elided="true" name="btn-tokenTypes" class="main-button-style" style="min-width: auto; padding-left: 20px; padding-right: 20px; font-size: 15px;" />
             </ui:VisualElement>
-            <ui:VisualElement name="actions" style="margin-top: 10px; align-items: center;">
+            <ui:VisualElement name="actions" style="margin-top: 10px; align-items: center; flex-shrink: 0;">
                 <ui:Button text="Archive Contract" display-tooltip-when-elided="true" name="btn-archive" class="main-button-style" />
             </ui:VisualElement>
         </ui:VisualElement>

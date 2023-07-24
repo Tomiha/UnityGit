@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Venly;
@@ -8,103 +9,59 @@ using Venly.Utils;
 
 public class ApiExplorer_TokenTypeDetailsVC : SampleViewBase<eApiExplorerViewId>
 {
-    //UI Elements
-    private VisualElement _imgToken;
+    //DATA-KEYS
+    public const string DATAKEY_CONTRACT = "contract";
+    public const string DATAKEY_TOKENTYPE = "tokentype";
 
-    private Foldout _fldAnimationUrls;
-    private VyControl_TypeValueListView _lstAnimationUrls;
-    private Foldout _fldAttributes;
-    private VyControl_AttributeListView _lstAttributes;
-
+    //DATA
     private VyTokenTypeDto _tokenType;
     private VyContractDto _sourceContract;
 
-    private long? _lastTokenId = null;
-    private Texture2D _tokenTexture = null;
+    //UI
+    [UIBind("img-tokentype")] private VisualElement _imgToken;
+    [UIBind("fld-animation-urls")] private Foldout _fldAnimationUrls;
+    [UIBind("lst-animation-urls")] private VyControl_TypeValueListView _lstAnimationUrls;
+    [UIBind("fld-attributes")] private Foldout _fldAttributes;
+    [UIBind("lst-attributes")] private VyControl_AttributeListView _lstAttributes;
+
 
     public ApiExplorer_TokenTypeDetailsVC() :
         base(eApiExplorerViewId.NftApi_TokenTypeDetails)
     {
     }
 
+    #region DATA & UI
     protected override void OnBindElements(VisualElement root)
     {
-        GetElement(out _fldAnimationUrls, "fld-animation-urls");
-        GetElement(out _lstAnimationUrls, "lst-animation-urls");
-        GetElement(out _fldAttributes, "fld-attributes");
-        GetElement(out _lstAttributes, "lst-attributes");
-        GetElement(out _imgToken, "img-tokentype");
+        base.OnBindElements(root);
 
         BindButton("btn-mint", onClick_Mint);
     }
 
     protected override void OnActivate()
     {
-        ShowNavigateHome = true;
-        ShowNavigateBack = true;
-        ShowRefresh = true;
-
         _fldAnimationUrls.value = false;
         _fldAttributes.value = false;
 
         //Retrieve Token from Blackboard (should be set by calling view)
-        _tokenType = GetBlackBoardData<VyTokenTypeDto>("tokenType");
-        _sourceContract = GetBlackBoardData<VyContractDto>("sourceContract");
-
-        if (_tokenType == null || _sourceContract == null)
-        {
-            ViewManager.HandleException(new ArgumentException("TokenTypeDetails View > tokenType or sourceContract data not set."));
-            return;
-        }
-
-        Refresh();
+        TryGetBlackboardData(out _tokenType, localKey: DATAKEY_TOKENTYPE);
+        TryGetBlackboardData(out _sourceContract, localKey: DATAKEY_CONTRACT);
     }
 
-    protected override void OnClick_Refresh()
+    protected override async Task OnRefreshData()
     {
-        Refresh(true);
+        ViewManager.Loader.Show("Refreshing TokenType...");
+        var result = await VenlyAPI.Nft.GetTokenType(_sourceContract.Id, _tokenType.Id);
+        ViewManager.Loader.Hide();
+
+        if(result.Success) _tokenType = result.Data;
+        else ViewManager.HandleException(result.Exception);
     }
 
-    private void Refresh(bool force = false)
+    protected override void OnRefreshUI()
     {
-        if (force)
-        {
-            ViewManager.Loader.Show("Refreshing TokenType...");
-            VenlyAPI.Nft.GetTokenType(_sourceContract.Id, _tokenType.Id)
-                .OnSuccess(tokenType =>
-                {
-                    _tokenType = tokenType;
-                    _lastTokenId = null;
-
-                    RefreshView();
-                })
-                .OnFail(ViewManager.HandleException)
-                .Finally(ViewManager.Loader.Hide);
-
-        }
-        else
-        {
-            RefreshView();
-        }
-    }
-
-    private void RefreshView()
-    {
-        //Retrieve Image
-        if (_tokenTexture == null || _lastTokenId != _tokenType.Id)
-        {
-            VenlyUnityUtils.DownloadImage(_tokenType.ImageUrl)
-                .OnComplete(result =>
-                {
-                    ToggleElement("img-container", result.Success);
-                    if (result.Success)
-                    {
-                        _tokenTexture = result.Data;
-                        _imgToken.style.backgroundImage = new StyleBackground(_tokenTexture);
-                    }
-                    else ViewManager.HandleException(result.Exception);
-                });
-        }
+        if (!ValidateData(_sourceContract, DATAKEY_CONTRACT)) return;
+        if (!ValidateData(_tokenType, DATAKEY_TOKENTYPE)) return;
 
         //Set Data
         SetLabel("lbl-token-id", _tokenType.Id.ToString());
@@ -137,12 +94,24 @@ public class ApiExplorer_TokenTypeDetailsVC : SampleViewBase<eApiExplorerViewId>
         {
             if (e.newValue) _fldAttributes.value = false;
         });
-    }
 
+        //Image
+        VenlyUnityUtils.DownloadImage(_tokenType.ImageUrl)
+            .OnComplete(result =>
+            {
+                ToggleElement("img-container", result.Success);
+                if (result.Success)_imgToken.style.backgroundImage = new StyleBackground(result.Data);
+                else VenlyLog.Exception(result.Exception);
+            });
+    }
+    #endregion
+
+    #region EVENTS
     private void onClick_Mint()
     {
-        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_MintToken, "sourceContract", _sourceContract);
-        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_MintToken, "sourceTokenType", _tokenType);
-        ViewManager.SwitchView(eApiExplorerViewId.NftApi_MintToken);
+        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_MintToken, ApiExplorer_MintTokenVC.DATAKEY_CONTRACT, _sourceContract);
+        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_MintToken, ApiExplorer_MintTokenVC.DATAKEY_TOKENTYPE, _tokenType);
+        ViewManager.SwitchView(eApiExplorerViewId.NftApi_MintToken, ViewId, false);
     }
+    #endregion
 }

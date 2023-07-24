@@ -1,4 +1,3 @@
-using System;
 using UnityEngine.UIElements;
 using Venly;
 using Venly.Models.Nft;
@@ -7,26 +6,27 @@ using Venly.Models.Wallet;
 
 public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
 {
+    //DATA-KEYS
+    public const string DATAKEY_CONTRACT = "contract";
+    public const string DATAKEY_TOKENTYPE = "tokentype";
+
+    //DATA
     private VyTokenTypeDto _sourceTokenType;
     private VyContractDto _sourceContract;
 
-    private TextField _txtTargetAddress;
-    private TextField _txtAmount;
-
-    private Button _btnSelectContract;
-    private Button _btnSelectTokenType;
+    //UI
+    [UIBind("btn-select-contract")] private Button _btnSelectContract;
+    [UIBind("btn-select-tokentype")] private Button _btnSelectTokenType;
 
 
     public ApiExplorer_MintTokenVC() :
         base(eApiExplorerViewId.NftApi_MintToken)
     { }
 
+    #region DATA & UI
     protected override void OnBindElements(VisualElement root)
     {
-        GetElement(out _txtTargetAddress, "txt-target-address");
-        GetElement(out _txtAmount, "txt-amount");
-        GetElement(out _btnSelectContract, "btn-select-contract");
-        GetElement(out _btnSelectTokenType, "btn-select-tokentype");
+        base.OnBindElements(root);
 
         BindButton("btn-select-contract", onClick_SelectContract);
         BindButton("btn-select-tokentype", onClick_SelectTokenType);
@@ -36,21 +36,18 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
 
     protected override void OnActivate()
     {
-        ShowNavigateBack = true;
+        ShowRefresh = false;
+        ShowNavigateHome = false;
 
         //Check if Source Is Set
-        if (HasBlackboardData("sourceContract")) _sourceContract = GetBlackBoardData<VyContractDto>("sourceContract");
-        else _sourceContract = null;
-
+        TryGetBlackboardData(out _sourceContract, localKey: DATAKEY_CONTRACT);
         _btnSelectContract.ToggleDisplay(_sourceContract == null);
         UpdateSourceContract(_sourceContract);
 
         //Check if Token is Set
         if (_sourceContract != null)
         {
-            if (HasBlackboardData("sourceTokenType")) _sourceTokenType = GetBlackBoardData<VyTokenTypeDto>("sourceTokenType");
-            else _sourceTokenType = null;
-
+            TryGetBlackboardData(out _sourceTokenType, localKey: DATAKEY_TOKENTYPE);
             _btnSelectTokenType.ToggleDisplay(_sourceTokenType == null);
             UpdateSourceTokenType(_sourceTokenType);
         }
@@ -102,13 +99,14 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
 
     protected override void OnDeactivate()
     {
-        ClearBlackboardData("sourceContract");
-        ClearBlackboardData("sourceTokenType");
+        ClearBlackboardData();
 
         _sourceContract = null;
         _sourceTokenType = null;
     }
+    #endregion
 
+    #region EVENTS
     private void onClick_SelectContract()
     {
         ViewManager.SelectionMode(eApiExplorerViewId.NftApi_ViewContracts, "Select Contract")
@@ -124,7 +122,8 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
 
     private void onClick_SelectTokenType()
     {
-        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_ViewTokenTypes, "sourceContract", _sourceContract);
+        ViewManager.ClearViewBlackboardData(eApiExplorerViewId.NftApi_ViewTokenTypes);
+        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_ViewTokenTypes, ApiExplorer_ViewTokenTypesVC.DATAKEY_CONTRACT, _sourceContract);
         ViewManager.SelectionMode(eApiExplorerViewId.NftApi_ViewTokenTypes, "Select TokenType")
             .OnComplete(result =>
             {
@@ -144,42 +143,28 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
                 if (result.Success)
                 {
                     var wallet = result.Data as VyWalletDto;
-                    _txtTargetAddress.value = wallet.Address;
+                    SetLabel("txt-target-address", wallet.Address);
                 }
             });
     }
 
-    private bool Validate()
-    {
-        try
-        {
-            if (_sourceContract == null) throw new ArgumentException("No contract selected");
-            if (_sourceTokenType == null) throw new ArgumentException("No token-type selected");
-            if (string.IsNullOrEmpty(_txtTargetAddress.text)) throw new ArgumentException("Target address invalid");
-            if (string.IsNullOrEmpty(_txtAmount.text) || !int.TryParse(_txtAmount.value, out _)) throw new ArgumentException("Amount invalid");
-        }
-        catch (Exception ex)
-        {
-            ViewManager.HandleException(ex);
-            return false;
-        }
-
-        return true;
-    }
-
     private void onCick_Mint()
     {
-#if ENABLE_VENLY_DEV_MODE
-        if (!Validate()) return;
+        //Validate
+        if (!ValidateData(_sourceContract, "contract")) return;
+        if (!ValidateData(_sourceTokenType, "tokentype")) return;
+        if (!ValidateInput("txt-target-address")) return;
+        if (!ValidateInput<int>("txt-amount")) return;
 
+        //Execute
         var reqParams = new VyMintTokensRequest()
         {
             Destinations = new []
             {
                 new VyTokenDestinationDto()
                 {
-                    Address = _txtTargetAddress.value,
-                    Amount = int.Parse(_txtAmount.value)
+                    Address = GetValue("txt-target-address"),
+                    Amount = GetValue<int>("txt-amount")
                 }
             }
         };
@@ -190,11 +175,10 @@ public class ApiExplorer_MintTokenVC : SampleViewBase<eApiExplorerViewId>
             {
                 //todo show confirmation
                 ViewManager.Info.Show("Token successfully minted!");
+                ViewManager.NavigateBack();
             })
             .OnFail(ViewManager.HandleException)
             .Finally(ViewManager.Loader.Hide);
-#else
-        ViewManager.HandleException(new Exception("Minting only possible on a backend."));
-#endif
     }
+    #endregion
 }

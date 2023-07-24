@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine.UIElements;
 using Venly.Core;
-using Venly.Models;
 using Venly.Models.Wallet;
 
 public abstract class ApiExplorer_ViewTokensBaseVC<T, TListView, TListItem> : SampleViewBase<eApiExplorerViewId> 
@@ -13,82 +13,71 @@ public abstract class ApiExplorer_ViewTokensBaseVC<T, TListView, TListItem> : Sa
         base(viewId)
     { }
 
-    protected abstract eApiExplorerViewId DetailViewId { get; }
+    //DATA-KEYS
+    public const string DATAKEY_TOKENLIST = "tokenList";
+    public const string DATAKEY_WALLET = "sourceWallet";
 
-    protected TListView _tokenListView;
+    //DATA
+    protected TListView _lstTokens;
     protected List<T> _tokenList = null;
-
     protected VyWalletDto _sourceWallet = null;
-    protected string _lastWalletId = null;
 
+    protected abstract eApiExplorerViewId DetailViewId { get; }
+    protected abstract VyTask<T[]> GetTokenBalances(string walletId);
+
+    #region DATA & UI
     protected override void OnBindElements(VisualElement root)
     {
-        _tokenListView = GetElement<TListView>();
+        _lstTokens = GetElement<TListView>();
     }
 
     protected override void OnActivate()
     {
+        _sourceWallet = null;
+        _tokenList = null;
+
         //View Parameters
         ShowNavigateBack = true;
         ShowNavigateHome = true;
         ShowRefresh = false; //No Refresh
 
-        _tokenListView.OnItemSelected += onClick_Token;
+        _lstTokens.OnItemSelected += onClick_Token;
 
-        if (HasBlackboardData("tokenList"))
+        if (TryGetBlackboardData(out T[] resultArr, localKey:DATAKEY_TOKENLIST))
         {
-            _tokenList = GetBlackBoardData<T[]>("tokenList").ToList();
+            _tokenList = resultArr.ToList();
+            NoDataRefresh = true;
         } 
-        else if (HasBlackboardData("sourceWallet"))
+        else if (TryGetBlackboardData(out _sourceWallet, DATAKEY_WALLET, ApiExplorer_GlobalKeys.DATA_UserWallet))
         {
-            _sourceWallet = GetBlackBoardData<VyWalletDto>("sourceWallet");
             ShowRefresh = true; //Wallet present, refresh is possible
         }
-
-        RefreshTokens();
     }
 
     protected override void OnDeactivate()
     {
-        _sourceWallet = null;
-        
-        ClearBlackboardData("sourceWallet");
-        ClearBlackboardData("tokenList");
+        //ClearBlackboardData();
     }
 
-    protected abstract VyTask<T[]> GetTokenBalances(string walletId);
-
-    private void RefreshTokens(bool force = false)
+    protected override async Task OnRefreshData()
     {
-        //Do we have a wallet?
-        if (_sourceWallet != null)
-        {
-            if (force || _sourceWallet.Id != _lastWalletId)
-            {
-                ViewManager.Loader.Show("Refreshing Tokens...");
-                GetTokenBalances(_sourceWallet.Id)
-                    .OnSuccess(tokens =>
-                    {
-                        _lastWalletId = _sourceWallet.Id;
-                        _tokenList = tokens.ToList();
-                        _tokenListView.SetItemSource(_tokenList);
-                    })
-                    .OnFail(ViewManager.HandleException)
-                    .Finally(ViewManager.Loader.Hide);
+        ViewManager.Loader.Show("Refreshing Tokens...");
+        var result = await GetTokenBalances(_sourceWallet.Id);
+        ViewManager.Loader.Hide();
 
-                return;
-            }
-        }
-        else _lastWalletId = null;
-        
-        _tokenListView.SetItemSource(_tokenList);
+        if(result.Success) _tokenList = result.Data.ToList();
+        else ViewManager.HandleException(result.Exception);
     }
 
-    protected override void OnClick_Refresh()
+    protected override void OnRefreshUI()
     {
-        RefreshTokens(true);
-    }
+        if (!ValidateData(_tokenList, "tokenList")) return;
 
+        _lstTokens.SetItemSource(_tokenList);
+    }
+    #endregion
+
+    #region EVENTS
     private void onClick_Token(T token)
     {
         if (IsSelectionMode)
@@ -97,11 +86,12 @@ public abstract class ApiExplorer_ViewTokensBaseVC<T, TListView, TListItem> : Sa
             return;
         }
 
-        ViewManager.SetViewBlackboardData(DetailViewId, "token", token);
+        ViewManager.SetViewBlackboardData(DetailViewId, ApiExplorer_TokenDetailsDataKeys.DATAKEY_TOKEN, token);
 
-        var wallet = GetBlackBoardData<VyWalletDto>("sourceWallet");
-        ViewManager.SetViewBlackboardData(DetailViewId, "sourceWallet", wallet);
+        var wallet = GetBlackBoardData<VyWalletDto>(DATAKEY_WALLET);
+        ViewManager.SetViewBlackboardData(DetailViewId, ApiExplorer_TokenDetailsDataKeys.DATAKEY_WALLET, wallet);
 
-        ViewManager.SwitchView(DetailViewId);
+        ViewManager.SwitchView(DetailViewId, ViewId, false);
     }
+    #endregion
 }

@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header />
+        <ui:ScrollView style="margin-top: 10px; margin-bottom: 10px;">
+            <ui:VisualElement style="margin-left: 10px; margin-right: 10px;">
+                <ui:VisualElement name="details">
+                    <ui:TextField picking-mode="Ignore" label="Offer Name" multiline="true" name="txt-offer-name" readonly="true" class="texfield-readonly" style="flex-shrink: 1;" />
+                    <ui:TextField picking-mode="Ignore" label="Offer Id" multiline="true" name="txt-offer-id" readonly="true" class="texfield-readonly" style="flex-shrink: 1;" />
+                    <ui:TextField picking-mode="Ignore" label="Highest Bid" multiline="true" name="txt-highest-bid" readonly="true" class="texfield-readonly" style="flex-shrink: 1;" />
+                    <ui:VisualElement style="flex-direction: row;">
+                        <ui:TextField picking-mode="Ignore" label="User" value="select user" text="select user" readonly="true" name="txt-user" multiline="true" class="texfield-readonly" />
+                        <ui:VisualElement style="justify-content: center; padding-bottom: 3px; flex-shrink: 0;">
+                            <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-user" class="main-button-style button-select" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:TextField picking-mode="Ignore" label="Bid Amount" multiline="false" name="txt-amount" style="flex-shrink: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="actions" style="align-items: center; margin-top: 30px;">
+                    <ui:Button text="Place Bid" display-tooltip-when-elided="true" name="btn-place-bid" class="main-button-style" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

@@ -15,11 +15,6 @@ public class ApiExplorer_LandingAuthVC : SampleViewBase<eApiExplorerViewId>
         SetLabel("lbl-backend-provider", VenlySettings.BackendProvider.ToString());
     }
 
-    protected override void OnDeactivate()
-    {
-        
-    }
-
     private void onClick_LoginUser()
     {
         ViewManager.SwitchView(eApiExplorerViewId.Auth_Login);

@@ -1,0 +1,38 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header />
+        <ui:ScrollView>
+            <ui:VisualElement style="margin-left: 10px; margin-right: 10px; margin-bottom: 10px;">
+                <ui:VisualElement name="user-details" style="margin-left: 0; margin-right: 0; margin-top: 10px; margin-bottom: 20px; border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-left-color: rgb(119, 53, 232); border-right-color: rgb(119, 53, 232); border-top-color: rgb(119, 53, 232); border-bottom-color: rgb(119, 53, 232); padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; flex-shrink: 0; border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px;">
+                    <ui:TextField picking-mode="Ignore" label="Nickname" readonly="true" name="lbl-nickname" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 2px; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="User Id" readonly="true" name="lbl-user-id" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="Verification" readonly="true" name="lbl-verification" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:TextField picking-mode="Ignore" label="Balance" readonly="true" name="lbl-balance" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+                    <ui:Foldout text="Deposit Addresses" name="fld-deposit-addresses" value="false" style="margin-top: 5px;">
+                        <VyControl_DepositAddressListView name="lst-deposit-addresses" />
+                    </ui:Foldout>
+                </ui:VisualElement>
+                <ui:VisualElement name="misc-details">
+                    <ui:VisualElement name="offers" style="align-items: center; flex-direction: row; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
+                        <ui:Label text="User Offers" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 15px;" />
+                        <ui:VisualElement style="flex-grow: 1; align-items: center;" />
+                        <ui:Label text="0 Offers" display-tooltip-when-elided="true" name="lbl-offers-amount" />
+                        <ui:Button text="View" display-tooltip-when-elided="true" name="btn-view-offers" class="main-button-style" style="min-width: auto; padding-left: 20px; padding-right: 20px; font-size: 15px;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="fulfillments" style="align-items: center; flex-direction: row; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
+                        <ui:Label text="Fulfillments" display-tooltip-when-elided="true" style="-unity-font-style: bold; font-size: 15px;" />
+                        <ui:VisualElement style="flex-grow: 1; align-items: center;" />
+                        <ui:Label text="0 Fulfillments" display-tooltip-when-elided="true" name="lbl-fulfillments-amount" />
+                        <ui:Button text="View" display-tooltip-when-elided="true" name="btn-view-fulfillments" class="main-button-style" style="min-width: auto; padding-left: 20px; padding-right: 20px; font-size: 15px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="actions" style="margin-top: 10px; align-items: center;">
+                    <ui:Button text="Create Deposit Addr" display-tooltip-when-elided="true" name="btn-create-deposit-address" class="main-button-style" />
+                    <ui:Button text="Create Offer" display-tooltip-when-elided="true" name="btn-create-offer" class="main-button-style" />
+                    <ui:Button text="View Market Offers" display-tooltip-when-elided="true" name="btn-view-market-offers" class="main-button-style" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

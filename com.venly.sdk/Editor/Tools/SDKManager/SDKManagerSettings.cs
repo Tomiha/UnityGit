@@ -116,6 +116,10 @@ namespace Venly.Editor.Tools.SDKManager
         private async void onSaveAuth_Clicked()
         {
             SDKManager.Instance.ShowLoader("Verifying Credentials...");
+            
+            //Make sure we are using the correct Environment
+            VenlyAPI.SetEnvironment(VenlySettings.Environment);
+
             var result = await SDKManager.Instance.Authenticate();
             if(!result.Success)
                 Debug.LogException(result.Exception);

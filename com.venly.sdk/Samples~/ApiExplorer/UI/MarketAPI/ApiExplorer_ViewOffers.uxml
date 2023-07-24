@@ -1,0 +1,50 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header />
+        <ui:VisualElement name="content" style="flex-grow: 1;">
+            <ui:VisualElement name="container-filter" style="margin-top: 5px;">
+                <ui:Foldout text="Filter" name="fld-filter" style="margin-right: 25px;">
+                    <ui:VisualElement>
+                        <ui:VisualElement name="filter-visibilty" style="flex-direction: column;">
+                            <ui:DropdownField label="Visibility" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="selector-visibility" style="flex-shrink: 1;" />
+                            <ui:VisualElement name="filter-chain" style="flex-direction: row;">
+                                <ui:DropdownField label="Chain" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="selector-chain" style="flex-shrink: 1;" />
+                                <ui:Toggle name="toggle-chain" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="container-filter-public">
+                            <ui:VisualElement name="filter-seller-id" style="flex-direction: row;">
+                                <ui:TextField picking-mode="Ignore" label="Seller Id" name="txt-seller-id" />
+                                <ui:Toggle name="toggle-seller-id" />
+                            </ui:VisualElement>
+                            <ui:VisualElement name="filter-type" style="flex-direction: row;">
+                                <ui:DropdownField label="Type" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="selector-type" style="flex-shrink: 1;" />
+                                <ui:Toggle name="toggle-type" />
+                            </ui:VisualElement>
+                            <ui:VisualElement name="filter-status" style="flex-direction: row;">
+                                <ui:DropdownField label="Status" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="selector-status" style="flex-shrink: 1;" />
+                                <ui:Toggle name="toggle-status" />
+                            </ui:VisualElement>
+                            <ui:VisualElement name="filter-page-number" style="flex-direction: row;">
+                                <ui:TextField picking-mode="Ignore" label="Page Number" value="1" text="1" name="txt-page-number" />
+                                <ui:Toggle name="toggle-page-number" />
+                            </ui:VisualElement>
+                            <ui:VisualElement name="filter-page-size" style="flex-direction: row;">
+                                <ui:TextField picking-mode="Ignore" label="Page Size" value="20" text="20" name="txt-page-size" />
+                                <ui:Toggle name="toggle-page-size" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement>
+                        <ui:Button text="Filter" display-tooltip-when-elided="true" name="btn-filter" class="button-select" />
+                    </ui:VisualElement>
+                </ui:Foldout>
+                <ui:VisualElement style="align-items: center;">
+                    <ui:Label text="Page 1 / 406 (10 items)&#10;4059 items total" display-tooltip-when-elided="true" name="lbl-pagination" style="flex-wrap: nowrap; align-items: auto; -unity-text-align: upper-center;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <VyControl_OfferListView focusable="true" name="lst-offers" generate-mock-items="true" mock-item-count="3" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

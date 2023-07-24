@@ -11,7 +11,11 @@ public abstract class VyControl_ListViewItemBase<T> : VisualElement
 {
     private static VisualTreeAsset _itemPrototype;
 
-    protected VyControl_ListViewItemBase(){}
+    protected VyControl_ListViewItemBase()
+    {
+        BuildItemPrototype();
+    }
+
     protected VyControl_ListViewItemBase(string itemUxml)
     {
         if (_itemPrototype == null)
@@ -20,6 +24,91 @@ public abstract class VyControl_ListViewItemBase<T> : VisualElement
         _itemPrototype.CloneTree(this);
     }
 
+    private void BuildItemPrototype()
+    {
+        var root = new VisualElement
+        {
+            style =
+            {
+                flexGrow = new StyleFloat(1)
+            }
+        };
+        Add(root);
+
+        var subRoot = new VisualElement()
+        {
+            style =
+            {
+                flexGrow = new StyleFloat(1)
+            }
+        };
+        root.Add(subRoot);
+        subRoot.AddToClassList("list-view__item");
+
+        GenerateTree(subRoot);
+    }
+
+    protected void AddLabelWithButton(VisualElement root, string labelName, string labelText, string buttonText,
+        Action onButtonClick)
+    {
+        var main = new VisualElement
+        {
+            style =
+            {
+                flexDirection = new StyleEnum<FlexDirection>(FlexDirection.Row)
+            }
+        };
+
+        AddLabel(main, labelName, labelText);
+
+        var buttonRoot = new VisualElement
+        {
+            style =
+            {
+                justifyContent = new StyleEnum<Justify>(Justify.Center),
+                marginBottom = new StyleLength(3),
+                flexShrink = new StyleFloat(0.0f)
+            }
+        };
+
+        var btn = new Button(onButtonClick);
+        btn.AddToClassList("button-select");
+        btn.text = buttonText;
+
+        buttonRoot.Add(btn);
+        main.Add(buttonRoot);
+        root.Add(main);
+    }
+
+    protected VisualElement AddLabel(VisualElement root, string elementName, string labelText)
+    {
+        VisualElement el = null;
+        if (string.IsNullOrEmpty(labelText))
+        {
+            el = new Label(labelText);
+            el.name = elementName;
+            el.style.alignSelf = new StyleEnum<Align>(Align.Center);
+        }
+        else
+        {
+            var txtField = new TextField(labelText)
+            {
+                multiline = true,
+                isReadOnly = true,
+                name = elementName
+            };
+            el = txtField;
+        }
+
+        el.AddToClassList("texfield-readonly");
+        el.AddToClassList("list-item");
+
+        root.Add(el);
+
+        return el;
+    }
+
+    public virtual void GenerateTree(VisualElement root){}
     public abstract void BindItem(T sourceItem);
     public abstract void BindMockItem();
 
@@ -33,9 +122,23 @@ public abstract class VyControl_ListViewItemBase<T> : VisualElement
         SetLabelText(elementName, txt);
     }
 
+    protected void SetLabel(string elementName, object txt)
+    {
+        SetLabelText(elementName, txt.ToString());
+    }
+
     protected void SetLabel(string elementName, bool state)
     {
         SetLabelText(elementName, state ? "YES" : "NO");
+    }
+
+    public void SetLabelName(string elementName, string name)
+    {
+        var el = this.Q<VisualElement>(elementName);
+        if (el == null) throw new ArgumentException($"element \'{elementName}\' not found");
+
+        if (el is Label lbl) lbl.text = name;
+        else if (el is TextField txtField) txtField.label = name;
     }
 
     private void SetLabelText(string elementname, string txt)
@@ -45,6 +148,7 @@ public abstract class VyControl_ListViewItemBase<T> : VisualElement
 
         if (el is Label lbl) lbl.text = txt;
         else if (el is LabelField lblfield) lblfield.UpdateText(txt);
+        else if (el is TextField txtField) txtField.value = txt;
     }
 }
 
@@ -91,14 +195,15 @@ public class VyControl_ListViewBase<TItem, TItemView> : ListView where TItemView
             onItemsChosen += (itemList) => { OnItemSelected?.Invoke((TItem) itemList.First()); };
         }
 
+        //focusable = isSelectable;
         selectionType = isSelectable ? SelectionType.Single : SelectionType.None;
-        showAlternatingRowBackgrounds =
-            isSelectable ? AlternatingRowBackground.None : AlternatingRowBackground.ContentOnly;
+        //selectionType = SelectionType.Single;
+        showAlternatingRowBackgrounds = AlternatingRowBackground.None;// isSelectable ? AlternatingRowBackground.None : AlternatingRowBackground.ContentOnly;
     }
 
     public void SetItemSource(TItem[] itemSource)
     {
-        SetItemSource(itemSource.ToList());
+        SetItemSource(itemSource?.ToList());
     }
 
     public void SetItemSource(List<TItem> itemSource)

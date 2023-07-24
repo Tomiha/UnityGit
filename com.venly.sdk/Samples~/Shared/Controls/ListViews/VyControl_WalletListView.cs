@@ -6,7 +6,15 @@ using Venly.Utils;
 //ITEM
 public class VyControl_WalletListItem : VyControl_ListViewItemBase<VyWalletDto>
 {
-    public VyControl_WalletListItem() : base("VyControl_WalletListItem") { }
+    //public VyControl_WalletListItem() : base("VyControl_WalletListItem") { }
+
+    public override void GenerateTree(VisualElement root)
+    {
+        AddLabel(root, "lbl-chain", "Chain");
+        AddLabel(root, "lbl-id", "Id");
+        AddLabel(root, "lbl-address", "Address");
+        AddLabel(root, "lbl-description", "Description");
+    }
 
     public override void BindItem(VyWalletDto sourceItem)
     {
@@ -14,7 +22,7 @@ public class VyControl_WalletListItem : VyControl_ListViewItemBase<VyWalletDto>
         SetLabel("lbl-id", sourceItem.Id);
         SetLabel("lbl-address", sourceItem.Address);
         SetLabel("lbl-description", sourceItem.Description);
-        ToggleElement("lbl-archived", sourceItem.Archived);
+        //ToggleElement("lbl-archived", sourceItem.Archived);
     }
 
     public override void BindMockItem()

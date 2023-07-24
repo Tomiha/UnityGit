@@ -4,27 +4,28 @@ using UnityEngine.UIElements;
 using Venly.Models;
 using Venly.Models.Shared;
 using Venly.Models.Wallet;
+using Venly.Utils;
 
 public class ApiExplorer_MultiTokenDetailsVC : SampleViewBase<eApiExplorerViewId>
 {
-    //UI Elements
+
+    //DATA
+    private VyMultiTokenDto _token;
+
+    //UI
     [UIBind("img-token")] private VisualElement _imgToken;
 
     [UIBind("fld-animation-urls")] private Foldout _fldAnimationUrls;
-    [UIBind("lst-animation-urls")] private ListView _lstAnimationUrls;
+    [UIBind("lst-animation-urls")] private VyControl_TypeValueListView _lstAnimationUrls;
     [UIBind("fld-attributes")] private Foldout _fldAttributes;
-    [UIBind("lst-attributes")] private ListView _lstAttributes;
-
-    private VyMultiTokenDto _token;
-
-    private string _lastTokenId = null;
-    private Texture2D _tokenTexture = null;
+    [UIBind("lst-attributes")] private VyControl_AttributeListView _lstAttributes;
 
     public ApiExplorer_MultiTokenDetailsVC() : 
         base(eApiExplorerViewId.Shared_MultiTokenDetails)
     {
     }
 
+    #region DATA & UI
     protected override void OnBindElements(VisualElement root)
     {
         //Make sure UIBind Elements are configured
@@ -35,45 +36,39 @@ public class ApiExplorer_MultiTokenDetailsVC : SampleViewBase<eApiExplorerViewId
 
     protected override void OnActivate()
     {
-        ShowNavigateBack = true;
+        ShowRefresh = false;
+        ShowNavigateHome = false;
 
         _fldAnimationUrls.value = false;
         _fldAttributes.value = false;
 
         //Retrieve Token from Blackboard (should be set by calling view)
-        _token = GetBlackBoardData<VyMultiTokenDto>("token");
+        TryGetBlackboardData(out _token, localKey: ApiExplorer_TokenDetailsDataKeys.DATAKEY_TOKEN);
+    }
 
-        //Retrieve Image
-        if (_tokenTexture == null || _lastTokenId != _token.Id)
-        {
-            VenlyUnityUtils.DownloadImage(_token.ImageUrl)
-                .OnComplete(result =>
-                {
-                    _imgToken.ToggleDisplay(result.Success);
-                    if (result.Success)
-                    {
-                        _tokenTexture = result.Data;
-                        _imgToken.style.backgroundImage = new StyleBackground(_tokenTexture);
-                    }
-                    else ViewManager.HandleException(result.Exception);
-                });
-        }
+    protected override void OnRefreshUI()
+    {
+        if (!ValidateData(_token, "token")) return;
 
-        //Set Data
         SetLabel("lbl-token-id", _token.Id);
         SetLabel("lbl-token-name", _token.Name);
         SetLabel("lbl-token-description", _token.Description);
         SetLabel("lbl-token-url", _token.Url);
-        SetLabel("lbl-token-fungible", _token.Fungible?"YES":"NO");
-        SetLabel("lbl-token-transfer-fees", _token.TransferFees?"YES":"NO");
+        SetLabel("lbl-token-fungible", _token.Fungible ? "YES" : "NO");
+        SetLabel("lbl-token-transfer-fees", _token.TransferFees ? "YES" : "NO");
         SetLabel("lbl-contract-name", _token.Contract.Name);
         SetLabel("lbl-contract-type", _token.Contract.Type);
 
         BuildAnimationUrls();
         BuildAttributes();
-    }
 
-    protected override void OnDeactivate() {}
+        VenlyUnityUtils.DownloadImage(_token.ImageUrl)
+            .OnSuccess(tex =>
+            {
+                _imgToken.style.backgroundImage = new StyleBackground(tex);
+            })
+            .OnFail(ex => VenlyLog.Exception(ex));
+    }
 
     private void BuildAnimationUrls()
     {
@@ -89,19 +84,7 @@ public class ApiExplorer_MultiTokenDetailsVC : SampleViewBase<eApiExplorerViewId
 
         _lstAnimationUrls.ToggleDisplay(_token.AnimationUrls.Any());
         if (!_token.AnimationUrls.Any()) return;
-
-        _lstAnimationUrls.makeItem = () =>
-        {
-            return new Label();
-        };
-
-        _lstAnimationUrls.bindItem = (element, i) =>
-        {
-            var item = _token.AnimationUrls[i];
-            (element as Label).text = $"Type = {item.Type}\nValue = {item.Value}\n";
-        };
-
-        _lstAnimationUrls.itemsSource = _token.AnimationUrls;
+        _lstAnimationUrls.SetItemSource(_token.AnimationUrls);
     }
 
     private void BuildAttributes()
@@ -118,28 +101,18 @@ public class ApiExplorer_MultiTokenDetailsVC : SampleViewBase<eApiExplorerViewId
 
         _lstAnimationUrls.ToggleDisplay(_token.Attributes.Any());
         if (!_token.Attributes.Any()) return;
-
-        _lstAttributes.makeItem = () =>
-        {
-            return new Label();
-        };
-
-        _lstAttributes.bindItem = (element, i) =>
-        {
-            var item = _token.Attributes[i];
-            (element as Label).text = $"Type = {item.Type}\nName = {item.Name}\nValue = {item.Value}\n";
-        };
-
-        _lstAttributes.itemsSource = _token.Attributes;
+        _lstAttributes.SetItemSource(_token.Attributes);
     }
+    #endregion
 
+    #region EVENTS
     private void OnClick_Transfer()
     {
-        var transferView = eApiExplorerViewId.WalletApi_TransferMultiToken;
-        var wallet = GetBlackBoardData<VyWalletDto>("sourceWallet");
-        ViewManager.SetViewBlackboardData(transferView, "sourceWallet", wallet);
-        ViewManager.SetViewBlackboardData(transferView, "sourceToken", _token);
+        var wallet = GetBlackBoardData<VyWalletDto>(ApiExplorer_TokenDetailsDataKeys.DATAKEY_WALLET);
+        ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransferMultiToken, ApiExplorer_TransferMultiTokenVC.DATAKEY_WALLET, wallet);
+        ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransferMultiToken, ApiExplorer_TransferMultiTokenVC.DATAKEY_TOKEN, _token);
 
-        ViewManager.SwitchView(transferView);
+        ViewManager.SwitchView(eApiExplorerViewId.WalletApi_TransferMultiToken);
     }
+    #endregion
 }

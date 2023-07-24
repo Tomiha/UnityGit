@@ -3,30 +3,12 @@
     <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
         <SampleControl_Header />
         <ui:VisualElement name="container-details" style="margin-left: 20px; margin-right: 20px; margin-bottom: 20px; margin-top: 20px;">
-            <ui:VisualElement name="details-name" class="main-labelfield-container" style="flex-direction: row;">
-                <ui:Label text="Name:" display-tooltip-when-elided="true" class="main-labelfield-key" />
-                <ui:Label display-tooltip-when-elided="true" name="lbl-token-name" class="main-labelfield-value" />
-            </ui:VisualElement>
-            <ui:VisualElement name="details-symbol" class="main-labelfield-container" style="flex-direction: row;">
-                <ui:Label text="Symbol:" display-tooltip-when-elided="true" class="main-labelfield-key" />
-                <ui:Label display-tooltip-when-elided="true" name="lbl-token-symbol" class="main-labelfield-value" />
-            </ui:VisualElement>
-            <ui:VisualElement name="details-balance" class="main-labelfield-container" style="flex-direction: row;">
-                <ui:Label text="Balance:" display-tooltip-when-elided="true" class="main-labelfield-key" />
-                <ui:Label display-tooltip-when-elided="true" name="lbl-token-balance" class="main-labelfield-value" />
-            </ui:VisualElement>
-            <ui:VisualElement name="details-decimals" class="main-labelfield-container" style="flex-direction: row;">
-                <ui:Label text="Decimals:" display-tooltip-when-elided="true" class="main-labelfield-key" />
-                <ui:Label display-tooltip-when-elided="true" name="lbl-token-decimals" class="main-labelfield-value" />
-            </ui:VisualElement>
-            <ui:VisualElement name="details-transferable" class="main-labelfield-container" style="flex-direction: row;">
-                <ui:Label text="Transferable:" display-tooltip-when-elided="true" class="main-labelfield-key" />
-                <ui:Label display-tooltip-when-elided="true" name="lbl-token-transferable" class="main-labelfield-value" />
-            </ui:VisualElement>
-            <ui:VisualElement name="details-address" class="main-labelfield-container" style="flex-direction: row;">
-                <ui:Label text="Address:" display-tooltip-when-elided="true" class="main-labelfield-key" />
-                <ui:Label display-tooltip-when-elided="true" name="lbl-token-address" class="main-labelfield-value" />
-            </ui:VisualElement>
+            <ui:TextField picking-mode="Ignore" label="Name" readonly="true" name="lbl-token-name" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Symbol" readonly="true" name="lbl-token-symbol" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Balance" readonly="true" name="lbl-token-balance" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Decimals" readonly="true" name="lbl-token-decimals" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Transferable" readonly="true" name="lbl-token-transferable" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Address" readonly="true" name="lbl-token-address" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
         </ui:VisualElement>
         <ui:VisualElement style="align-items: center; margin-top: 20px; display: flex;">
             <ui:Button text="Transfer" display-tooltip-when-elided="true" name="btn-transfer" class="main-button-style" />

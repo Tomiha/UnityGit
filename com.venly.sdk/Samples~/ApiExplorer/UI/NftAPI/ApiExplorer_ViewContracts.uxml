@@ -3,7 +3,7 @@
     <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
         <SampleControl_Header />
         <ui:VisualElement name="content" style="flex-grow: 1;">
-            <VyControl_ContractListView focusable="true" />
+            <VyControl_ContractListView focusable="true" name="lst-contracts" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

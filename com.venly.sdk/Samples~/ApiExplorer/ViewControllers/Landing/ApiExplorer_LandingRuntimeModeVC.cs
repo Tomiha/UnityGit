@@ -16,11 +16,6 @@ public class ApiExplorer_LandingRuntimeModeVC : SampleViewBase<eApiExplorerViewI
         SetLabel("lbl-backend-provider", VenlySettings.BackendProvider.ToString());
     }
 
-    protected override void OnDeactivate()
-    {
-        
-    }
-
     private void onClick_Admin()
     {
         ViewManager.SwitchView(eApiExplorerViewId.Landing_DevMode);

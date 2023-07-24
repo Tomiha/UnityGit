@@ -20,6 +20,11 @@ public class ApiExplorer_ExceptionVC : MonoBehaviour
             .clickable.clicked += Hide;
     }
 
+    public void Show(string msg)
+    {
+        Show(new Exception(msg));
+    }
+
     public void Show(Exception ex)
     {
         gameObject.SetActive(true);

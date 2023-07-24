@@ -5,7 +5,16 @@ using Venly.Models.Shared;
 //ITEM
 public class VyControl_MultiTokenListItem : VyControl_ListViewItemBase<VyMultiTokenDto>
 {
-    public VyControl_MultiTokenListItem() : base("VyControl_MultiTokenListItem") { }
+    //public VyControl_MultiTokenListItem() : base("VyControl_MultiTokenListItem") { }
+    public VyControl_MultiTokenListItem() : base() { }
+
+    public override void GenerateTree(VisualElement root)
+    {
+        AddLabel(root, "lbl-name", "Name");
+        AddLabel(root, "lbl-id", "Id");
+        AddLabel(root, "lbl-fungible", "Fungible");
+        AddLabel(root, "lbl-type", "Type");
+    }
 
     public override void BindItem(VyMultiTokenDto sourceItem)
     {

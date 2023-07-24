@@ -5,7 +5,14 @@ using Venly.Utils;
 //ITEM
 public class VyControl_AttributeListItem : VyControl_ListViewItemBase<VyTokenAttributeDto>
 {
-    public VyControl_AttributeListItem() : base("VyControl_AttributeListItem") { }
+    //public VyControl_AttributeListItem() : base("VyControl_AttributeListItem") { }
+
+    public override void GenerateTree(VisualElement root)
+    {
+        AddLabel(root, "lbl-type", "Type");
+        AddLabel(root, "lbl-name", "Name");
+        AddLabel(root, "lbl-value", "Value");
+    }
 
     public override void BindItem(VyTokenAttributeDto sourceItem)
     {

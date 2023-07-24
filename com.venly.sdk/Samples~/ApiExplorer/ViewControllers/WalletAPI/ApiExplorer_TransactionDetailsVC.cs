@@ -1,37 +1,42 @@
 using System;
-using UnityEngine.UIElements;
 using Venly;
 using Venly.Models.Shared;
 
 public class ApiExplorer_TransactionDetailsVC : SampleViewBase<eApiExplorerViewId>
 {
+    //DATA-KEY
+    public const string DATAKEY_TXCHAIN = "tx_chain";
+    public const string DATAKEY_TXHASH = "tx_hash";
+
+    //DATA
     private eVyChain _transactionChain;
     private string _transactionHash;
 
     public ApiExplorer_TransactionDetailsVC() : 
         base(eApiExplorerViewId.WalletApi_TransactionDetails) { }
 
-    protected override void OnBindElements(VisualElement root)
-    {
-        BindButton("btn-refresh", Refresh);
-    }
-
+    #region DATA & UI
     protected override void OnActivate()
     {
         ShowNavigateBack = true;
-        ShowRefresh = false;
+        ShowRefresh = true;
+        ShowNavigateHome = false;
 
-        _transactionChain = (eVyChain)GetBlackboardDataRaw("tx_chain");
-        _transactionHash = GetBlackBoardData<string>("tx_hash");
-        Refresh();
+        if (TryGetBlackboardDataRaw(out object txChain, localKey: DATAKEY_TXCHAIN))
+        {
+            _transactionChain = (eVyChain)txChain;
+        }
+
+        TryGetBlackboardData(out _transactionHash, localKey: DATAKEY_TXHASH);
     }
 
-    protected override void OnDeactivate()
+    protected override void OnRefreshUI()
     {
-    }
+        //Validate
+        if (!ValidateData(_transactionChain, DATAKEY_TXCHAIN)) return;
+        if (!ValidateData(_transactionHash, DATAKEY_TXHASH)) return;
 
-    private void Refresh()
-    {
+        //Execute
         ViewManager.Loader.Show("Retrieving Transaction Info...");
         VenlyAPI.Wallet.GetTransactionInfo(_transactionChain, _transactionHash)
             .OnSuccess(info =>
@@ -46,4 +51,5 @@ public class ApiExplorer_TransactionDetailsVC : SampleViewBase<eApiExplorerViewI
             .OnFail(ViewManager.HandleException)
             .Finally(ViewManager.Loader.Hide);
     }
+    #endregion
 }

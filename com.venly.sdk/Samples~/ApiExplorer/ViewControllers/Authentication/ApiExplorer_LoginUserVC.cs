@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.UIElements;
 using Venly;
-using Venly.Core;
+using Venly.Utils;
 
 #if ENABLE_VENLY_PLAYFAB
 using Venly.Backends.PlayFab;
@@ -13,9 +13,6 @@ using Venly.Backends.Beamable;
 
 public class ApiExplorer_LoginUserVC : SampleViewBase<eApiExplorerViewId>
 {
-    private TextField _txtEmail;
-    private TextField _txtPassword;
-
     public ApiExplorer_LoginUserVC() :
         base(eApiExplorerViewId.Auth_Login)
     { }
@@ -23,9 +20,6 @@ public class ApiExplorer_LoginUserVC : SampleViewBase<eApiExplorerViewId>
     protected override void OnBindElements(VisualElement root)
     {
         BindButton("btn-login", onClick_LoginUser);
-
-        GetElement(out _txtEmail, "txt-email");
-        GetElement(out _txtPassword, "txt-password");
     }
 
     protected override void OnActivate()
@@ -37,72 +31,36 @@ public class ApiExplorer_LoginUserVC : SampleViewBase<eApiExplorerViewId>
         SetLabel("lbl-backend-provider", VenlySettings.BackendProvider.ToString());
     }
 
-    protected override void OnDeactivate()
-    {
-
-    }
-
-#if ENABLE_VENLY_PLAYFAB
     private void onClick_LoginUser()
     {
-        ViewManager.Loader.Show("Logging in...");
+        if (!ValidateInput("txt-email")) return;
+        if (!ValidateInput("txt-password")) return;
 
-        //Helper Task
-        var taskNotifier = VyTask.Create();
-        var combinedTask = taskNotifier.Task;
-
-        PlayFabAuth.SignIn(_txtEmail.text, _txtPassword.text)
-            .OnSuccess(loginResult =>
-            {
-                //Set Authentication Context for this User
-                VenlyAPI.SetProviderData(VyProvider_PlayFab.AuthContextDataKey, loginResult.AuthenticationContext);
-
-                //Retrieve User Wallet
-                VenlyAPI.ProviderExtensions.GetWalletForUser()
-                    .OnSuccess(wallet =>
-                    {
-                        //Set Wallet Data
-                        ViewManager.SetViewBlackboardData(
-                            eApiExplorerViewId.WalletApi_WalletDetails,
-                            ApiExplorer_WalletDetailsVC.DATAKEY_WALLET,
-                            wallet);
-
-                        //Success!
-                        taskNotifier.NotifySuccess();
-                    })
-                    .OnFail(taskNotifier.NotifyFail);
-            })
-            .OnFail(taskNotifier.NotifyFail);
-
-        //Task that triggers when all related sub-tasks are finished (fail or success)
-        combinedTask
-                .OnSuccess(() =>
-                {
-                    ViewManager.SwitchView(eApiExplorerViewId.WalletApi_WalletDetails);
-                })
-                .OnFail(ViewManager.HandleException)
-                .Finally(ViewManager.Loader.Hide);
+#if ENABLE_VENLY_BEAMABLE
+        Beamable_LoginUser();
+#elif ENABLE_VENLY_PLAYFAB
+        PlayFab_LoginUser();
+#else
+    ViewManager.Exception.Show($"No Implementation for selected Backend Provider ({VenlySettings.BackendProvider.GetMemberName()})");
+#endif
     }
-#elif ENABLE_VENLY_BEAMABLE
-    private void onClick_LoginUser()
+
+#if ENABLE_VENLY_BEAMABLE
+    private async void Beamable_LoginUser()
     {
-        ViewManager.Loader.Show("Logging in...");
-
-        //Helper Task
-        var taskNotifier = VyTask.Create();
-        var combinedTask = taskNotifier.Task;
-
-        var ctx = BeamContext.Default;
-
-        taskNotifier.Scope(async () =>
+        try
         {
+            ViewManager.Loader.Show("Logging in...");
+
+            //Retrieve BeamContext
+            var ctx = BeamContext.Default;
             await ctx.OnReady;
 
             //Provide BeamContext to Beamable Provider
             VenlyAPI.SetProviderData(VyProvider_Beamable.BeamContextDataKey, ctx);
 
             //Login with Credentials
-            var operation = await ctx.Accounts.RecoverAccountWithEmail(_txtEmail.text, _txtPassword.text);
+            var operation = await ctx.Accounts.RecoverAccountWithEmail(GetValue("txt-email"), GetValue("txt-password"));
             if (operation.isSuccess)
             {
                 await operation.SwitchToAccount();
@@ -117,29 +75,39 @@ public class ApiExplorer_LoginUserVC : SampleViewBase<eApiExplorerViewId>
                 throw new Exception($"Failed to recover the account. (inner-error={ex.Message})");
             }
 
-            //Retrieve User Wallet
-            var userWallet = await VenlyAPI.ProviderExtensions.GetWalletForUser();
-            if (!userWallet.Success) throw userWallet.Exception; 
-            
-            //Set Wallet Data
-            ViewManager.SetViewBlackboardData(
-                eApiExplorerViewId.WalletApi_WalletDetails,
-                ApiExplorer_WalletDetailsVC.DATAKEY_WALLET,
-                userWallet.Data);
+            ViewManager.Loader.Hide();
 
-            //taskNotifier.NotifySuccess();
-        });
-
-        //Task that triggers when all related sub-tasks are finished (fail or success)
-        combinedTask
-            .OnSuccess(() =>
-            {
-                ViewManager.SwitchView(eApiExplorerViewId.WalletApi_WalletDetails);
-            })
-            .OnFail(ViewManager.HandleException)
-            .Finally(ViewManager.Loader.Hide);
+            SwitchToPortal(ctx.PlayerId.ToString());
+        }
+        catch (Exception ex)
+        {
+            ViewManager.Loader.Hide();
+            ViewManager.HandleException(ex);
+        }
     }
-#else
-    private void onClick_LoginUser(){}
 #endif
+
+#if ENABLE_VENLY_PLAYFAB
+    private async void PlayFab_LoginUser()
+    {
+        ViewManager.Loader.Show("Logging in...");
+        var result = await PlayFabAuth.SignIn(GetValue("txt-email"), GetValue("txt-password"));
+        ViewManager.Loader.Hide();
+
+        if (!result.Success)
+        {
+            ViewManager.HandleException(result.Exception);
+            return;
+        }
+
+        VenlyAPI.SetProviderData(VyProvider_PlayFab.AuthContextDataKey, result.Data.AuthenticationContext);
+        SwitchToPortal(result.Data.PlayFabId);
+    }
+#endif
+
+    private void SwitchToPortal(string userId)
+    {
+        ViewManager.SetViewBlackboardData(eApiExplorerViewId.Auth_UserPortal, ApiExplorer_UserPortalVC.DATAKEY_USER_ID, userId);
+        ViewManager.SwitchView(eApiExplorerViewId.Auth_UserPortal);
+    }
 }

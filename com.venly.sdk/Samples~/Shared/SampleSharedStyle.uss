@@ -1,15 +1,43 @@
 .sample-main-background {
-    background-color: rgb(176, 176, 176);
+    background-color: rgb(6, 6, 71);
 }
 
 .control-header-background {
     background-color: rgb(99, 99, 99);
 }
 
-.main-button-style {
+.button-select {
+    height: 25px;
+    min-width: 20px;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 14px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+Label {
+    color: rgb(254, 254, 254);
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+    -unity-font-style: normal;
+    font-size: 16px;
+}
+
+Button:hover {
+    background-color: rgb(254, 96, 42);
+    color: rgb(254, 254, 254);
+}
+
+Button {
     min-width: 250px;
-    background-color: rgb(99, 99, 99);
-    color: rgb(197, 197, 197);
+    background-color: rgb(254, 254, 254);
+    color: rgb(6, 6, 71);
     border-top-left-radius: 22px;
     border-bottom-left-radius: 22px;
     border-top-right-radius: 22px;
@@ -20,41 +48,227 @@
     padding-right: 20px;
 }
 
-.main-button-style.button-select {
-    min-width: 20px;
-    font-size: 16px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
+TextField {
+    align-items: center;
+    padding-bottom: 3px;
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+    -unity-font-style: bold;
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 
-.list-item-style {
-    border-left-color: rgb(38, 36, 36);
-    border-right-color: rgb(38, 36, 36);
-    border-top-color: rgb(38, 36, 36);
-    border-bottom-color: rgb(38, 36, 36);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+TextField .unity-base-field__label {
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+    -unity-font-style: bold;
+}
+
+TextField .unity-base-text-field__input {
+    color: rgb(6, 6, 71);
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+    -unity-font: resource('Fonts/TTCommons-Regular');
+    font-size: 17px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    padding-left: 10px;
+    padding-right: 5px;
+    padding-top: 6px;
+    padding-bottom: 2px;
+    border-left-color: rgb(119, 53, 231);
+    border-right-color: rgb(119, 53, 231);
+    border-top-color: rgb(119, 53, 231);
+    border-bottom-color: rgb(119, 53, 231);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    white-space: normal;
+    -unity-font-style: normal;
+    background-color: rgb(253, 253, 253);
+}
+
+.texfield-readonly .unity-base-text-field__input {
+    color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+DropdownField {
+    align-items: center;
+    margin-bottom: 3px;
+    flex-shrink: 1;
+}
+
+DropdownField .unity-popup-field__input {
+    color: rgb(6, 6, 71);
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+    -unity-font: resource('Fonts/TTCommons-Regular');
+    font-size: 17px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    background-color: rgb(253, 253, 253);
+    padding-left: 10px;
+    padding-right: 5px;
+    padding-top: 4px;
+    padding-bottom: 2px;
+    border-left-color: rgb(119, 53, 231);
+    border-right-color: rgb(119, 53, 231);
+    border-top-color: rgb(119, 53, 231);
+    border-bottom-color: rgb(119, 53, 231);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    white-space: normal;
+    margin-left: 2px;
+}
+
+DropdownField .unity-popup-field__label {
+    color: rgb(254, 254, 254);
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+    -unity-font: resource('Fonts/TTCommons-Regular');
+    font-size: 17px;
+    -unity-font-style: bold;
+}
+
+Foldout .unity-foldout__text {
+    -unity-font-style: bold;
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+    margin-left: 5px;
+}
+
+Toggle .unity-toggle__label {
+    -unity-font-style: bold;
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+}
+
+Toggle .unity-toggle__checkmark {
+    -unity-font-style: bold;
+    -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
+    background-color: rgb(254, 254, 254);
+    border-left-color: rgb(119, 53, 232);
+    border-right-color: rgb(119, 53, 232);
+    border-top-color: rgb(119, 53, 232);
+    border-bottom-color: rgb(119, 53, 232);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+}
+
+Toggle .unity-foldout__checkmark {
+    background-color: rgb(6, 6, 71);
+    border-left-color: rgb(254, 254, 254);
+    border-right-color: rgb(254, 254, 254);
+    border-top-color: rgb(254, 254, 254);
+    border-bottom-color: rgb(254, 254, 254);
+    -unity-background-image-tint-color: rgb(255, 255, 255);
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    margin-left: 3px;
-    margin-right: 3px;
-    margin-top: 3px;
+    margin-bottom: 4px;
+}
+
+Scroller .unity-base-slider__tracker {
+    background-color: rgb(6, 6, 71);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left-color: rgb(254, 254, 254);
+    border-right-color: rgb(254, 254, 254);
+    border-top-color: rgb(254, 254, 254);
+    border-bottom-color: rgb(254, 254, 254);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+}
+
+Scroller .unity-base-slider__dragger {
+    background-color: rgb(254, 254, 254);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+Scroller .unity-repeat-button {
+    background-color: rgb(255, 255, 255);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.list-item .unity-base-text-field__label {
+    min-width: 100px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
     margin-bottom: 3px;
+    font-size: 18px;
+    -unity-text-align: middle-left;
+    padding-bottom: 2px;
+}
+
+.list-item .unity-base-text-field__input {
+    font-size: 18px;
+    margin-bottom: 3px;
+    padding-top: 7px;
+}
+
+.list-item {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.unity-list-view__item:hover {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.list-view__item:hover {
+    border-left-color: rgb(252, 95, 42);
+    border-right-color: rgb(252, 95, 42);
+    border-top-color: rgb(252, 95, 42);
+    border-bottom-color: rgb(252, 95, 42);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    background-color: rgba(0, 0, 0, 0.22);
+}
+
+.list-view__item {
+    border-left-color: rgb(119, 53, 232);
+    border-right-color: rgb(119, 53, 232);
+    border-top-color: rgb(119, 53, 232);
+    border-bottom-color: rgb(119, 53, 232);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background-color: rgb(6, 6, 71);
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 5px;
-    padding-bottom: 5px;
-    background-color: rgb(188, 188, 188);
+    padding-bottom: 2px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
 }
 
 .main-labelfield-key {
@@ -62,7 +276,7 @@
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
-    min-width: 120px;
+    min-width: 10px;
     -unity-font-style: bold;
 }
 
@@ -88,22 +302,4 @@
 }
 
 .unity-base-field > mainlabelfield_base {
-}
-
-.button-select {
-    height: 30px;
-    min-width: 20px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    font-size: 16px;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-}
-
-.main-labelfield-details {
-    margin-bottom: -7px;
 }

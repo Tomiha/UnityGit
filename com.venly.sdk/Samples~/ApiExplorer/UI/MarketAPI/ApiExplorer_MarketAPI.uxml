@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header name="view-header" header-title="Market API" />
+        <ui:VisualElement style="flex-grow: 1; justify-content: center; align-items: center;">
+            <ui:Button text="View Users" display-tooltip-when-elided="true" enable-rich-text="true" name="btn-view-users" class="main-button-style" style="align-items: auto; justify-content: flex-start;" />
+            <ui:Button text="View Offers" display-tooltip-when-elided="true" enable-rich-text="true" name="btn-view-offers" class="main-button-style" style="align-items: auto; justify-content: flex-start;" />
+            <ui:Button text="Create SubUser" display-tooltip-when-elided="true" enable-rich-text="true" name="btn-create-sub-user" class="main-button-style" style="align-items: auto; justify-content: flex-start;" />
+            <ui:Button text="Create Offer" display-tooltip-when-elided="true" enable-rich-text="true" name="btn-create-offer" class="main-button-style" style="align-items: auto; justify-content: flex-start;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -5,20 +5,18 @@ public class ApiExplorer_LandingDevModeVC : SampleViewBase<eApiExplorerViewId>
 
     protected override void OnActivate()
     {
+        ShowNavigateBack = false;
+        ShowNavigateHome = false;
+        ShowRefresh = false;
+
         BindButton("btn-wallet-api", onClick_WalletAPI);
         BindButton("btn-nft-api", onClick_NftAPI);
-
-        ShowNavigateBack = false;
+        BindButton("btn-market-api", onClick_MarketAPI);
 
 #if ENABLE_VENLY_DEV_MODE
         SetLabel("lbl-client-id", VenlySettings.ClientId);
         SetLabel("lbl-backend-provider", VenlySettings.BackendProvider.ToString());
 #endif
-    }
-
-    protected override void OnDeactivate()
-    {
-        
     }
 
     private void onClick_WalletAPI()
@@ -29,6 +27,11 @@ public class ApiExplorer_LandingDevModeVC : SampleViewBase<eApiExplorerViewId>
     private void onClick_NftAPI()
     {
         ViewManager.SwitchView(eApiExplorerViewId.Main_NftApi);
+    }
+
+    private void onClick_MarketAPI()
+    {
+        ViewManager.SwitchView(eApiExplorerViewId.Main_MarketApi);
     }
 
     private void onClick_LoginUser()

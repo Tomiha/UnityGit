@@ -15,7 +15,7 @@ namespace Venly
             return Initialize(backendProviderType.GetMemberName(), env);
         }
 
-        public static VyTask Initialize(IVyBackendExtension extensionsOverride = null)
+        public static VyTask Initialize()
         {
             var providerType = "";
             switch (VenlySettings.BackendProvider)

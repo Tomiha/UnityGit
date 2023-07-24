@@ -1,12 +1,12 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
-    <ui:VisualElement name="root" class="sample-main-background" style="justify-content: flex-start; flex-grow: 1;">
+    <ui:VisualElement name="root" class="sample-main-background" style="justify-content: flex-start; flex-grow: 1; background-color: rgb(6, 6, 71);">
         <SampleControl_Header header-title="API Features Sample" show-navigate-back="true" name="view-header" />
         <ui:VisualElement name="tools" style="justify-content: center; flex-grow: 1;">
             <ui:VisualElement name="api-tools" style="align-items: center; margin-top: 20px;">
                 <ui:Button text="Wallet API" display-tooltip-when-elided="true" name="btn-wallet-api" class="main-button-style" />
                 <ui:Button text="NFT API" display-tooltip-when-elided="true" name="btn-nft-api" class="main-button-style" />
-                <ui:Button text="Market API" display-tooltip-when-elided="true" name="btn-market-api" class="main-button-style" style="font-size: 20px; display: none; visibility: visible;" />
+                <ui:Button text="Market API" display-tooltip-when-elided="true" name="btn-market-api" class="main-button-style" style="font-size: 20px; visibility: visible;" />
             </ui:VisualElement>
             <ui:VisualElement name="user-tools" style="align-items: center; margin-top: 20px;" />
         </ui:VisualElement>

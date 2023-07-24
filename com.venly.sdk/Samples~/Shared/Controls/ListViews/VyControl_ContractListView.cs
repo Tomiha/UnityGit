@@ -5,7 +5,15 @@ using Venly.Utils;
 //ITEM
 public class VyControl_ContractListItem : VyControl_ListViewItemBase<VyContractDto>
 {
-    public VyControl_ContractListItem() : base("VyControl_ContractListItem") { }
+    //public VyControl_ContractListItem() : base("VyControl_ContractListItem") { }
+
+    public override void GenerateTree(VisualElement root)
+    {
+        AddLabel(root, "lbl-name", "Name");
+        AddLabel(root, "lbl-id", "Id");
+        AddLabel(root, "lbl-chain", "Chain");
+        AddLabel(root, "lbl-symbol", "Symbol");
+    }
 
     public override void BindItem(VyContractDto sourceItem)
     {

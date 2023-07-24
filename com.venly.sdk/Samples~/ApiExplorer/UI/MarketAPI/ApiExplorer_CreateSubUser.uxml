@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header />
+        <ui:VisualElement style="flex-grow: 1; justify-content: center;">
+            <ui:VisualElement style="margin-top: 10px; margin-bottom: 40px; margin-left: 20px; margin-right: 20px;">
+                <ui:TextField picking-mode="Ignore" label="Nickname" name="txt-nickname" />
+            </ui:VisualElement>
+            <ui:VisualElement style="align-items: center;">
+                <ui:Button text="Create" display-tooltip-when-elided="true" name="btn-create" class="main-button-style" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

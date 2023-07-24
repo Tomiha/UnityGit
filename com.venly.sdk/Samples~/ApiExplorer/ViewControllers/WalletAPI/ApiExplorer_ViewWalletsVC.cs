@@ -1,78 +1,61 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UIElements;
+using System.Threading.Tasks;
 using Venly;
-using Venly.Models;
 using Venly.Models.Wallet;
 
 public class ApiExplorer_ViewWalletsVC : SampleViewBase<eApiExplorerViewId>
 {
+    //DATA
+    private List<VyWalletDto> _walletList = null;
+
+    //UI
+    [UIBind("lst-wallets")] private VyControl_WalletListView _lstWallets;
+
     public ApiExplorer_ViewWalletsVC() :
         base(eApiExplorerViewId.WalletApi_ViewWallets) { }
 
-    private VyControl_WalletListView _walletListView;
-    private List<VyWalletDto> _walletList = null;
-
-    protected override void OnBindElements(VisualElement root)
-    {
-        _walletListView = GetElement<VyControl_WalletListView>(null);
-    }
-
+    #region DATA & UI
     protected override void OnActivate()
     {
-        //View Parameters
-        ShowNavigateBack = true;
-        ShowNavigateHome = true;
-        ShowRefresh = true;
-
-        _walletListView.OnItemSelected += onClick_Wallet;
+        _walletList = null;
+        _lstWallets.OnItemSelected += OnClick_Wallet;
 
         //Check for Cached Wallets
-        if (ViewManager.HasGlobalBlackboardData(ApiExplorer_GlobalKeys.DATA_AllWalletsCached))
-            _walletList = ViewManager.GetGlobalBlackBoardData<VyWalletDto[]>(ApiExplorer_GlobalKeys.DATA_AllWalletsCached).ToList();
-
-        //Refresh Wallets (Fresh or Cache)
-        RefreshWalletList();
-    }
-
-    protected override void OnDeactivate()
-    {
-        
-    }
-
-    protected override void OnClick_Refresh()
-    {
-        RefreshWalletList(true); //Force fresh reload
-    }
-
-    private void RefreshWalletList(bool forceFreshLoad = false)
-    {
-        if (forceFreshLoad || _walletList == null)
+        if (TryGetBlackboardData(out VyWalletDto[] resultArr, globalKey: ApiExplorer_GlobalKeys.DATA_AllWalletsCached))
         {
-            ViewManager.Loader.Show("Retrieving Wallets...");
-            var query = VyQuery_GetWallets.Create().IncludeBalance(false);
-            VenlyAPI.Wallet.GetWallets(query)
-                .OnSuccess(wallets =>
-                {
-                    ViewManager.Loader.SetLoaderText("Populating List...");
-                    _walletList = wallets.ToList();
-                    _walletListView.SetItemSource(wallets);
-
-                    //Store to cache
-                    ViewManager.SetGlobalBlackboardData(ApiExplorer_GlobalKeys.DATA_AllWalletsCached, wallets);
-                })
-                .OnFail(ViewManager.HandleException)
-                .Finally(ViewManager.Loader.Hide);
-        }
-        else
-        {
-            ViewManager.Loader.Show("Populating List...");
-            _walletListView.SetItemSource(_walletList);
-            ViewManager.Loader.Hide();
+            _walletList = resultArr.ToList();
+            NoDataRefresh = true;
         }
     }
 
-    private void onClick_Wallet(VyWalletDto wallet)
+    protected override async Task OnRefreshData()
+    {
+        ViewManager.Loader.Show("Retrieving Wallets...");
+        var query = VyQuery_GetWallets.Create().IncludeBalance(false);
+        var result = await VenlyAPI.Wallet.GetWallets(query);
+        ViewManager.Loader.Hide();
+
+        if (result.Success)
+        {
+            _walletList = result.Data.ToList();
+
+            //Store to global
+            ViewManager.SetGlobalBlackboardData(ApiExplorer_GlobalKeys.DATA_AllWalletsCached, result.Data);
+        }
+        else ViewManager.HandleException(result.Exception);
+    }
+
+    protected override void OnRefreshUI()
+    {
+        if (!ValidateData(_walletList, "walletList")) return;
+
+        _lstWallets.SetItemSource(_walletList);
+    }
+    #endregion
+
+    #region EVENTS
+    private void OnClick_Wallet(VyWalletDto wallet)
     {
         if (IsSelectionMode)
         {
@@ -83,4 +66,5 @@ public class ApiExplorer_ViewWalletsVC : SampleViewBase<eApiExplorerViewId>
         ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_WalletDetails, ApiExplorer_WalletDetailsVC.DATAKEY_WALLET, wallet);
         ViewManager.SwitchView(eApiExplorerViewId.WalletApi_WalletDetails);
     }
+    #endregion
 }

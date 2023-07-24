@@ -5,7 +5,15 @@ using Venly.Models.Shared;
 //ITEM
 public class VyControl_CryptoTokenListItem : VyControl_ListViewItemBase<VyCryptoTokenDto>
 {
-    public VyControl_CryptoTokenListItem() : base("VyControl_CryptoTokenListItem") { }
+    //public VyControl_CryptoTokenListItem() : base("VyControl_CryptoTokenListItem") { }
+
+    public override void GenerateTree(VisualElement root)
+    {
+        AddLabel(root, "lbl-name", "Name");
+        AddLabel(root, "lbl-symbol", "Symbol");
+        AddLabel(root, "lbl-balance", "Balance");
+        AddLabel(root, "lbl-type", "Type");
+    }
 
     public override void BindItem(VyCryptoTokenDto sourceItem)
     {

@@ -4,15 +4,17 @@
         <SampleControl_Header />
         <ui:VisualElement style="margin-top: 10px; margin-bottom: 40px; margin-left: 20px; margin-right: 20px;">
             <ui:VisualElement style="flex-direction: row; justify-content: flex-start;">
-                <LabelField label="Contract" text="select contract" name="lbl-source-contract" style="flex-direction: row; flex-grow: 1;" />
+                <ui:TextField picking-mode="Ignore" label="Source Contract" value="select contract" text="select contract" readonly="true" name="lbl-source-contract" multiline="true" class="texfield-readonly" style="flex-grow: 1; flex-shrink: 1;" />
                 <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-contract" class="main-button-style button-select" />
             </ui:VisualElement>
-            <ui:VisualElement style="flex-direction: row; justify-content: flex-start;">
-                <LabelField label="Token Type" text="select type" name="lbl-source-tokentype" style="flex-direction: row; flex-grow: 1; align-items: auto;" />
+            <ui:VisualElement style="flex-direction: row; justify-content: flex-start; align-items: center;">
+                <ui:TextField picking-mode="Ignore" label="Token Type" value="select type" text="select type" readonly="true" name="lbl-source-tokentype" multiline="true" class="texfield-readonly" style="flex-grow: 1; flex-shrink: 1;" />
                 <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-tokentype" class="main-button-style button-select" />
             </ui:VisualElement>
-            <LabelField label="Fungible" text="select type" name="lbl-fungible" style="margin-left: 15px;" />
-            <LabelField label="Supply" text="select type" name="lbl-supply" style="margin-left: 15px;" />
+            <ui:VisualElement style="margin-left: 15px;">
+                <ui:TextField picking-mode="Ignore" label="Supply" value="select type" text="select type" readonly="true" name="lbl-supply" multiline="true" class="texfield-readonly" style="flex-grow: 1; flex-shrink: 1;" />
+                <ui:TextField picking-mode="Ignore" label="Fungible" value="select type" text="select type" readonly="true" name="lbl-fungible" multiline="true" class="texfield-readonly" style="flex-grow: 1; flex-shrink: 1;" />
+            </ui:VisualElement>
             <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between; margin-top: 15px;">
                 <ui:TextField picking-mode="Ignore" label="Target Address" name="txt-target-address" style="margin-top: 2px; flex-grow: 1; flex-shrink: 1;" />
                 <ui:Button text="Select" display-tooltip-when-elided="true" name="btn-select-target" class="main-button-style button-select" />

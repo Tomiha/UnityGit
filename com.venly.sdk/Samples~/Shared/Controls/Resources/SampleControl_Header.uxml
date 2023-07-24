@@ -1,17 +1,18 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
-    <ui:VisualElement class="control-header-background" style="height: 31px;" />
-    <ui:VisualElement name="root" class="control-header-background" style="flex-direction: row; align-items: center; justify-content: flex-start; padding-top: 10px; padding-bottom: 10px; padding-left: 10px; padding-right: 10px;">
-        <ui:VisualElement style="min-height: 25px; flex-direction: row;">
-            <ui:VisualElement name="btn-back" style="width: 25px; height: 25px; background-image: resource(&apos;Icons/button_back&apos;); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px;" />
-            <ui:VisualElement name="btn-home" style="width: 25px; height: 25px; background-image: resource(&apos;Icons/button_home&apos;); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px;" />
-        </ui:VisualElement>
-        <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1; flex-direction: row; justify-content: center; position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center;">
-            <ui:Label text="Label" display-tooltip-when-elided="true" name="lbl-header-title" style="color: rgb(255, 255, 255); -unity-font-style: bold;" />
-        </ui:VisualElement>
-        <ui:VisualElement name="space" style="flex-grow: 1;" />
-        <ui:VisualElement style="min-height: 25px; flex-grow: 1; flex-direction: row; justify-content: flex-end;">
-            <ui:VisualElement name="btn-refresh" style="width: 25px; height: 25px; background-image: resource(&apos;Icons/button_refresh&apos;); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px;" />
+    <ui:VisualElement class="control-header-background" style="background-image: resource(&apos;Icons/explorer_headerbg&apos;); padding-top: 31px; border-bottom-width: 2px; border-left-color: rgb(254, 254, 254); border-right-color: rgb(254, 254, 254); border-top-color: rgb(254, 254, 254); border-bottom-color: rgb(254, 254, 254);">
+        <ui:VisualElement name="root" class="control-header-background" style="flex-direction: row; align-items: center; justify-content: flex-start; padding-top: 10px; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; margin-top: 0; -unity-background-scale-mode: scale-and-crop; background-color: rgba(99, 99, 99, 0);">
+            <ui:VisualElement style="min-height: 25px; flex-direction: row;">
+                <ui:VisualElement name="btn-back" style="width: 25px; height: 25px; background-image: resource(&apos;Icons/button_back&apos;); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px;" />
+                <ui:VisualElement name="btn-home" style="width: 25px; height: 25px; background-image: resource(&apos;Icons/button_home&apos;); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px;" />
+            </ui:VisualElement>
+            <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1; flex-direction: row; justify-content: center; position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center;">
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="lbl-header-title" style="color: rgb(255, 255, 255); -unity-font-style: bold;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="space" style="flex-grow: 1;" />
+            <ui:VisualElement style="min-height: 25px; flex-grow: 1; flex-direction: row; justify-content: flex-end;">
+                <ui:VisualElement name="btn-refresh" style="width: 25px; height: 25px; background-image: resource(&apos;Icons/button_refresh&apos;); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px;" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

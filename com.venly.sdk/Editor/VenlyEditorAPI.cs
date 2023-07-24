@@ -35,9 +35,9 @@ namespace Venly.Editor
                 {"client_id", clientId},
                 {"client_secret", clientSecret}
             };
-
             var reqData = VyRequestData.Post("/auth/realms/Arkane/protocol/openid-connect/token", eVyApiEndpoint.Auth)
                 .AddFormContent(formData);
+
             return Request<VyAccessTokenDto>(reqData);
         }
         #endregion

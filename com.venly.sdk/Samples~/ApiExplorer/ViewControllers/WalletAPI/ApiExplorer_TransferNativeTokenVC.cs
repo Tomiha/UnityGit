@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using UnityEngine.UIElements;
 using Venly;
@@ -7,21 +6,19 @@ using Venly.Models.Wallet;
 
 public class ApiExplorer_TransferNativeTokenVC : SampleViewBase<eApiExplorerViewId>
 {
+    //DATA-KEYS
+    public const string DATAKEY_WALLET = "wallet";
+
+    //DATA
     private VyWalletDto _sourceWallet;
-
-    private TextField _txtPincode;
-    private TextField _txtTargetAddress;
-    private TextField _txtAmount;
-
 
     public ApiExplorer_TransferNativeTokenVC() : 
         base(eApiExplorerViewId.WalletApi_TransferNativeToken) { }
 
+    #region DATA & UI
     protected override void OnBindElements(VisualElement root)
     {
-        GetElement(out _txtPincode, "txt-pincode");
-        GetElement(out _txtTargetAddress, "txt-target-address");
-        GetElement(out _txtAmount, "txt-amount");
+        base.OnBindElements(root);
 
         BindButton("btn-select-source", OnClick_SelectSource);
         BindButton("btn-select-target", OnClick_SelectTarget);
@@ -30,20 +27,13 @@ public class ApiExplorer_TransferNativeTokenVC : SampleViewBase<eApiExplorerView
 
     protected override void OnActivate()
     {
-        ShowNavigateBack = true;
+        ShowRefresh = false;
+        ShowNavigateHome = false;
 
         //Check if Source Is Set
-        if (HasBlackboardData("sourceWallet"))
-        {
-            ToggleElement("btn-select-source", false);
-            UpdateSourceWallet(GetBlackBoardData<VyWalletDto>("sourceWallet"));
-            SetLabel("lbl-source-wallet", _sourceWallet.Id);
-        }
-        else
-        {
-            ToggleElement("btn-select-source", true);
-            UpdateSourceWallet(null);
-        }
+        TryGetBlackboardData(out _sourceWallet, DATAKEY_WALLET, ApiExplorer_GlobalKeys.DATA_UserWallet);
+        ToggleElement("btn-select-source", _sourceWallet == null);
+        UpdateSourceWallet(_sourceWallet);
     }
 
     private void UpdateSourceWallet(VyWalletDto sourceWallet)
@@ -61,18 +51,22 @@ public class ApiExplorer_TransferNativeTokenVC : SampleViewBase<eApiExplorerView
 
        _sourceWallet = null;
     }
+    #endregion
 
-    private void OnClick_SelectSource()
+    #region EVENTS
+    private async void OnClick_SelectSource()
     {
-        ViewManager.SelectionMode(eApiExplorerViewId.WalletApi_ViewWallets, "Select Wallet")
-            .OnComplete(result =>
-            {
-                if (result.Success)
-                {
-                    var wallet = result.Data as VyWalletDto;
-                    UpdateSourceWallet(wallet);
-                }
-            });
+        var selection = await ViewManager.SelectionMode(eApiExplorerViewId.WalletApi_ViewWallets, "Select Wallet");
+        if(!selection.Success) return;
+
+        //Update Wallet
+        var selectedWallet = selection.Data as VyWalletDto; //Will have no Balance
+        ViewManager.Loader.Show("Refreshing Wallet Details...");
+        var result = await VenlyAPI.Wallet.GetWallet(selectedWallet.Id);
+        ViewManager.Loader.Hide();
+
+        if (result.Success) UpdateSourceWallet(result.Data);
+        else ViewManager.HandleException(result.Exception);
     }
 
     private void OnClick_SelectTarget()
@@ -83,52 +77,38 @@ public class ApiExplorer_TransferNativeTokenVC : SampleViewBase<eApiExplorerView
                 if (result.Success)
                 {
                     var wallet = result.Data as VyWalletDto;
-                    _txtTargetAddress.value = wallet.Address;
+                    SetLabel("txt-target-address", wallet.Address);
                 }
             });
     }
 
-    private bool Validate()
-    {
-        try
-        {
-            if (_sourceWallet == null) throw new ArgumentException("No wallet selected");
-            if (string.IsNullOrEmpty(_txtPincode.text)) throw new ArgumentException("Pincode invalid");
-            if (string.IsNullOrEmpty(_txtTargetAddress.text)) throw new ArgumentException("Target address invalid");
-            if (string.IsNullOrEmpty(_txtAmount.text)) throw new ArgumentException("Amount invalid");
-        }
-        catch (Exception ex)
-        {
-            ViewManager.HandleException(ex);
-            return false;
-        }
-
-        return true;
-    }
-
     private void OnClick_Transfer()
     {
-        if (!Validate()) return;
+        if (!ValidateData(_sourceWallet, "sourceWallet")) return;
+        if (!ValidateInput("txt-pincode")) return;
+        if (!ValidateInput("txt-target-address")) return;
+        if (!ValidateInput<double>("txt-amount")) return;
 
         var reqParams = new VyTransactionNativeTokenTransferRequest()
         {
             Chain = _sourceWallet?.Chain ?? eVyChain.NotSupported,
             WalletId = _sourceWallet?.Id,
-            ToAddress = _txtTargetAddress.value,
-            Value = double.Parse(_txtAmount.value),
+            ToAddress = GetValue("txt-target-address"),
+            Value = GetValue<double>("txt-amount"),
             Data = "Venly Api Explorer Transaction (Native Token)"
 
         };
 
         ViewManager.Loader.Show("Transferring...");
-        VenlyAPI.Wallet.ExecuteNativeTokenTransfer(_txtPincode.text, reqParams)
+        VenlyAPI.Wallet.ExecuteNativeTokenTransfer(GetValue("txt-pincode"), reqParams)
             .OnSuccess(transferInfo =>
             {
-                ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_hash", transferInfo.TransactionHash);
-                ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_chain", _sourceWallet.Chain);
-                ViewManager.SwitchView(eApiExplorerViewId.WalletApi_TransactionDetails);
+                ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, ApiExplorer_TransactionDetailsVC.DATAKEY_TXHASH, transferInfo.TransactionHash);
+                ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, ApiExplorer_TransactionDetailsVC.DATAKEY_TXCHAIN, _sourceWallet.Chain);
+                ViewManager.SwitchView(eApiExplorerViewId.WalletApi_TransactionDetails, CurrentBackTarget);
             })
             .OnFail(ViewManager.HandleException)
             .Finally(ViewManager.Loader.Hide);
     }
+    #endregion
 }

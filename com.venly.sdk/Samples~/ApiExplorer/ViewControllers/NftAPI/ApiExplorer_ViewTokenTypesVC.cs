@@ -1,81 +1,70 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UIElements;
+using System.Threading.Tasks;
 using Venly;
 using Venly.Models.Nft;
 using Venly.Models.Shared;
 
 public class ApiExplorer_ViewTokenTypesVC : SampleViewBase<eApiExplorerViewId>
 {
+    //DATA-KEYS
+    public const string DATAKEY_TOKENTYPES = "tokenTypes";
+    public const string DATAKEY_CONTRACT = "sourceContract";
+
+    //DATA
+    private List<VyTokenTypeDto> _tokenTypeList = null;
+    private VyContractDto _sourceContract = null;
+
+    //UI
+    [UIBind("lst-tokentypes")]private VyControl_TokenTypeListView _lstTokenTypes;
+
     public ApiExplorer_ViewTokenTypesVC() :
         base(eApiExplorerViewId.NftApi_ViewTokenTypes) { }
 
-    private VyControl_TokenTypeListView _tokenTypeListView;
-
-    private List<VyTokenTypeDto> _tokenTypeList = null;
-    private VyContractDto _sourceContract = null;
-    private int? _lastContractId = null;
-
-    protected override void OnBindElements(VisualElement root)
-    {
-        GetElement(out _tokenTypeListView);
-    }
-
+    #region DATA & UI
     protected override void OnActivate()
     {
         //View Parameters
         ShowNavigateBack = true;
-        ShowNavigateHome = true;
+        ShowNavigateHome = false;
         ShowRefresh = false;
 
-        _tokenTypeListView.OnItemSelected += onClick_TokenType;
+        _lstTokenTypes.OnItemSelected += onClick_TokenType;
 
-        if (HasBlackboardData("tokenTypes"))
+        if (TryGetBlackboardData(out VyTokenTypeDto[] resultArr, localKey:DATAKEY_TOKENTYPES))
         {
-            _tokenTypeList = GetBlackBoardData<VyTokenTypeDto[]>("tokenTypes").ToList();
+            _tokenTypeList = resultArr.ToList();
+            NoDataRefresh = true;
         }
         
-        if (HasBlackboardData("sourceContract"))
+        if (TryGetBlackboardData(out _sourceContract, localKey: DATAKEY_CONTRACT))
         {
-            _sourceContract = GetBlackBoardData<VyContractDto>("sourceContract");
             ShowRefresh = true;
         }
-
-        //Refresh (Fresh or Cache)
-        RefreshTokenTypes();
     }
 
-    protected override void OnClick_Refresh()
+    protected override async Task OnRefreshData()
     {
-        RefreshTokenTypes(true); //Force fresh reload
+        if (!ValidateData(_sourceContract, DATAKEY_CONTRACT)) return;
+
+        ViewManager.Loader.Show("Refreshing TokenTypes...");
+        var result = await VenlyAPI.Nft.GetTokenTypes(_sourceContract.Id);
+        ViewManager.Loader.Hide();
+
+        if (result.Success) _tokenTypeList = result.Data.ToList();
+        else ViewManager.HandleException(result.Exception);
     }
 
-    private void RefreshTokenTypes(bool force = false)
+    protected override void OnRefreshUI()
     {
-        //Do we have a source contract?
-        if (_sourceContract != null)
-        {
-            if (force || _sourceContract.Id != _lastContractId)
-            {
-                ViewManager.Loader.Show("Refreshing TokenTypes...");
-                VenlyAPI.Nft.GetTokenTypes(_sourceContract.Id)
-                    .OnSuccess(tokens =>
-                    {
-                        _lastContractId = _sourceContract.Id;
-                        _tokenTypeList = tokens.ToList();
-                        _tokenTypeListView.SetItemSource(_tokenTypeList);
-                    })
-                    .OnFail(ViewManager.HandleException)
-                    .Finally(ViewManager.Loader.Hide);
+        if (!ValidateData(_tokenTypeList, DATAKEY_TOKENTYPES)) return;
+        //if (!ValidateData(_sourceContract, DATAKEY_CONTRACT)) return;
 
-                return;
-            }
-        }
-        else _lastContractId = null;
-
-        _tokenTypeListView.SetItemSource(_tokenTypeList);
+        _lstTokenTypes.SetItemSource(_tokenTypeList);
     }
+    #endregion
 
+    #region EVENTS
     private void onClick_TokenType(VyTokenTypeDto tokenType)
     {
         if (IsSelectionMode)
@@ -85,8 +74,9 @@ public class ApiExplorer_ViewTokenTypesVC : SampleViewBase<eApiExplorerViewId>
         }
 
         //Should come from a Contract Details View
-        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_TokenTypeDetails, "tokenType" , tokenType);
-        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_TokenTypeDetails, "sourceContract" , _sourceContract);
-        ViewManager.SwitchView(eApiExplorerViewId.NftApi_TokenTypeDetails);
+        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_TokenTypeDetails, ApiExplorer_TokenTypeDetailsVC.DATAKEY_TOKENTYPE , tokenType);
+        ViewManager.SetViewBlackboardData(eApiExplorerViewId.NftApi_TokenTypeDetails, ApiExplorer_TokenTypeDetailsVC.DATAKEY_CONTRACT , _sourceContract);
+        ViewManager.SwitchView(eApiExplorerViewId.NftApi_TokenTypeDetails, ViewId, false);
     }
+    #endregion
 }

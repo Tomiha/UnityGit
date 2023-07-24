@@ -1,5 +1,5 @@
-using System;
 using System.Globalization;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using Venly;
 using Venly.Models.Shared;
@@ -7,52 +7,44 @@ using Venly.Models.Wallet;
 
 public class ApiExplorer_TransferCryptoTokenVC : SampleViewBase<eApiExplorerViewId>
 {
+    //DATA-KEYS
+    public const string DATAKEY_WALLET = "wallet";
+    public const string DATAKEY_TOKEN = "token";
+
+    //DATA
     private VyWalletDto _sourceWallet;
     private VyCryptoTokenDto _sourceToken;
-
-    private TextField _txtPincode;
-    private TextField _txtTargetAddress;
-    private TextField _txtAmount;
-
-    private Button _btnSelectSourceWallet;
-    private Button _btnSelectSourceToken;
-
 
     public ApiExplorer_TransferCryptoTokenVC() : 
         base(eApiExplorerViewId.WalletApi_TransferCryptoToken) { }
 
+    #region DATA & UI
     protected override void OnBindElements(VisualElement root)
     {
-        GetElement(out _txtPincode, "txt-pincode");
-        GetElement(out _txtTargetAddress, "txt-target-address");
-        GetElement(out _txtAmount, "txt-amount");
-        GetElement(out _btnSelectSourceWallet, "btn-select-source-wallet");
-        GetElement(out _btnSelectSourceToken, "btn-select-source-token");
-
-        BindButton("btn-select-source-wallet", onClick_SelectSourceWallet);
-        BindButton("btn-select-source-token", onClick_SelectSourceToken);
-        BindButton("btn-select-target", onClick_SelectTarget);
-        BindButton("btn-transfer", onClick_Transfer);
+        BindButton("btn-select-source-wallet", OnClick_SelectSourceWallet);
+        BindButton("btn-select-source-token", OnClick_SelectSourceToken);
+        BindButton("btn-select-target", OnClick_SelectTarget);
+        BindButton("btn-transfer", OnClick_Transfer);
     }
 
     protected override void OnActivate()
     {
-        ShowNavigateBack = true;
+        ShowRefresh = false;
+        ShowNavigateHome = false;
+
+        _sourceWallet = null;
+        _sourceToken = null;
 
         //Check if Source Is Set
-        if (HasBlackboardData("sourceWallet")) _sourceWallet = GetBlackBoardData<VyWalletDto>("sourceWallet");
-        else _sourceWallet = null;
-
-        _btnSelectSourceWallet.ToggleDisplay(_sourceWallet == null);
+        TryGetBlackboardData(out _sourceWallet, DATAKEY_WALLET, ApiExplorer_GlobalKeys.DATA_UserWallet);
+        ToggleElement("btn-select-source-wallet", _sourceWallet == null);
         UpdateSourceWallet(_sourceWallet);
 
         //Check if Token is Set
         if (_sourceWallet != null)
         {
-            if (HasBlackboardData("sourceToken")) _sourceToken = GetBlackBoardData<VyCryptoTokenDto>("sourceToken");
-            else _sourceToken = null;
-
-            _btnSelectSourceToken.ToggleDisplay(_sourceToken == null);
+            TryGetBlackboardData(out _sourceToken, localKey: DATAKEY_TOKEN);
+            ToggleElement("btn-select-source-token", _sourceToken == null);
             UpdateSourceToken(_sourceToken);
         }
     }
@@ -79,7 +71,7 @@ public class ApiExplorer_TransferCryptoTokenVC : SampleViewBase<eApiExplorerView
         }
 
         //Hide Select Token button if no wallet is selected yet
-        _btnSelectSourceToken.ToggleDisplay(_sourceWallet != null);
+        ToggleElement("btn-select-source-token", _sourceWallet != null);
     }
 
     private void UpdateSourceToken(VyCryptoTokenDto sourceToken)
@@ -100,14 +92,12 @@ public class ApiExplorer_TransferCryptoTokenVC : SampleViewBase<eApiExplorerView
 
     protected override void OnDeactivate()
     {
-       ClearBlackboardData("sourceWallet");
-       ClearBlackboardData("sourceToken");
-
-       _sourceWallet = null;
-       _sourceToken = null;
+        ClearBlackboardData();
     }
+    #endregion
 
-    private void onClick_SelectSourceToken()
+    #region EVENTS
+    private void OnClick_SelectSourceToken()
     {
         ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_ViewCryptoTokens, "sourceWallet", _sourceWallet);
         ViewManager.SelectionMode(eApiExplorerViewId.WalletApi_ViewCryptoTokens, "Select Token")
@@ -121,7 +111,7 @@ public class ApiExplorer_TransferCryptoTokenVC : SampleViewBase<eApiExplorerView
             });
     }
 
-    private void onClick_SelectSourceWallet()
+    private void OnClick_SelectSourceWallet()
     {
         ViewManager.SelectionMode(eApiExplorerViewId.WalletApi_ViewWallets, "Select Wallet")
             .OnComplete(result =>
@@ -134,7 +124,7 @@ public class ApiExplorer_TransferCryptoTokenVC : SampleViewBase<eApiExplorerView
             });
     }
 
-    private void onClick_SelectTarget()
+    private void OnClick_SelectTarget()
     {
         ViewManager.SelectionMode(eApiExplorerViewId.WalletApi_ViewWallets, "Select Wallet")
             .OnComplete(result =>
@@ -142,52 +132,41 @@ public class ApiExplorer_TransferCryptoTokenVC : SampleViewBase<eApiExplorerView
                 if (result.Success)
                 {
                     var wallet = result.Data as VyWalletDto;
-                    _txtTargetAddress.value = wallet.Address;
+                    SetLabel("txt-target-address", wallet.Address);
                 }
             });
     }
 
-    private bool Validate()
+
+    private void OnClick_Transfer()
     {
-        try
-        {
-            if (_sourceWallet == null) throw new ArgumentException("No wallet selected");
-            if (_sourceToken == null) throw new ArgumentException("No token selected");
-            if (string.IsNullOrEmpty(_txtPincode.text)) throw new ArgumentException("Pincode invalid");
-            if (string.IsNullOrEmpty(_txtTargetAddress.text)) throw new ArgumentException("Target address invalid");
-            if (string.IsNullOrEmpty(_txtAmount.text)) throw new ArgumentException("Amount invalid");
-        }
-        catch (Exception ex)
-        {
-            ViewManager.HandleException(ex);
-            return false;
-        }
+        //Validate
+        if (!ValidateData(_sourceWallet, "sourceWallet")) return;
+        if (!ValidateData(_sourceToken, "sourceToken")) return;
+        if (!ValidateInput("txt-pincode")) return;
+        if (!ValidateInput("txt-target-address")) return;
+        if (!ValidateInput<double>("txt-amount")) return;
 
-        return true;
-    }
-
-    private void onClick_Transfer()
-    {
-        if (!Validate()) return;
-
+        //Execute
         var reqParams = new VyTransactionCrytoTokenTransferRequest()
         {
             Chain = _sourceWallet?.Chain ?? eVyChain.NotSupported,
             WalletId = _sourceWallet?.Id,
             TokenAddress = _sourceToken.TokenAddress,
-            ToAddress = _txtTargetAddress.value,
-            Value = double.Parse(_txtAmount.value)
+            ToAddress = GetValue("txt-target-address"),
+            Value = GetValue<double>("txt-amount")
         };
 
         ViewManager.Loader.Show("Transferring...");
-        VenlyAPI.Wallet.ExecuteCryptoTokenTransfer(_txtPincode.text, reqParams)
+        VenlyAPI.Wallet.ExecuteCryptoTokenTransfer(GetValue("txt-pincode"), reqParams)
             .OnSuccess(transferInfo =>
             {
-                ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_hash", transferInfo.TransactionHash);
-                ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, "tx_chain", _sourceWallet.Chain);
-                ViewManager.SwitchView(eApiExplorerViewId.WalletApi_TransactionDetails);
+                ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, ApiExplorer_TransactionDetailsVC.DATAKEY_TXHASH, transferInfo.TransactionHash);
+                ViewManager.SetViewBlackboardData(eApiExplorerViewId.WalletApi_TransactionDetails, ApiExplorer_TransactionDetailsVC.DATAKEY_TXCHAIN, _sourceWallet.Chain);
+                ViewManager.SwitchView(eApiExplorerViewId.WalletApi_TransactionDetails, CurrentBackTarget);
             })
             .OnFail(ViewManager.HandleException)
             .Finally(ViewManager.Loader.Hide);
     }
+    #endregion
 }

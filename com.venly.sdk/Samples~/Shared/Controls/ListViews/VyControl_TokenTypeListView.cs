@@ -5,7 +5,16 @@ using Venly.Models.Nft;
 //ITEM
 public class VyControl_TokenTypeListItem : VyControl_ListViewItemBase<VyTokenTypeDto>
 {
-    public VyControl_TokenTypeListItem() : base("VyControl_TokenTypeListItem") { }
+    //public VyControl_TokenTypeListItem() : base("VyControl_TokenTypeListItem") { }
+    public VyControl_TokenTypeListItem() : base() { }
+
+    public override void GenerateTree(VisualElement root)
+    {
+        AddLabel(root, "lbl-name", "Name");
+        AddLabel(root, "lbl-id", "Id");
+        AddLabel(root, "lbl-fungible", "Fungible");
+        AddLabel(root, "lbl-supply", "Supply");
+    }
 
     public override void BindItem(VyTokenTypeDto sourceItem)
     {

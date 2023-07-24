@@ -3,12 +3,12 @@
     <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
         <SampleControl_Header />
         <ui:VisualElement style="margin-top: 10px; margin-bottom: 40px; margin-left: 20px; margin-right: 20px;">
-            <LabelField label="Hash" name="lbl-hash" />
-            <LabelField label="Status" name="lbl-status" />
-            <LabelField label="Confirmations" name="lbl-confirmations" />
-            <LabelField label="Block Hash" name="lbl-blockHash" />
-            <LabelField label="Block Number" name="lbl-blockNumber" />
-            <LabelField label="Reached Finality" name="lbl-reachedFinality" />
+            <ui:TextField picking-mode="Ignore" label="Hash" readonly="true" name="lbl-hash" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Status" readonly="true" name="lbl-status" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Confirmations" readonly="true" name="lbl-confirmations" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Block Hash" readonly="true" name="lbl-blockHash" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Block Number" readonly="true" name="lbl-blockNumber" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
+            <ui:TextField picking-mode="Ignore" label="Reached Finality" readonly="true" name="lbl-reachedFinality" multiline="true" class="texfield-readonly" style="margin-left: 0; margin-right: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 1px;" />
         </ui:VisualElement>
         <ui:VisualElement style="align-items: center;">
             <ui:Button text="Refresh" display-tooltip-when-elided="true" name="btn-refresh" class="main-button-style" />

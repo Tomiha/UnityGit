@@ -1,13 +1,17 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Samples/Sample_Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
     <ui:VisualElement name="root" class="sample-main-background" style="justify-content: flex-start; flex-grow: 1;">
         <SampleControl_Header header-title="API Features Sample" show-navigate-back="true" name="view-header" />
         <ui:VisualElement style="align-items: center; flex-grow: 1; justify-content: center;">
-            <ui:VisualElement style="margin-bottom: 50px; margin-left: 20px; margin-right: 20px; justify-content: flex-start; flex-direction: column; min-width: 400px;">
-                <ui:TextField picking-mode="Ignore" label="E-Mail" name="txt-email" />
-                <ui:TextField picking-mode="Ignore" label="Password" name="txt-password" password="true" />
+            <ui:VisualElement style="margin-bottom: 50px; margin-left: 20px; margin-right: 20px; flex-direction: row; justify-content: space-between; max-width: 400px; flex-grow: 1; align-items: center;">
+                <ui:VisualElement style="flex-grow: 1; justify-content: flex-start; align-items: stretch; min-width: auto; min-height: auto;">
+                    <ui:TextField picking-mode="Ignore" label="E-Mail" name="txt-email" style="flex-shrink: 1; align-items: center; flex-grow: 0;" />
+                    <ui:TextField picking-mode="Ignore" label="Password" name="txt-password" password="true" style="flex-shrink: 1; flex-grow: 0;" />
+                    <ui:VisualElement style="align-items: center;">
+                        <ui:Button text="Login" display-tooltip-when-elided="true" name="btn-login" class="main-button-style" style="margin-top: 60px; margin-left: 30px; margin-right: 30px; max-width: 150px; min-width: auto; flex-grow: 1; width: 150px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:Button text="Login" display-tooltip-when-elided="true" name="btn-login" class="main-button-style" />
         </ui:VisualElement>
         <ui:VisualElement name="admin-details" style="align-items: center; margin-bottom: 30px;">
             <ui:Label text="Backend Provider" display-tooltip-when-elided="true" style="-unity-font-style: bold; padding-bottom: 0;" />

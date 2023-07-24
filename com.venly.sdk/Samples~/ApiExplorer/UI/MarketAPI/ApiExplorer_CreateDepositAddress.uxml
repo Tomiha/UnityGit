@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Samples/Shared/SampleSharedStyle.uss?fileID=7433441132597879392&amp;guid=87b612c5c3ef33c4cb5833fee346054f&amp;type=3#SampleSharedStyle" />
+    <ui:VisualElement name="root" class="sample-main-background" style="flex-grow: 1;">
+        <SampleControl_Header />
+        <ui:ScrollView style="margin-top: 10px; margin-bottom: 10px;">
+            <ui:VisualElement style="margin-left: 10px; margin-right: 10px;">
+                <ui:VisualElement name="details">
+                    <ui:DropdownField label="Chain" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="selector-chain" />
+                    <ui:TextField picking-mode="Ignore" label="Memo" multiline="false" name="txt-memo" style="flex-shrink: 1; display: none;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="actions" style="align-items: center; margin-top: 30px;">
+                    <ui:Button text="Create" display-tooltip-when-elided="true" name="btn-create" class="main-button-style" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>
