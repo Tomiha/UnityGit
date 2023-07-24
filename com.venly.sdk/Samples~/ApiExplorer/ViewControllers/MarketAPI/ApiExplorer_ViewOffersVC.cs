@@ -16,7 +16,6 @@ public class ApiExplorer_ViewOffersVC : SampleViewBase<eApiExplorerViewId>
     //DATA
     private List<VyOfferDto> _offerList;
     private VyQuery_GetOffers _offerQuery = null;
-    private VyQuery_GetUserOffers _userOfferQuery = null;
 
     private eVyVisibilityType _visibility = eVyVisibilityType.Public;
 
@@ -150,12 +149,6 @@ public class ApiExplorer_ViewOffersVC : SampleViewBase<eApiExplorerViewId>
         _offerQuery = null;
         _visibility = _selectorVisibility.GetValue<eVyVisibilityType>();
 
-        if (GetToggleValue("toggle-chain"))
-        {
-            _offerQuery =VyQuery_GetOffers.Create();
-            _offerQuery.Chain(_selectorChain.GetValue<eVyChain>());
-        }
-
         if (_visibility == eVyVisibilityType.Public)
         {
             _offerQuery ??= VyQuery_GetOffers.Create();
@@ -164,6 +157,9 @@ public class ApiExplorer_ViewOffersVC : SampleViewBase<eApiExplorerViewId>
                 if (!ValidateInput("txt-seller-id")) return;
                 _offerQuery.SellerId(GetValue("txt-seller-id"));
             }
+
+            if (GetToggleValue("toggle-chain")) 
+                _offerQuery.Chain(_selectorChain.GetValue<eVyChain>());
 
             if (GetToggleValue("toggle-type"))
                 _offerQuery.Type(new[] {_selectorType.GetValue<eVyOfferType>().GetMemberName()});

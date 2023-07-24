@@ -139,6 +139,10 @@ Foldout .unity-foldout__text {
     margin-left: 5px;
 }
 
+Toggle {
+    padding-bottom: 2px;
+}
+
 Toggle .unity-toggle__label {
     -unity-font-style: bold;
     -unity-font-definition: resource('Fonts/TTCommons-Regular SDF');
@@ -299,7 +303,4 @@ Scroller .unity-repeat-button {
 }
 
 .unity-text-field__label > mainlabelfield_text {
-}
-
-.unity-base-field > mainlabelfield_base {
 }
